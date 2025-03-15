@@ -1,2 +1,11 @@
-/ignoreF
+<<<<<<< HEAD
 
+=======
+# Suggestions from w3schools.com
+
+# ignore ALL .log files
+*.log
+
+# ignore ALL files in ANY directory named temp
+temp/ 
+>>>>>>> 8f9a836be5a427a8f805c5d31cbd8531f0b6a806
