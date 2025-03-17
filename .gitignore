@@ -1,11 +1,17 @@
-<<<<<<< HEAD
+# Ignore all script files
+*.sh
+*.ps1
 
-=======
-# Suggestions from w3schools.com
+# Ignore the requirements.txt file
+requirements.txt
 
-# ignore ALL .log files
+# Ignore node_modules directory (if you're using npm)
+node_modules/
+
+
+# Ignore all .log files
 *.log
 
-# ignore ALL files in ANY directory named temp
-temp/ 
->>>>>>> 8f9a836be5a427a8f805c5d31cbd8531f0b6a806
+# Ignore all files in any directory named temp
+temp/
+

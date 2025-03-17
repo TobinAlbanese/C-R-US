@@ -1,0 +1,36 @@
+{
+  "name": "full-stack-project",
+  "version": "1.0.0",
+  "description": "A full-stack web application using JavaScript, Python, Java, C++, MongoDB/SQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "install:all": "npm install && bash install.sh"
+  },
+  "keywords": [
+    "full-stack",
+    "node",
+    "express",
+    "mongodb",
+    "python",
+    "java",
+    "c++",
+    "sql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^3.1.9",
+    "mongoose": "^6.0.0",
+    "mongodb": "^4.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
+
