@@ -8,12 +8,14 @@ if (-not (Test-Path "HKCU:\Software\Microsoft\PowerShell\1\ShellIds\Microsoft.Po
 Write-Host "Installing backend dependencies (server)..."
 Set-Location -Path "server"
 npm install
+npm install express
 Set-Location -Path ".."
 
 # Install dependencies for frontend (client) folder
 Write-Host "Installing frontend dependencies (client)..."
 Set-Location -Path "client"
 npm install
+npm install express
 Set-Location -Path ".."
 
 # Install C++ dependencies (Boost)
