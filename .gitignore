@@ -1,6 +1,3 @@
-# Ignore the requirements.txt file
-requirements.txt
-
 # Ignore node_modules directory (if you're using npm)
 node_modules/
 
