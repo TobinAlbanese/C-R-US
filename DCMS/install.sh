@@ -4,12 +4,14 @@
 echo "Installing backend dependencies..."
 cd server
 npm install
+npm install express
 cd ..
 
 # Install frontend dependencies (client folder)
 echo "Installing frontend dependencies..."
 cd client
 npm install
+npm install express
 cd ..
 
 # Install C++ dependencies
@@ -37,6 +39,11 @@ brew install mysql
 
 # Install PostgreSQL on macOS (alternative to MySQL)
 # brew install postgresql
+
+# Install bootstrap 
+echo "Installing bootstrap..."
+npm install bootstrap
+
 
 # Final message
 echo "All dependencies installed!"
