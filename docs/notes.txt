@@ -1,0 +1,50 @@
+You have to git pull everytime you want an updated version of the website
+    If you don't you will be stuck on the same folder while everyone else is on updated
+
+
+
+ TO PUSH & PULL & ADD TO GIT HUB
+CLONE REPO:                 git clone https://github.com/TobinAlbanese/C-R-US/tree/main
+                                (or just pull from starting menu and that should be updated version)
+
+PULL REPO:                  git pull origin main    (pulls main files from github)
+
+CREATE BRANCH:              git checkout -b "branch name"
+                                to switch between branches: git switch "branch name"
+
+STAGING FILES FOR ADD:      git add . (for all changes you made)
+                            git add (for specific files/folders"file name: index.html")
+
+COMMITING CHANGES:          git commit -m "type reasoning here in quotes"
+
+(you can git pull again for sync but not necessary we aren't working with 100 files)
+
+PUSHING CHANGES:            git push origin "branch name" (for branches)
+                            git push origin main (for main (entire git))
+
+
+
+
+
+            TO BRANCH:
+first pull git into vs code for updated folder
+
+create a branch by;     git checkout -b (branch name)
+
+make changes to your own version of the folder (aka branch)
+
+before finishing; git pull origin main 
+            (we pull it again but this time by the main branch we will be working on separate branches
+            and this allows us to pull in updated folder to our separate branch
+            if git has no conflicts it should be good to go)
+
+
+
+If you happen to get PORT error or EADDRINUSE
+Run this code:          lsof -i:5000
+                        (after running lsof a code segment should appear under 
+                        PID there should be 4 digits)
+                        kill -9 (that PID 4 digit number)
+    you have to go into server.js and change the port
+        just change it from 5000 to maybe 5001 but this error shouldn't occur after I fixed it.
+        

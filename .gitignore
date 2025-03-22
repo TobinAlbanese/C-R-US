@@ -8,3 +8,5 @@ node_modules/
 # Ignore all files in any directory named temp
 temp/
 
+#ignore env file
+*.env
