@@ -1,9 +1,14 @@
 You have to git pull everytime you want an updated version of the website
     If you don't you will be stuck on the same folder while everyone else is on updated
 
+ALWAYS DO THIS FIRST AFTER PULLING REPO:
+                            cd mern-stack/backend
+                            npm install
+                                 WITHOUT doing this you will get the same error everytime.
 
 
- TO PUSH & PULL & ADD TO GIT HUB
+
+ STEPS ON HOW TOO PUSH & PULL & ADD TO GIT HUB: 
 CLONE REPO:                 git clone https://github.com/TobinAlbanese/C-R-US/tree/main
                                 (or just pull from starting menu and that should be updated version)
 
