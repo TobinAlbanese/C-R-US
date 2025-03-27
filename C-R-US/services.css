@@ -1,0 +1,169 @@
+body { 
+    background-color: #fff;
+    color: #0d0d0e;
+    font-family: Arial; 
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+h1 { 
+    margin: 0; 
+    padding: 0 2em; 
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h2, h3 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+p {
+    margin-top: 50px;
+    padding-left: 10px; /* Add padding to create space from the floated image */
+    padding-right: 10px; /* Add padding to create space from the floated image */
+}
+
+nav#menu { 
+    background-color: #516651; 
+    color: #fff; 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); 
+    position: fixed; 
+    left: 0; 
+    top: 50px; 
+    bottom: 30px; 
+    width: 250px; 
+    box-sizing: border-box; 
+    padding: 1em; 
+}
+
+nav#menu a {
+    text-decoration: none;
+}
+
+nav#assignments { 
+    background-color: #516651; 
+    color: #fff; 
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); 
+    position: fixed; 
+    right: 0; 
+    top: 50px; 
+    bottom: 30px; 
+    width: 250px; 
+    box-sizing: border-box; 
+    padding: 1em; 
+}
+
+nav#assignments a {
+    text-decoration: none;
+}
+
+a:link {
+    color: #d5f1db;
+} 
+
+a:visited {
+    color: #104e88;
+}
+
+a:hover {
+    color: #ffffff;
+}
+
+main {
+    display: flex; /* Use flexbox to position the video and text side by side */
+    flex-direction: column; /* Stack the content vertically */
+    align-items: center; /* Center the content horizontally */
+    padding: 1.5em;
+    margin: 0 270px; /* Space for both columns */
+    padding-top: 80px; /* Space for the fixed header */
+    padding-bottom: 40px; /* Space for the fixed footer */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.image-description {
+    font-size: 0.75em; /* Make the text smaller */
+    text-align: center; /* Center the description text */
+    color: #5f5f80; /* Color for the description text */
+    margin-top: 0.5em; /* Space above the description */
+}
+.content {
+    width: 100%; /* Ensure the content takes up the full width */
+    margin-bottom: 1.5em; /* Space below content */
+}
+
+.video {
+    width: 300px; /* Set width of the video container */
+    margin-bottom: 1.5em; /* Space below video */
+}
+
+.video iframe {
+    width: 100%; /* Make the video fill the container */
+    height: 200px; /* Adjust height as needed */
+}
+
+table {
+    width: 90%; /* Adjust as needed */
+    margin: 0 auto; /* Center the table */
+    border: 1px solid #516651;
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 5px;
+    border: 1px solid #516651;
+}
+
+td {
+    text-align: center;
+}
+
+tr:nth-of-type(even) {
+    background-color: #d5f1db;
+}
+
+footer { 
+    background-color: #516651;
+    font-size: 0.75em;
+    font-style: italic;
+    text-align: center;
+    padding: 1em;
+    min-height: 20px;
+    position: fixed; /* Fix the footer to the bottom */
+    bottom: 0;
+    width: 100%;
+}
+
+/* Media Query for 960px and below */
+@media (max-width: 960px) {
+    nav#menu, nav#assignments {
+        width: 200px; /* Adjust width for smaller screens */
+        padding: 0.5em; /* Adjust padding */
+    }
+
+    main {
+        margin: 0; /* Remove side margins */
+        padding: 1em; /* Adjust padding */
+    }
+
+    .video {
+        width: 100%; /* Make video container full width */
+    }
+
+    .video iframe {
+        height: auto; /* Adjust height for responsiveness */
+    }
+
+    table {
+        width: 100%; /* Make table full width */
+    }
+
+    nav#menu, nav#assignments {
+        position: relative; /* Change to relative positioning for smaller screens */
+        width: 100%; /* Full width for smaller screens */
+        box-shadow: none; /* Remove box shadow */
+    }
+
+    footer {
+        position: relative; /* Change to relative positioning for smaller screens */
+    }
+}
