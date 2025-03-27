@@ -9,6 +9,19 @@ img{
   }
 
 
+/* Style for a dynamic background */
+.dynamic-background {
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 1;
+}
+
 /* Style for the login button */
 .navbar .btn-login {
     border: 2px solid black;        
@@ -49,8 +62,8 @@ img{
 
 /* Style for View Services Button */
 .btn-view-services {
-    background-color: #91C8CB; /* Same color as navbar */
-    color: white;
+    background-color: #000000; /* Same color as navbar */
+    color: rgb(255, 255, 255);
     padding: 25px 60px;
     font-size: 28px;
     border-radius: 8px;
