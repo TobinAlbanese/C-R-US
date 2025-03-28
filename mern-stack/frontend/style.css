@@ -24,36 +24,39 @@ img{
     position: relative;
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
 
 }
 
-/* Style for a dynamic background */
-.dynamic-background {
-    background-size: cover;
-    background-position: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 1;
+header a img {
+    margin-right: 15px; /* Adds spacing between the logo and the text */
+    padding-left: 20px;
+    width: 80px;
+    padding-top: 5px;;
+    
+}
+
+header h4 {
+    margin: 0; /* Removes any margin around the header text */
+    padding-top: 20px;
+    padding-left: 0;
+    color: #000000; /* Ensure the color is black */
 }
 
 /* Style for the login button */
 nav#menu { 
     background-color: transparent;
-    padding-top: 13px;
-    padding-right: 3px;
+    padding-top: 30px;
+    padding-right: 15px;
+    margin-left: auto;
 }
 
 nav#menu ul {
     list-style: none;  /* Removes the bullet points from the list */
     display: flex;  /* Display the menu items horizontally */
-    margin: 0;
-    padding: 0;
+    margin-left: 50px;  
+    padding-left: 50px;
     font-family: sans-serif;
 }
 
@@ -87,6 +90,16 @@ nav#menu ul li:nth-child(5) {
     border-radius: 8em;
     padding: 15px 21px;
     display: inline-block;
+
+}
+
+nav#menu ul li:nth-child(5) a:hover {
+    opacity: 0.7;
+    border-radius: 5px;  /* Rounded corners for hover */
+}
+
+nav#menu ul li:nth-child(5) a {
+    color: white;
 
 }
 
@@ -147,7 +160,18 @@ nav#menu ul li:nth-child(5) {
 }
 
 
-
+/* Style for a dynamic background */
+.dynamic-background {
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 1;
+}
 
 footer { 
     background-color: #ffffff;
