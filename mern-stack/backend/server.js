@@ -24,4 +24,5 @@ app.get("/", (req, res) => {
 // Start the server
 app.listen(5001, () => {
   console.log('Server started at http://localhost:5001');
+  console.log('Testing a commit');
 });
