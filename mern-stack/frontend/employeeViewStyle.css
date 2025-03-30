@@ -90,14 +90,13 @@ h2{
 }
 .buttonTimeOff{
     color:white;
-    background-color: #4681AC;
+    background-color: #5AA1D4;
     padding: 100px 100px;
     font-size: 20px;
     text-align: center;
     line-height: 50px;
     border-radius: 15px;
-    border-color: #4681AC;
-    
+    border-color: #5AA1D4;
     margin: 35px;
 
 }
@@ -111,13 +110,13 @@ h2{
 
 .buttonLogHours{
     color:white;
-    background-color: #4681AC;
+    background-color: #67B7F1;
     padding: 100px 100px;
     font-size: 20px;
     text-align: center;
     line-height: 50px;
     border-radius: 15px;
-    border-color: #4681AC;
+    border-color: #67B7F1;
     margin: 35px;
     
 
@@ -156,14 +155,7 @@ p3{
     line-height: 10px;
 }
 
-.button{ 
- background-color: black;
- border: none;
- color: white;
- padding: 15px 30px;
- text-align: center;
- border-radius: 15px;
-}
+
 footer { 
     background-color: #ffffff;
     font-size: 1em;
