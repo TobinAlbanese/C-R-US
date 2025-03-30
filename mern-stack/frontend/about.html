@@ -6,7 +6,8 @@
     <title>Cavities R US - Dental Clinic</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
     <style>
       body{
         background-color: #ffffff;
@@ -16,39 +17,21 @@
 <body>
 
 <!-- Navbar (Reused in other pages) -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #ffffff !important;">
-  <div class="container-fluid">
-    <!-- Logo in the navbar -->
-    <a class="navbar-brand" href="#">
-      <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65"> Cavities R US Dental Clinic
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="appointments.html">Appointments</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="about.html">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="services.html">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a href="login.html" class="btn-login">Login</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<header>
+  <a href="index.html">
+    <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
+</a>
+<h4>Cavities R US Dental Clinic</h4>
+        <nav id="menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="appointment.html">Book</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+  </header>
 
 
 
@@ -159,43 +142,45 @@
 </section>
 
 <!-- Main Where You Can Find Us Section -->
-<section>
-  <div class="where-you-can-box container py-5">
-    <!-- Large Static Logo -->
-    <div style="white-space: nowrap; text-align: left;">
-      <h1 class="display-4" style="font-weight: bold;">Where You Can Find Us</h1>
-      <br>
-      <!--<a href="appointments.html" class="btn btn-light btn-lg">Book an Appointment</a>-->
-    </div>
-    <div class="col-md-12 row">
-      <div class="d-flex align-items-center" style=" position: relative;">
-        <h3 class="display-7"> <img src="/C-R-US/public/assets/images/locationIcon.png" alt="MapIcon" class="img-fluid me-4" style="width: 30px; height: auto;">
-          <strong>Location:</strong> <br> 
-          <div style="margin-left: 75px;">
-            6000 Jed Smith Dr, Sacramento, CA 95819
-          </div> 
-          <br><br><br>
-          <img src="/C-R-US/public/assets/images/contactIcon.png" alt="MapIcon" class="img-fluid me-4" style="width: 30px; height: auto;">
-          <strong>Contact Us:</strong> <br>
-          <div style="margin-left: 75px;">
-            (916) 278-6011
-          </div> <br>
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6239.651877359375!2d-121.42657328876204!3d38.56082397168031!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ada8d31c6f4db%3A0x763ddc32823f5b82!2sCalifornia%20State%20University%2C%20Sacramento!5e0!3m2!1sen!2sus!4v1743193919563!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <br>
-        </h3>
+<section class="where-you-can-section text-black py-5" style="background-color: #ffffff;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center" style=" position: relative; top: -90px;">
+            <h1 class="display-5" style="font-weight: bold;">Where You Can Find Us</h1>
+            <img src="/C-R-US/public/assets/images/mapIcon.png" alt="MapIcon" class="img-fluid me-4" style="width: 50px; height: auto; margin-left: 10px;">
+        </div>
+        <div class="d-flex align-items-center" style=" position: relative; top: -55px;">
+          <h3 class="display-7"> <img src="/C-R-US/public/assets/images/locationIcon.png" alt="MapIcon" class="img-fluid me-4" style="width: 30px; height: auto;">
+            <strong>Location:</strong> <br> 
+            <div style="margin-left: 75px;">
+              6000 Jed Smith Dr, Sacramento, CA 95819
+            </div> 
+            <br><br><br><br>
+            <img src="/C-R-US/public/assets/images/contactIcon.png" alt="MapIcon" class="img-fluid me-4" style="width: 30px; height: auto;">
+            <strong>Contact Us:</strong> <br>
+            <div style="margin-left: 75px;">
+              (916) 278-6011
+            </div> 
+          </h3>
+        </div>
+      </div>
+      <div class="col-md-6 text-center">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6239.651877359375!2d-121.42657328876204!3d38.56082397168031!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ada8d31c6f4db%3A0x763ddc32823f5b82!2sCalifornia%20State%20University%2C%20Sacramento!5e0!3m2!1sen!2sus!4v1743193919563!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Footer (Reused in other pages) -->
-<footer class="text-center text-white py-5" style="background-color: #000000;">
-    <p>&copy; 2025 Cavities R US. All rights reserved.</p>
-    <ul class="list-inline">
-        <li class="list-inline-item"><a href="#" class="text-white">Facebook</a></li>
-        <li class="list-inline-item"><a href="#" class="text-white">Twitter</a></li>
-        <li class="list-inline-item"><a href="#" class="text-white">Instagram</a></li>
-    </ul>
+<footer>
+  Cavities R US Dental Clinic
+  <br>
+  <a href="https://www.facebook.com/login.php/" class="fa fa-facebook"></a>
+  <a href="https://www.linkedin.com/home" class="fa fa-linkedin"></a>
+  <a href="https://www.youtube.com/account_advanced" class="fa fa-youtube"></a>
+  <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
+
 </footer>
 
 <!-- Bootstrap JS and dependencies -->
