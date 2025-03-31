@@ -1,3 +1,4 @@
+
 header {
     background-color: #ffffff;
     text-align: left;
@@ -7,6 +8,7 @@ header {
     display: flex;
     justify-content: flex-start; /* Align items to the left */
     align-items: center; /* Align vertically centered */
+    margin-bottom: 50px;
 }
 
 header a img {
@@ -24,6 +26,29 @@ header h1 {
     font-weight: bold;
 }
 
+main-header{
+    text-align: left;
+    padding: 100px;
+    white-space: nowrap;
+}
+main-header top {
+    font-weight: bold;
+    font-size: larger;
+}
+main-header bottom {
+    font-weight: lighter;
+    font-size: large;
+    padding: 100px;
+}
+frImage {
+    display: flex;
+    justify-content: center;
+}
+frImage img {
+    width: 85%;
+    height: auto;
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+}
 nav#menu { 
     background-color: transparent;
     padding: 0;
@@ -143,19 +168,6 @@ nav#assignments {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     border: 2px solid black;
-}
-
-/* Style for a dynamic background */
-.dynamic-background {
-    background-size: cover;
-    background-position: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 1;
 }
 
 footer { 
