@@ -1,27 +1,9 @@
 .headerText{
-    color:black;
+    color: black;
     background-color: #4681AC;
     padding: 40px;
     font-size: 40px;
 }
-
-
-.buttonSubmitTimesheet{
-    color:white;
-    background-color: #000000;
-    padding: 2px 20px;
-    font-size: 15px;
-    text-align: center;
-    line-height: 50px;
-    border-radius:20px;
-    border-color: #4080AF;
-    margin-left: 800px;
-    margin-top: 25px;
-    font-weight: bold;
-
-}
-
-
 
 
 header {
@@ -80,6 +62,8 @@ nav#menu ul li:nth-child(5) {
     display: inline-block;
 
 }
+
+
 
 footer { 
     background-color: #ffffff;
