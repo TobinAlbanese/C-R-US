@@ -21,6 +21,9 @@ header h1 {
     padding-top: 30px;
     padding-left: 0;
     color: #000000; /* Ensure the color is black */
+    font-family: sans-serif;
+    font-size: 1.25em;
+    font-weight: bold;
 }
 
 
