@@ -171,7 +171,7 @@ h2 {
 
 }
 
-#appointment {
+#order {
     background-color: #ebecec;
     height: 15em;
     display: flex;
@@ -186,17 +186,17 @@ h2 {
 
 /* Section 2 */
 
-#schedule {
+#shipping {
     background-color: #ebecec;
-    height: 40em;
+    height: 15em;
     display: flex;
-    align-items: last baseline;
+    align-items: center;
 }
 
 
 
 
-button
+ button
 {
     background-color: black;
     color:white;
@@ -223,19 +223,16 @@ button
 
 /* Section 3 */
 
-#feedback {
+#method {
     background-color: #ebecec;
-    height: 25em;
+    height: 15em;
     display: flex;
     align-items: center;
 }
 
-#feedback img {
-    margin-right: 30px;
-    padding-left: 30px;
-}
 
-#feedback p2 {
+
+#method p2 {
     padding-left: 40px;
     padding-bottom: 30px;
     font-size: larger;
