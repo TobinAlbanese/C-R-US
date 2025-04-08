@@ -123,19 +123,10 @@ section {
     clear: both; /* Clear floats if there are any */
 }
 
-img {
-    display: block; /* Ensures images are block-level elements */
-   margin: 0 auto; /* Centers images horizontally */
-
-}
 
 
-.image-description {
-    font-size: 0.75em; 
-    text-align: center; 
-    color: #5f5f80; 
-    margin-top: 0.5em; 
-}
+
+
 
 
 
@@ -161,40 +152,43 @@ h2 {
 
 
 /* Section 1 */
+#headings {
 
-#appointments {
-    background-color: #ffffff;
+    background-color: #437fb8;
+    height: 1em;
+    border-radius: 1em;
+    display: flex;
+    align-items: center;
+}
+
+#headings p2 {
+
+    color: #000000;  
+    padding-bottom: 1.5em;
+    font-family: sans-serif;
+    font-size: 2em;
+    font-weight: bold;
+
+}
+
+#appointment {
+    background-color: #ebecec;
     height: 15em;
     display: flex;
     align-items: center;
 }
 
-#appointments header{
-    background-color: #437fb8;
-    height: 5em;
-    display: flex;
-    align-items: center;
-}
-
-#appointments img {
-    margin-right: 30px;
-    padding-left: 30px;
-}
-
-#appointments p2 {
-    padding-left: 40px;
-    padding-bottom: 30px;
-    font-size: larger;
-    line-height: 1.6;
-}
 
 
 
-/* Section 1 */
+
+
+
+/* Section 2 */
 
 #schedule {
-    background-color: #437fb8;
-    height: 15em;
+    background-color: #ebecec;
+    height: 40em;
     display: flex;
     align-items: center;
 }
@@ -209,16 +203,17 @@ h2 {
     padding-bottom: 30px;
     font-size: larger;
     line-height: 1.6;
+    color: #000000;
 }
 
 
 
 
-/* Section 1 */
+/* Section 3 */
 
 #feedback {
-    background-color: #437fb8;
-    height: 15em;
+    background-color: #ebecec;
+    height: 25em;
     display: flex;
     align-items: center;
 }
@@ -233,6 +228,7 @@ h2 {
     padding-bottom: 30px;
     font-size: larger;
     line-height: 1.6;
+    color: #000000;
 }
 
 
