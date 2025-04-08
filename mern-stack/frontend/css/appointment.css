@@ -1,0 +1,369 @@
+
+
+header {
+    background-color: #ffffff;
+    text-align: left;
+    padding: 20px 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center; /* Align vertically centered */
+}
+
+header a img {
+    margin-right: 15px; /* Adds spacing between the logo and the text */
+    padding-left: 20px;
+}
+
+header h1 {
+    margin: 0; /* Removes any margin around the header text */
+    padding-top: 30px;
+    padding-left: 0;
+    color: #000000; /* Ensure the color is black */
+    font-family: sans-serif;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+
+
+nav#menu { 
+    background-color: transparent;
+    padding: 0;
+    margin-left: auto;
+}
+
+nav#menu ul {
+    list-style: none;  /* Removes the bullet points from the list */
+    display: flex;  /* Display the menu items horizontally */
+margin-left: 50px;  
+padding-left: 50px;
+
+
+}
+
+
+
+nav#menu ul li {
+    margin-right: 20px;  
+    border-radius: 8em;
+    padding: 20px 20px;
+    display: inline-block;
+}
+
+
+
+nav#menu ul li a {
+    text-decoration: none;
+    color: #000000;  
+    font-size: 1em;
+    height: 50px;
+    
+}
+
+nav#menu ul li a:hover {
+    opacity: 0.7;
+    border-radius: 5px;  /* Rounded corners for hover */
+}
+
+
+nav#menu ul li:nth-child(5) {
+    background-color: black; 
+    border-radius: 8em;
+    padding: 20px 20px;
+    display: inline-block;
+    transition: opacity 0.3s;;
+
+}
+
+nav#menu ul li:nth-child(5) a:hover {
+    opacity: 0.7;
+    border-radius: 5px;  /* Rounded corners for hover */
+}
+
+nav#menu ul li:nth-child(5) a {
+    color: white;
+
+}
+
+
+nav#assignments {
+    background-color: #ffffff;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+
+
+
+
+
+
+main {
+    display: flex; 
+    flex-direction: column; 
+    align-items: left; 
+    margin: 0 100px; 
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+    box-sizing: border-box; 
+}
+
+
+section {
+    margin: 2em 0; /* Add space between sections */
+   padding: 1em;
+    clear: both; /* Clear floats if there are any */
+}
+
+img {
+    display: block; /* Ensures images are block-level elements */
+   margin: 0 auto; /* Centers images horizontally */
+
+}
+
+
+.image-description {
+    font-size: 0.75em; 
+    text-align: center; 
+    color: #5f5f80; 
+    margin-top: 0.5em; 
+}
+
+
+
+
+h1 {
+    color: #000000;  
+    font-size: 1em;
+    height: 50px;
+    padding-left: 20px;
+    padding-top: 20px;
+    
+}
+
+h2 {
+    color: #000000; 
+    font-family: sans-serif; 
+    text-align: left;
+    font-size: 3em;
+}
+
+
+
+
+
+/* Section 1 */
+
+#appointments {
+    background-color: #437fb8;
+    height: 15em;
+    display: flex;
+    align-items: center;
+}
+
+#appointments img {
+    margin-right: 30px;
+    padding-left: 30px;
+}
+
+#appointments p2 {
+    padding-left: 40px;
+    padding-bottom: 30px;
+    font-size: larger;
+    line-height: 1.6;
+}
+
+
+
+/* Section 1 */
+
+#schedule {
+    background-color: #437fb8;
+    height: 15em;
+    display: flex;
+    align-items: center;
+}
+
+#schedule img {
+    margin-right: 30px;
+    padding-left: 30px;
+}
+
+#schedule p2 {
+    padding-left: 40px;
+    padding-bottom: 30px;
+    font-size: larger;
+    line-height: 1.6;
+}
+
+
+
+
+/* Section 1 */
+
+#feedback {
+    background-color: #437fb8;
+    height: 15em;
+    display: flex;
+    align-items: center;
+}
+
+#feedback img {
+    margin-right: 30px;
+    padding-left: 30px;
+}
+
+#feedback p2 {
+    padding-left: 40px;
+    padding-bottom: 30px;
+    font-size: larger;
+    line-height: 1.6;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+body { 
+    background-color: #fff;
+    color: #0d0d0e;
+    font-family: sans-serif; 
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+
+
+p1 {
+    color: #000000;
+    margin-top: 50px;
+    padding-left: 10px; /* Add padding to create space from the floated image */
+    padding-right: 10px; /* Add padding to create space from the floated image */
+}
+
+p2 {
+    color: #ffffff;
+    margin-top: 50px;
+    padding-left: 10px; /* Add padding to create space from the floated image */
+    padding-right: 10px;  
+}
+
+a:link {
+    color: #d5f1db;
+} 
+
+a:visited {
+    color: #104e88;
+}
+
+a:hover {
+    opacity: 0.7;
+}
+
+
+
+
+footer { 
+    background-color: #ffffff;
+    font-size: 1em;
+    font-style: bold;
+    text-align: left;
+    margin-top: 3em;
+    padding: 1em;
+    min-height: 100px;
+    position: relative; /* Fix the footer to the bottom */
+    bottom: 0;
+    width: 100%;
+    border-top: #c7c7c9 2px solid;
+   
+}
+
+.fa {
+    padding: 5px;
+    font-size: 10px;
+    width: 15px;
+    text-align: center;
+    text-decoration: none;
+    margin: 5px 2px;
+    border-radius: 50%;
+    margin-top: 5em;
+  }
+  
+  .fa:hover {
+      opacity: 0.7;
+  }
+  
+  .fa-facebook {
+    background: #909091;
+    color: #ffffff !important;
+  
+  }
+  
+  .fa-linkedin {
+      background: #909091;
+      color: #ffffff !important;
+    }
+    
+    .fa-youtube {
+      background: #909091;
+      color: #ffffff !important;
+    }
+    
+    .fa-instagram {
+      background: #909091;
+      color: #ffffff !important;
+    }
+  
+
+
+
+/* Media Query for 960px and below */
+@media (max-width: 960px) {
+    nav#menu, nav#assignments {
+        width: 200px; /* Adjust width for smaller screens */
+        padding: 0.5em; /* Adjust padding */
+    }
+
+    main {
+        margin: 0; /* Remove side margins */
+        padding: 1em; /* Adjust padding */
+    }
+
+    .video {
+        width: 100%; /* Make video container full width */
+    }
+
+    .video iframe {
+        height: auto; /* Adjust height for responsiveness */
+    }
+
+    table {
+        width: 100%; /* Make table full width */
+    }
+
+    nav#menu, nav#assignments {
+        position: relative; /* Change to relative positioning for smaller screens */
+        width: 100%; /* Full width for smaller screens */
+        box-shadow: none; /* Remove box shadow */
+    }
+
+    footer {
+        position: relative; /* Change to relative positioning for smaller screens */
+    }
+}
