@@ -163,8 +163,15 @@ h2 {
 /* Section 1 */
 
 #appointments {
-    background-color: #437fb8;
+    background-color: #ffffff;
     height: 15em;
+    display: flex;
+    align-items: center;
+}
+
+#appointments header{
+    background-color: #437fb8;
+    height: 5em;
     display: flex;
     align-items: center;
 }
