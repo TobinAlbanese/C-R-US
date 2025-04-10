@@ -1,4 +1,3 @@
-
 header {
     background-color: #ffffff;
     text-align: left;
@@ -8,7 +7,6 @@ header {
     display: flex;
     justify-content: flex-start; /* Align items to the left */
     align-items: center; /* Align vertically centered */
-    margin-bottom: 50px;
 }
 
 header a img {
@@ -26,29 +24,6 @@ header h1 {
     font-weight: bold;
 }
 
-main-header{
-    text-align: left;
-    padding: 100px;
-    white-space: nowrap;
-}
-main-header top {
-    font-weight: bold;
-    font-size: larger;
-}
-main-header bottom {
-    font-weight: lighter;
-    font-size: large;
-    padding: 100px;
-}
-frImage {
-    display: flex;
-    justify-content: center;
-}
-frImage img {
-    width: 85%;
-    height: auto;
-    object-fit: cover; /* Ensures the image covers the area without distortion */
-}
 nav#menu { 
     background-color: transparent;
     padding: 0;
@@ -81,7 +56,6 @@ nav#menu ul li a:hover {
     opacity: 0.7;
     border-radius: 5px;  /* Rounded corners for hover */
 }
-
 
 nav#menu ul li:nth-child(5) {
     background-color: black; 
@@ -121,55 +95,137 @@ nav#assignments {
     width: 100%;  /* Makes the image span the full width of its container */
     height: auto; /* Keeps aspect ratio */
     height: 70vh; /* Sets the height to 80% of the viewport height */
+
 }
 
 
-.card-title {
-    font-size: 1.25rem;     
-    font-family: 'Arial', sans-serif; 
+.checkmark {
+    font-size: 40px; /* Size of the check mark */
+    display: inline-block; /* Allows us to apply width, height, and border-radius */
+    padding: 15px; /* Space inside the circle */
+    border: 2px solid #000; /* Black border around the circle */
+    border-radius: 50%; /* Makes it a circle */
+    width: 30px; /* Diameter of the circle */
+    height: 30px; /* Diameter of the circle */
+    line-height: 30px;
+    text-align: center; /* Center the check mark inside the circle */
+    color: #000; /* Color of the check mark */
+    background-color: #ffffff; /* Background color for the circle (light green) */
 }
 
-.card-text {
-    font-size: 1rem;          
-    font-family: 'Arial', sans-serif; 
+form
+{
+    width: 450px;
+    box-shadow: 0 0 3px 0 rgba(0,0,0,0.3);
+    background: white;
+    padding: 40px;
+    margin: 8% auto 0;
+    text-align: center;
+    margin-bottom: 10em;
+    margin-top: 5em;
 }
 
-/* Style for View Services Button */
-.btn-view-services {
-    background-color: #000000; /* Same color as navbar */
-    color: rgb(255, 255, 255);
-    padding: 25px 60px;
-    font-size: 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s, color 0.3s;
+form div label
+{
+    float: left;
+    width: auto;
 }
 
-.btn-view-services:hover {
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0); /* Matching navbar color */
-    border: 2px solid black;
+form div input
+{
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    border: 1px solid #999;
+    outline: none;
 }
 
-
-
-/* Style for Leave a review Button */
-.btn-leaveAReview {
-    background-color: #000000; 
-    color: rgb(255, 255, 255);
-    padding: 25px 60px;
-    font-size: 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s, color 0.3s;
+form h2 
+{
+    color: #000000; 
+    font-family: sans-serif; 
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 0;
+}
+form h4
+{
+    color: #979393; 
+    font-family: sans-serif; 
+    text-align: center;
+    font-size: 1em;
+    margin-top: 0;
+}
+form h3 
+{
+    color: #000000; 
+    font-family: sans-serif; 
+    text-align: center;
+    font-size: 1.5em;
+}
+form .login-link a
+{
+    float: left;
+    position: relative;
+    color: black;
+    margin-bottom: 10px;
 }
 
-.btn-leaveAReview:hover {
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    border: 2px solid black;
+form button
+{
+    background-color: black;
+    color:white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 1em;
+    margin: 10px 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: center;
+}
+
+button:hover
+{
+    opacity: 0.7;
+    border-radius: 20px;
+}
+
+form a.special-link {
+    text-decoration: underline;  
+    color: #000;                
+    font-size: 1em;                      
+    margin-top: 10px;
+    display: inline-block;        
+    margin-right: 290px;          
+}
+
+form a.special-link2 {
+    text-decoration: underline;  
+    color: #000;                
+    font-size: 1em;                      
+    display: inline-block;   
+    margin-top:10px;
+    margin-right: 270px;         
+    display: none;               
+    padding: 0; 
+    border: none; 
+    background: none;
+}
+
+form a.special-link:hover, form a.special-link2:hover {
+    opacity: 0.7;                
+}
+
+body { 
+    background-color: #fff;
+    color: #0d0d0e;
+    font-family: sans-serif; 
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; 
 }
 
 footer { 
@@ -190,7 +246,7 @@ footer {
 .fa {
     padding: 5px;
     font-size: 10px;
-    width: 20px;
+    width: 15px;
     text-align: center;
     text-decoration: none;
     margin: 5px 2px;
@@ -222,4 +278,3 @@ footer {
       background: #909091;
       color: #ffffff !important;
     }
-  
