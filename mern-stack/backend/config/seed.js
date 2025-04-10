@@ -1,5 +1,5 @@
 import User from "./user.js";
-
+console.log('Seed.js loaded');
 const users = {
   "king.glory11@gmail.com": { password: "A123", role: "employee" },
   "tobinmgraham@csus.edu": { password: "A123", role: "employee" },
@@ -20,7 +20,7 @@ export async function seedUsers() {
 
       const newUser = new User({
         email,
-        password: user.password, // Use the raw password, no manual hashing here
+        password: user.password, 
         role: user.role,
       });
 

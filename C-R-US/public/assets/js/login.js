@@ -1,6 +1,8 @@
-let failedAttempts = 0; 
-let lockout = false; 
-const maxFailedAttempts = 15; 
+console.log('login.js loaded');
+
+let failedAttempts = 0;
+let lockout = false;
+const maxFailedAttempts = 15;
 
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -38,9 +40,10 @@ function loginUser(email, password) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        failedAttempts = 0;  // Reset failed attempts on successful login
-        lockout = false;  // Reset lockout status
-        hideErrorMessage(); 
+        failedAttempts = 0; // Reset failed attempts on successful login
+        lockout = false; // Reset lockout status
+        hideErrorMessage();
+        console.log("Logged in successfully!");
         redirectToPage(data.role);
       } else {
         failedAttempts++;
@@ -76,7 +79,8 @@ function loginUser(email, password) {
           lockoutMessage.innerText =
             "Too many failed attempts. Please try again later.";
 
-          const lockoutMessageExisting = document.getElementById("lockout-message");
+          const lockoutMessageExisting =
+            document.getElementById("lockout-message");
           if (!lockoutMessageExisting) {
             passwordInput.insertAdjacentElement("afterend", lockoutMessage);
           }
@@ -97,7 +101,7 @@ function loginUser(email, password) {
             if (lockoutMessage) {
               lockoutMessage.remove();
             }
-            failedAttempts = 0; 
+            failedAttempts = 0;
           }, 30 * 60 * 1000); // Lockout duration of 30 minutes
         }
       }
@@ -114,7 +118,6 @@ function hideErrorMessage() {
     errorMessage.remove();
   }
 }
-
 function toggleLinks(show) {
   const forgotPasswordLink = document.querySelector(".special-link2");
   const createAccountLink = document.querySelector(".special-link");
@@ -138,6 +141,6 @@ function redirectToPage(role) {
   } else if (role === "employee") {
     window.location.href = "/employeeViewPage.html";
   } else {
-    window.location.href = "/index.html";
+    window.location.href = "/userHP.html";
   }
 }
