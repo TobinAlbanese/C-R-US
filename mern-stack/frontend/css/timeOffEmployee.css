@@ -115,3 +115,13 @@ footer {
       background: #909091;
       color: #ffffff !important;
     }
+
+
+    #time-off-type-label, #time-off-comments-label, #time-off-date-label, #time-off-start-label, #time-off-end-label {
+        font-weight: bold;
+    }
+
+    #time-off-submit {
+        background-color: #000000;
+        color: #ffffff;
+    }

@@ -152,10 +152,8 @@ nav#assignments {
     border: 2px solid black;
 }
 
-
-
 /* Style for Leave a review Button */
-.btn-leaveAReview {
+.btn-review {
     background-color: #000000; 
     color: rgb(255, 255, 255);
     padding: 25px 60px;
@@ -166,7 +164,7 @@ nav#assignments {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.btn-leaveAReview:hover {
+.btn-review:hover {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     border: 2px solid black;
