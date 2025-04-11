@@ -132,7 +132,7 @@ app.post("/redirect", (req, res) => {
     case "employee":
       return res.json({ redirectUrl: "/EmployeeViewPage.html" });
     case "admin":
-      return res.json({ redirectUrl: "/Admin.html" });
+      return res.json({ redirectUrl: "/adminViewPage.html" });
     case "user":
       return res.json({ redirectUrl: "/userHP.html" });
     default:
