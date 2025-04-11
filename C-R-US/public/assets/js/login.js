@@ -137,7 +137,7 @@ function toggleLinks(show) {
 
 function redirectToPage(role) {
   if (role === "admin") {
-    window.location.href = "/admin.html";
+    window.location.href = "/adminViewPage.html";
   } else if (role === "employee") {
     window.location.href = "/employeeViewPage.html";
   } else {

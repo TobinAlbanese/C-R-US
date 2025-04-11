@@ -64,7 +64,7 @@ timeOffSubmit.addEventListener("click", function(){
 //Used to redirect to correct page after submission
 function redirectToPage(role) {
     if (role === "admin") {
-      window.location.href = "/admin.html";
+      window.location.href = "/adminViewPage.html";
     } else if (role === "employee") {
       window.location.href = "/employeeViewPage.html";
     } else {
