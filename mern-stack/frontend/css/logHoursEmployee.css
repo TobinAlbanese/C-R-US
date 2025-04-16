@@ -1,16 +1,15 @@
 .headerText{
-    color:black;
+    color:white;
     background-color: #4681AC;
     padding: 40px;
     font-size: 40px;
 }
-
+/*comment*/ 
 /*-----------------------Header-----------------------*/
 
 .buttonSubmitTimesheet{
     color:white;
     background-color: #000000;
-    padding: 2px 20px;
     font-size: 15px;
     text-align: center;
     border-radius:20px;
@@ -18,7 +17,14 @@
     font-weight: bold;
     padding: 15px 20px;
     float: right;
-    margin: 20x;
+    margin: 4em 4em 80em 80em;
+    cursor: pointer;
+    position: absolute;
+    
+}
+.buttonSubmitTimesheet:hover{
+    opacity: 0.8;
+    border-radius: 20px;
 }
 
 
@@ -80,6 +86,49 @@ nav#menu ul li:nth-child(5) {
     display: inline-block;
 
 }
+
+
+
+/*----------------------Table-------------------------*/
+
+.timesheetTable{
+    height: 50vh;
+    display: grid;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    color: lightslategray;
+    font-size: 0.9rem;
+    background-color: white;
+    
+}
+table{
+    table-layout: fixed;
+    width: 90%;
+    margin-left: 4em;
+    border-collapse: collapse;
+    box-shadow: 20px 20px 20px 5px rgb(221, 221, 238);
+    background-color: white;
+    text-align: center;
+}
+th{
+    background-color: rgb(221, 221, 238);
+    padding:0.75rem 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-size: 0.7rem;
+    font-weight: 950;
+}
+tbody{
+    padding: 1rem 2rem;
+}
+tr:nth-child(even){
+    background-color: lightgray;
+}
+
+
+
+
 
 /*-----------------------Footer-----------------------*/
 

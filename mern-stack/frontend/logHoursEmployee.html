@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 
 <html lang="en-US">
-    <!-----------------------Header----------------------->
+    <!------------------------Header----------------------->
 <head>
     <title>Log Hours</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/services.css">
-    <link rel="stylesheet" href="/css/logHoursEmployee.css">
+    <link rel="stylesheet" href="css/services.css">
+    <link rel="stylesheet" href="css/logHoursEmployee.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-       
 
-       
-        
-    </style>
 </head>
 <body>
     <header>
@@ -41,10 +36,26 @@
 
     <div class="headerText">
         <b>Log Your Hours</b>   
-        </div>  
-        <button class="buttonSubmitTimesheet">Submit Timesheet</button>
-
+    </div>
         
+        <button class="buttonSubmitTimesheet">Submit Timesheet</button>
+    
+    <div class="timesheetTable">
+        <table id="timesheet" border="1">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Total Hours</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>    
     
 
 
@@ -60,3 +71,5 @@
         <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
 
     </footer>
+</body>
+</html>
