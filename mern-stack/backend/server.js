@@ -140,6 +140,30 @@ app.post("/redirect", (req, res) => {
   }
 });
 
+// START OF: SCHEDULING DB
+
+// Define the schema and model for the "Scheduling" collection
+const schedulingSchema = new mongoose.Schema({
+  date: { type: String, required: true }, // e.g., "2025-04-27"
+  client: { type: String, required: true },
+});
+
+const Scheduling = mongoose.model("Scheduling", schedulingSchema);
+
+// API endpoint to fetch events
+app.get("/products/Scheduling", async (req, res) => {
+  try {
+    const events = await Scheduling.find({});
+    console.log("Fetched events from MongoDB:", events); // Log the fetched data
+    res.json(events);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
+});
+
+// END OF: SCHEDULING DB
+
 
 // Example API route
 app.get("/products", (req, res) => {
