@@ -181,6 +181,36 @@
         <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
 
     </footer>
+
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const appointmentService = localStorage.getItem('appointmentService');
+        const appointmentDate = localStorage.getItem('appointmentDate');
+        const appointmentTime = localStorage.getItem('appointmentTime');
+    
+        const orderSection = document.getElementById('order');
+    
+        if (appointmentService && appointmentDate && appointmentTime) {
+          orderSection.innerHTML = `
+            <div class="order-summary">
+              <div class="left-column">
+                <div class="order-line"><span class="label">Appointment Date:</span> <span class="value">${appointmentDate}</span></div>
+                <div class="order-line"><span class="label">Appointment Time:</span> <span class="value">${appointmentTime}</span></div>
+              </div>
+              <div class="right-column">
+                <div class="order-line"><span class="label">Service:</span> <span class="value">${appointmentService}</span></div>
+              </div>
+            </div>
+          `;
+        } else {
+          orderSection.innerHTML = `<p>No appointment details found.</p>`;
+        }
+      });
+    </script>
+    
+    
+
 </body>
 </html>
         
