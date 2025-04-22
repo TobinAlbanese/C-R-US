@@ -93,26 +93,33 @@
                 <br>
                 <div class="service-select-container">
                     <div class="service-group-label">Standard Services</div>
-                    <button class="service-option" data-value="Dental Exams">Dental Exam</button>
-                    <button class="service-option" data-value="Dental Cleanings & Prevention">Dental Cleaning</button>
-                    <button class="service-option" data-value="Composite Filling">Composite Filling</button>
-                    <button class="service-option" data-value="Crowns">Crowns</button>
-                    <button class="service-option" data-value="Crown Lengthening">Crown Lengthening</button>
-                    <button class="service-option" data-value="Full/Partial Dentures">Full & Partial Dentures</button>
-                    <button class="service-option" data-value="Root Canal Therapy">Root Canal Therapy</button>
-                    <button class="service-option" data-value="Dental X-rays">Dental X-rays</button>
+                    <button class="service-option" data-value="Dental Exams" data-price="50" >Dental Exam</button>
+                    <button class="service-option" data-value="Dental Cleanings & Prevention" data-price="75">Dental Cleaning</button>
+                    <button class="service-option" data-value="Composite Filling" data-price="100">Composite Filling</button>
+                    <button class="service-option" data-value="Crowns" data-price="200">Crowns</button>
+                    <button class="service-option" data-value="Crown Lengthening" data-price="250">Crown Lengthening</button>
+                    <button class="service-option" data-value="Full/Partial Dentures" data-price="300">Full & Partial Dentures</button>
+                    <button class="service-option" data-value="Root Canal Therapy" data-price="400">Root Canal Therapy</button>
+                    <button class="service-option" data-value="Dental X-rays" data-price="25">Dental X-rays</button>
 
                     <div class="service-group-label">Specialized Services</div>
-                    <button class="service-option" data-value="Porcelain Crowns">Porcelain Crowns</button>
-                    <button class="service-option" data-value="Zirconia Crowns">Zirconia Crowns</button>
-                    <button class="service-option" data-value="Porcelain Veneers">Porcelain Veneers</button>
-                    <button class="service-option" data-value="Restorations">Restorations</button>
-                    <button class="service-option" data-value="Scaling and Root Planning">Scaling and Root Planning</button>
-                    <button class="service-option" data-value="Sealants">Sealants</button>
+                    <button class="service-option" data-value="Porcelain Crowns" data-price="500">Porcelain Crowns</button>
+                    <button class="service-option" data-value="Zirconia Crowns" data-price="600">Zirconia Crowns</button>
+                    <button class="service-option" data-value="Porcelain Veneers" data-price="700">Porcelain Veneers</button>
+                    <button class="service-option" data-value="Restorations" data-price="150">Restorations</button>
+                    <button class="service-option" data-value="Scaling and Root Planning" data-price="200">Scaling and Root Planning</button>
+                    <button class="service-option" data-value="Sealants" data-price="50">Sealants</button>
 
                     <input type="hidden" id="service-of-appointment" name="service" required>
                 </div>
             </div>
+
+            <br><br>
+            <div class="comments-container">
+                <label for="comments">Comments:</label><br>
+                <textarea id="comments" name="comments" placeholder="Any specific requests or comments?"></textarea>
+            </div>
+            
 
             <br><br>
             <div class="submit-container">

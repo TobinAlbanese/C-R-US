@@ -1,21 +1,13 @@
 <!DOCTYPE html>
-
 <html lang="en-US">
 <head>
     <title>Cavities R US - Dental Clinic</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-       
-
-       
-        
-    </style>
 </head>
-
 
 <body>
 
@@ -32,145 +24,98 @@
                 <li><a href="services.html">Services</a></li>
             </ul>
         </nav>
+        
         <a href="login.html"><button>Login</button></a>
-
     </header>
-    
 
-    
-       
+    <main>
+        <h2>Checkout</h2>
 
-        <main>
+        <section id="headings">
+            <p2>My Order</p2>
+        </section>
 
-            <h2>Checkout</h2>
+        <section id="order"></section>
 
+        <section id="headings">
+            <p2>Shipping</p2>
+        </section>
 
-            <section id="headings">
-                
-                <p2>My Order</p2>
-            </section>
-
-            <section id="order">
-                
-            </section>
-
-
-
-
-
-
-            <section id="headings">
-                
-                <p2>Shipping</p2>
-            </section>
-
-
-            <section id="shipping">
-                
-                <!--Embed Shipping Api-->
-                
-                <form id="shipping-form">
-                    <div class="form-group-row">
-                      <div class="form-group">
+        <section id="shipping">
+            <form id="shipping-form">
+                <div class="form-group-row">
+                    <div class="form-group">
                         <label for="firstName">First name</label>
-                        <input type="text" id="firstName" placeholder="First name" required>
-                      </div>
-                      <div class="form-group">
+                        <input type="text" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name" required>
+                    </div>
+                    <div class="form-group">
                         <label for="lastName">Last name</label>
-                        <input type="text" id="lastName" placeholder="Last name" required>
-                      </div>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name" required>
                     </div>
-                  
-                    <div class="form-group">
-                      <label for="email">Address</label>
-                      <input type="email" id="email" placeholder="example@gmail.com">
-                    </div>
+                </div>
 
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@gmail.com" autocomplete="email" required>
+                </div>
 
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" placeholder="1234 Main St" autocomplete="street-address" required>
+                </div>
+
+                <div class="form-group-row">
                     <div class="form-group">
-                      <label for="address">Address</label>
-                      <input type="text" id="address" placeholder="1234 Main St">
-                    </div>
-                  
-                    <div class="form-group-row">
-                      <div class="form-group">
                         <label for="city">City</label>
-                        <input type="text" id="city" placeholder="City" required>
-                      </div>
-                      <div class="form-group">
+                        <input type="text" id="city" name="city" placeholder="City" autocomplete="address-level2" required>
+                    </div>
+                    <div class="form-group">
                         <label for="state">State</label>
-                        <input type="text" id="state" placeholder="State" required>
-                      </div>
-                      <div class="form-group">
+                        <input type="text" id="state" name="state" placeholder="State" autocomplete="address-level1" required>
+                    </div>
+                    <div class="form-group">
                         <label for="zip">Zip</label>
-                        <input type="text" id="zip" placeholder="Zip" required>
-                      </div>
+                        <input type="text" id="zip" name="zip" placeholder="Zip" autocomplete="postal-code" required>
                     </div>
-                  
+                </div>
+
+               
+            </form>
+        </section>
+
+        <section id="headings">
+            <p2>Payment Method</p2>
+        </section>
+
+        <section id="method">
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="cardName">Cardholder Name</label>
+                    <input type="text" id="cardName" name="cardName" placeholder="Name on card" autocomplete="cc-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1111 2222 3333 4444" autocomplete="cc-number" maxlength="19" required>
+                </div>
+
+                <div class="form-group-row">
                     <div class="form-group">
-                      <label><input type="checkbox" required> Agree to terms and conditions</label>
-                    </div>
-                  </form>
-                  
-
-
-
-            </section>
-
-
-
-
-            <section id="headings">
-                
-                <p2>Payment Method</p2>
-            </section>
-
-
-            <section id="method">
-                
-                <!--Input Payment API-->
-
-                <form id="payment-form">
-                    <div class="form-group">
-                      <label for="cardName">Cardholder Name</label>
-                      <input type="text" id="cardName" name="cardName" placeholder="Name on card" autocomplete="cc-name" required>
-                    </div>
-                  
-                    <div class="form-group">
-                      <label for="cardNumber">Card Number</label>
-                      <input type="text" id="cardNumber" name="cardNumber" placeholder="1111 2222 3333 4444" autocomplete="cc-number" maxlength="19" required>
-                    </div>
-                  
-                    <div class="form-group-row">
-                      <div class="form-group">
                         <label for="expDate">Expiration Date</label>
                         <input type="text" id="expDate" name="expDate" placeholder="MM/YY" autocomplete="cc-exp" maxlength="5" required>
-                      </div>
-                      <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label for="cvv">CVV</label>
                         <input type="text" id="cvv" name="cvv" placeholder="123" autocomplete="cc-csc" maxlength="4" required>
-                      </div>
                     </div>
-                  </form>
-                  
-                  
-            
-            
-            </section>
-            
+                </div>
+            </form>
+        </section>
 
-
-
-            
-
-                <a href="paymentConfirmation.html"><button>Complete Purchase</button></a>
-
-           
-           
-        </main>
-
-    
-    
+        <div class="submit-container">
+            <button type="submit" id="submit-button" class="submit-button">Complete Purchase</button>
+        </div>
+    </main>
 
     <footer>
         Cavities R US Dental Clinic
@@ -179,38 +124,78 @@
         <a href="https://www.linkedin.com/home" class="fa fa-linkedin"></a>
         <a href="https://www.youtube.com/account_advanced" class="fa fa-youtube"></a>
         <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
-
     </footer>
 
-
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const appointmentService = localStorage.getItem('appointmentService');
-        const appointmentDate = localStorage.getItem('appointmentDate');
-        const appointmentTime = localStorage.getItem('appointmentTime');
-    
-        const orderSection = document.getElementById('order');
-    
-        if (appointmentService && appointmentDate && appointmentTime) {
-          orderSection.innerHTML = `
-            <div class="order-summary">
-              <div class="left-column">
-                <div class="order-line"><span class="label">Appointment Date:</span> <span class="value">${appointmentDate}</span></div>
-                <div class="order-line"><span class="label">Appointment Time:</span> <span class="value">${appointmentTime}</span></div>
-              </div>
-              <div class="right-column">
-                <div class="order-line"><span class="label">Service:</span> <span class="value">${appointmentService}</span></div>
-              </div>
-            </div>
-          `;
-        } else {
-          orderSection.innerHTML = `<p>No appointment details found.</p>`;
-        }
-      });
-    </script>
-    
-    
+        document.addEventListener('DOMContentLoaded', () => {
+            const appointmentService = localStorage.getItem('appointmentService');
+            const appointmentDate = localStorage.getItem('appointmentDate');
+            const appointmentTime = localStorage.getItem('appointmentTime');
+            const appointmentPrice = localStorage.getItem('appointmentPrice');
 
+            const orderSection = document.getElementById('order');
+
+            if (appointmentDate && appointmentTime && appointmentService) {
+                orderSection.innerHTML = `
+                    <div class="order-summary">
+                        <div class="left-column">
+                            <div class="order-line"><span class="label">Appointment Date:</span> <span class="value">${appointmentDate}</span></div>
+                            <div class="order-line"><span class="label">Appointment Time:</span> <span class="value">${appointmentTime}</span></div>
+                        </div>
+                        <div class="right-column">
+                            <div class="order-line"><span class="label">Service:</span> <span class="value">${appointmentService}</span></div>
+                            <div class="order-line"><strong>Price:</strong> $${appointmentPrice}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                orderSection.innerHTML = `<p>No appointment details found.</p>`;
+            }
+        });
+
+        // Submission logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstName = document.getElementById("firstName");
+            const lastName = document.getElementById("lastName");
+            const email = document.getElementById("email");
+            const address = document.getElementById("address");
+            const city = document.getElementById("city");
+            const state = document.getElementById("state");
+            const zip = document.getElementById("zip");
+            const cardName = document.getElementById("cardName");
+            const cardNumber = document.getElementById("cardNumber");
+            const expDate = document.getElementById("expDate");
+            const cvv = document.getElementById("cvv");
+            const submitButton = document.getElementById("submit-button");
+
+            submitButton.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                if (!firstName.value.trim() || !lastName.value.trim() || !email.value.trim() || !address.value.trim() || !city.value.trim() || !state.value.trim() || !zip.value.trim() || !cardName.value.trim() || !cardNumber.value.trim() || !expDate.value.trim() || !cvv.value.trim()) {
+                    alert('Please fill out all required fields.');
+                    return;
+                }
+
+                try {
+                    localStorage.setItem('firstName', firstName.value.trim());
+                    localStorage.setItem('lastName', lastName.value.trim());
+                    localStorage.setItem('email', email.value.trim());
+                    localStorage.setItem('address', address.value.trim());
+                    localStorage.setItem('city', city.value.trim());
+                    localStorage.setItem('state', state.value.trim());
+                    localStorage.setItem('zip', zip.value.trim());
+                    localStorage.setItem('cardName', cardName.value.trim());
+                    localStorage.setItem('cardNumber', cardNumber.value.trim());
+                    localStorage.setItem('expDate', expDate.value.trim());
+                    localStorage.setItem('cvv', cvv.value.trim());
+
+                    window.location.href = "/paymentConfirmation.html";
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Something went wrong. Please try again.\n\n' + error.message);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-        
