@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const serviceInput = document.getElementById('service-of-appointment');
     const dateInput = document.getElementById('date-of-appointment');
     const submitButton = document.getElementById('submit-button');
+    const comment = document.getElementById('comments');
+
+    let selectedServicePrice = 0; // Variable to store the selected service price
 
     // Handle time selection
     timeButtons.forEach(button => {
@@ -36,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('selected');
             button.setAttribute('aria-pressed', 'true');
             serviceInput.value = button.dataset.value;
-            console.log("Service selected:", serviceInput.value);
+            selectedServicePrice = parseFloat(button.dataset.price); // Get the price from the data-price attribute
+            console.log("Service selected:", serviceInput.value, "Price:", selectedServicePrice);
         });
     });
 
@@ -63,11 +67,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const appointmentDate = dateInput.value.trim();
             const appointmentTime = hiddenTimeInput.value.trim();
             const appointmentService = serviceInput.value.trim();
+            const appointmentComment = comment.value.trim();
 
+            // Store the data in localStorage
             localStorage.setItem('appointmentDate', appointmentDate);
             localStorage.setItem('appointmentTime', appointmentTime);
             localStorage.setItem('appointmentService', appointmentService);
+            localStorage.setItem('appointmentComment', appointmentComment);
+            localStorage.setItem('appointmentPrice', selectedServicePrice.toFixed(2)); // Store the price as a string with 2 decimal places
 
+            // Redirect to checkout.html
             window.location.href = "/checkout.html";
         } catch (error) {
             console.error('Error:', error);

@@ -201,7 +201,7 @@ h2 {
 #schedule .flatpickr-calendar {
     position: absolute;
     top: 60px; /* Add some space from the top */
-    left: 100px; /* Add some space from the left */
+    left: 65px; /* Add some space from the left */
     margin: 0;  /* Remove any default margin or padding */
 }
 
@@ -209,7 +209,7 @@ h2 {
 #schedule #date-of-appointment-label {
     position: absolute;
     top: 25px;
-    left: 100px; /* Same left position as the calendar for alignment */
+    left: 65px; /* Same left position as the calendar for alignment */
     font-size: 1.1em;
     font-weight: bold;
 }
@@ -219,7 +219,7 @@ h2 {
 #schedule #time-of-appointment-label {
     position: absolute;
     top: 25px;
-    left: 450px;
+    left: 425px;
     font-size: 1.1em;
     font-weight: bold;
 }
@@ -234,10 +234,11 @@ h2 {
 }
 
 
+
 .time-slot-container {
     position: absolute;
     top: 55px; /* Just below the label */
-    left: 450px; /* Same left as label for alignment */
+    left: 425px; /* Same left as label for alignment */
     max-height: 300px;
     overflow-y: auto;
     display: flex;
@@ -310,13 +311,45 @@ h2 {
 
 }
 
+.comments-container {
+    position: absolute;
+    top: auto;
+    left: 960px;
+    bottom: 80px; /* Just above the button */
+    width: 260px;
+}
+
+.comments-container label {
+    position: absolute;
+    top: 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 2em;
+    margin-left: 15px;
+}
+
+.comments-container textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 1em;
+    resize: vertical;
+    border: 1px solid #ccc;
+    margin-bottom: 4.7em;
+    margin-top: 2.2em;
+    margin-left: 15px;
+}
+
+
 
 
 .submit-container {
     margin-left: 960px;
     display: flex;
     justify-content: flex-end; /* Pushes button to the right */
-    margin-bottom: 140px ; 
+    margin-bottom: 17px ; 
  }
   
   .submit-button {
@@ -382,6 +415,7 @@ button
     font-family: sans-serif;
     font-size: 2em;
     font-weight: bold;
+    margin-left: 1.5em;
 }
 
 #feedback button {
@@ -394,7 +428,7 @@ button
     height: 3em;
     font-family: sans-serif;
     transition: background-color 0.3s, color 0.3s;
-   margin-right: 2em;
+   margin-right: 2.2em;
 }
 
 
