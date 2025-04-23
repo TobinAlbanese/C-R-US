@@ -48,10 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     submitButton.addEventListener('click', (event) => {
         event.preventDefault();
 
-        if (!serviceInput.value.trim()) {
-            alert('Please select a service.');
-            return;
-        }
+      
 
         if (!dateInput.value.trim()) {
             alert('Please select a date.');
@@ -63,6 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (!serviceInput.value.trim()) {
+            alert('Please select a service.');
+            return;
+        }
+        
         try {
             const appointmentDate = dateInput.value.trim();
             const appointmentTime = hiddenTimeInput.value.trim();
