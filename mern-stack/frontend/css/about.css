@@ -17,48 +17,74 @@ img{
     padding-left: 20px;
     padding-top: 20px;
 }
-  header {
-    background-color:#ffffff ;
+header {
+    background-color: #ffffff;
     text-align: left;
-    padding: 20 0;
+    padding: 20px 0;
     position: relative;
     width: 100%;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center; /* Align vertically centered */
 }
 
 header a img {
     margin-right: 15px; /* Adds spacing between the logo and the text */
     padding-left: 20px;
-    width: 80px;
-    padding-top: 5px;;
-    
 }
 
-header h4 {
+header h1 {
     margin: 0; /* Removes any margin around the header text */
-    padding-top: 20px;
+    padding-top: 30px;
     padding-left: 0;
     color: #000000; /* Ensure the color is black */
+    font-family: sans-serif;
+    font-size: 1.25em;
+    font-weight: bold;
 }
 
-/* Style for the login button */
+header button
+ {
+    background-color: black;
+    color:white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1.5em;
+    cursor: pointer;
+    height: 2em;
+    font-family: sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 1em ;
+
+
+}
+
+
+
+
+ header button:hover
+{
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 2px solid black;
+}
+
 nav#menu { 
     background-color: transparent;
-    padding-top: 30px;
-    padding-right: 15px;
+    padding: 0;
     margin-left: auto;
 }
 
 nav#menu ul {
     list-style: none;  /* Removes the bullet points from the list */
     display: flex;  /* Display the menu items horizontally */
-    margin-left: 50px;  
-    padding-left: 50px;
-    font-family: sans-serif;
+margin-left: 50px;  
+padding-left: 50px;
+
+
 }
+
+
 
 nav#menu ul li {
     margin-right: 20px;  
@@ -74,6 +100,7 @@ nav#menu ul li a {
     color: #000000;  
     font-size: 1em;
     height: 50px;
+    
 }
 
 nav#menu ul li a:hover {
@@ -81,27 +108,19 @@ nav#menu ul li a:hover {
     border-radius: 5px;  /* Rounded corners for hover */
 }
 
-nav#menu ul li:nth-child(5) a {
-    color: white; 
+
+
+nav#assignments {
+    background-color: #ffffff;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-nav#menu ul li:nth-child(5) {
-    background-color: black; 
-    border-radius: 8em;
-    padding: 15px 21px;
-    display: inline-block;
 
-}
-
-nav#menu ul li:nth-child(5) a:hover {
-    opacity: 0.7;
-    border-radius: 5px;  /* Rounded corners for hover */
-}
-
-nav#menu ul li:nth-child(5) a {
-    color: white;
-
-}
 
 
 /* Set uniform size for service images */

@@ -27,9 +27,9 @@
                     <li><a href="appointment.html">Book</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="services.html">Services</a></li>
-                    <li><a href="login.html">Login</a></li>
                 </ul>
             </nav>
+            <a href="login.html"><button>Login</button></a>
         </header>
         
         <main>
@@ -41,7 +41,11 @@
                     <h3> Order Summary</h3>
 
                     <!--Embed Order Summary-->
-                    
+                    <div id="orderSummary" class="summary-box">
+                        <!-- Filled in by JS -->
+                    </div>
+
+
                     <button type="submit" class="createAcc-btn">Resend Email</button>                      
                    
                 </form>
@@ -58,6 +62,27 @@
         </footer>
 
         <script src="/C-R-US/public/assets/js/login.js"></script>
-
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const appointmentService = localStorage.getItem("appointmentService");
+                const appointmentDate = localStorage.getItem("appointmentDate");
+                const appointmentTime = localStorage.getItem("appointmentTime");
+                const appointmentPrice = localStorage.getItem("appointmentPrice");
+            
+                const orderSummary = document.getElementById("orderSummary");
+            
+                if (appointmentDate && appointmentTime && appointmentService && appointmentPrice) {
+                    orderSummary.innerHTML = `
+                        <div><span class="label">Service:</span> <span>${appointmentService}</span></div>
+                        <div><span class="label">Date:</span> <span>${appointmentDate}</span></div>
+                        <div><span class="label">Time:</span> <span>${appointmentTime}</span></div>
+                        <div><span class="label">Total:</span> <span>$${appointmentPrice}</span></div>
+                    `;
+                } else {
+                    orderSummary.innerHTML = `<p>Order details not found. Please try again.</p>`;
+                }
+            });
+            </script>
+            
     </body>
 </html>

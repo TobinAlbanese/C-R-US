@@ -8,28 +8,73 @@
 /*-----------------------Header-----------------------*/
 
 header {
-    background-color:#ffffff ;
+    background-color: #ffffff;
     text-align: left;
-    padding: 20 0;
+    padding: 20px 0;
     position: relative;
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center; /* Align vertically centered */
+}
 
+header a img {
+    margin-right: 15px; /* Adds spacing between the logo and the text */
+    padding-left: 20px;
+}
+
+header h1 {
+    margin: 0; /* Removes any margin around the header text */
+    padding-top: 30px;
+    padding-left: 0;
+    color: #000000; /* Ensure the color is black */
+    font-family: sans-serif;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+header button
+ {
+    background-color: black;
+    color:white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1.5em;
+    cursor: pointer;
+    height: 2em;
+    font-family: sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 1em ;
+
+
+}
+
+
+
+
+ header button:hover
+{
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 2px solid black;
 }
 
 nav#menu { 
     background-color: transparent;
     padding: 0;
+    margin-left: auto;
 }
 
 nav#menu ul {
     list-style: none;  /* Removes the bullet points from the list */
     display: flex;  /* Display the menu items horizontally */
-    margin: 0;
-    padding: 0;
+margin-left: 50px;  
+padding-left: 50px;
+
+
 }
+
+
 
 nav#menu ul li {
     margin-right: 20px;  
@@ -45,6 +90,7 @@ nav#menu ul li a {
     color: #000000;  
     font-size: 1em;
     height: 50px;
+    
 }
 
 nav#menu ul li a:hover {
@@ -52,16 +98,16 @@ nav#menu ul li a:hover {
     border-radius: 5px;  /* Rounded corners for hover */
 }
 
-nav#menu ul li:nth-child(5) a {
-    color: white; 
-}
 
-nav#menu ul li:nth-child(5) {
-    background-color: black; 
-    border-radius: 8em;
-    padding: 20px 20px;
-    display: inline-block;
 
+nav#assignments {
+    background-color: #ffffff;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 
@@ -91,7 +137,6 @@ nav#menu ul li:nth-child(5) {
 .date-controls {
     margin: 2em 4em;
 }
-
 
 
 /*----------------------Table-------------------------*/
