@@ -130,7 +130,7 @@ nav#assignments {
     cursor: pointer;
 }
 .buttonSubmitTimesheet:hover{
-    opacity: 0.81;
+    opacity: 0.8;
     border-radius: 20px;
 }
 
@@ -206,6 +206,12 @@ input [type = "time"] {
 input[type="time"]::-webkit-calendar-picker-indicator {
     display: none;
     appearance: none;
+}
+.locked-input {
+    background-color: rgb(136, 136, 136) !important;
+    color: rgb(154, 154, 154) !important;
+    border: none !important;
+    cursor: not-allowed !important;
 }
 
 

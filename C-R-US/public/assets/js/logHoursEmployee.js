@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.querySelector('#timesheet tbody');
-    const submitButton = document.getElementById('buttonSubmitTimesheet');
+    const submitBut = document.querySelector('.buttonSubmitTimesheet');
 
     const today = new Date();
     const year = today.getFullYear();
@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const startTimeCell = document.createElement('td');
         const startTimeInput = document.createElement('input');
         startTimeInput.type = 'time';
-        //ffwi
         startTimeInput.dataset.date = datestr;
         startTimeCell.appendChild(startTimeInput);
         row.appendChild(startTimeCell);
@@ -33,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const endTimeCell = document.createElement('td');
         const endTimeInput = document.createElement('input');
         endTimeInput.type = 'time';
-        //fjiwo
         endTimeInput.dataset.date = datestr;
         endTimeCell.appendChild(endTimeInput);
         row.appendChild(endTimeCell);
@@ -41,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const totalHoursCell = document.createElement('td');
         const totalHoursInput = document.createElement('input');
         totalHoursInput.type = 'number';
-        //fijwo
         totalHoursInput.readOnly = true;
         totalHoursInput.step = "0.01";
         totalHoursCell.appendChild(totalHoursInput);
@@ -61,32 +58,57 @@ document.addEventListener("DOMContentLoaded", () => {
             input.addEventListener('change', () => {
                 const hours = autocalcTotalHours(startTimeInput.value, endTimeInput.value);
                 totalHoursInput.value = hours;
-            })
-        })
+            });
+        });
 
         tbody.appendChild(row);
     }
+
+    submitBut.addEventListener('click', () => {
+        const rows = document.querySelectorAll('#timesheet tbody tr');
+
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll('input, textarea');
+            let hasData = false;
+            
+            inputs.forEach (input => {
+                if (input.tagName === "TEXTAREA") {
+                    if (input.value.trim() !== "") {
+                        hasData = true;
+                    }
+                } else if (input.value != "") {
+                    hasData = true;
+                }
+                
+            });
+
+            if (hasData) {
+                inputs.forEach(input => {
+                    input.disabled = true;
+                    input.classList.add('locked-input');
+                });
+                row.classList.add('locked-input');
+            }
+        });
+    });
 });
 
 //automatically calculates the Total Hours worked.
 //reference from: https://connect.formidableforms.com/question/category/general-questions/javascript-to-calculate-the-date-and-time-difference/
-function autocalcTotalHours(startTime, endTime) {
-    if (startTime != '' && endTime != ''){
-        const startTime = startTime.split(':');
-        const endTime = endTime.split(':');
-        var startTimeHours = startTime[0];
-        var startTimeMins = startTime[1];
-        var endTimeHours = endTime[0];
-        var endTimeMins = endTime[1];
+function autocalcTotalHours(start, end) {
+    if (start != '' && end != ''){
+        const [startHours, startMins] = start.split(':').map(Number);
+        const [endHours, endMins] = end.split(':').map(Number);
 
-        var startDate = new Date (0, 0, 0, startTimeHours, startTimeMins, 0);
-        var endDate = new Date (0, 0, 0, endTimeHours, endTimeMins, 0);
-        var timeDiff = endDate.getTime() - startDate.getTime();
-        var hours = Math.floor(timeDiff / 1000 / 60);
-        timeDiff -= hours * 1000 * 60 * 60;
-        var minutes = Math.floor(timeDiff / 1000 / 60);
-        minutes = (minutes < 9 ? "00" : minutes);
-        numb = hours + (minutes/60);
+        const startDate = new Date (0, 0, 0, startHours, startMins, 0);
+        const endDate = new Date (0, 0, 0, endHours, endMins, 0);
+        let timeDiff = (endDate - startDate) / (1000 * 60 * 60);
+        if (timeDiff < 0) {
+            return '';
+        }
+        else {
+            return timeDiff.toFixed(2);
+        }
     }
     else {
         return '';
