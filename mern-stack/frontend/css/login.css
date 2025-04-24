@@ -1,90 +1,91 @@
 header {
-    background-color: #ffffff;
-    text-align: left;
-    padding: 20px 0;
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start; /* Align items to the left */
-    align-items: center; /* Align vertically centered */
+    background-color: #ffffff !important;
+    text-align: left !important;
+    padding: 20px 0 !important;
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    margin-bottom: 50px !important;
 }
 
 header a img {
-    margin-right: 15px; /* Adds spacing between the logo and the text */
-    padding-left: 20px;
+    margin-right: 15px !important;
+    padding-left: 20px !important;
 }
 
 header h1 {
-    margin: 0; /* Removes any margin around the header text */
-    padding-top: 0;
-    padding-left: 0;
-    color: #000000; /* Ensure the color is black */
-    font-family: sans-serif;
-    font-size: 1.25em;
-    font-weight: bold;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+    color: #000000 !important;
+    font-family: sans-serif !important;
+    font-size: 1.25em !important;
+    font-weight: bold !important;
 }
 
-nav#menu { 
-    background-color: transparent;
-    padding: 0;
-    margin-left: auto;
+nav#menu {
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin-left: auto !important;
 }
 
 nav#menu ul {
-    list-style: none;  /* Removes the bullet points from the list */
-    display: flex;  /* Display the menu items horizontally */
-    margin-left: 50px;  
-    padding-left: 50px;
+    list-style: none !important;
+    display: flex !important;
+    margin-left: 50px !important;
+    padding-left: 50px !important;
 }
 
 nav#menu ul li {
-    margin-right: 20px;  
-    border-radius: 8em;
-    padding: 20px 20px;
-    display: inline-block;
+    margin-right: 20px !important;
+    border-radius: 8em !important;
+    padding: 20px 20px !important;
+    display: inline-block !important;
 }
 
 nav#menu ul li a {
-    text-decoration: none;
-    color: #000000;  
-    font-size: 1em;
-    height: 50px;
-    
+    text-decoration: none !important;
+    color: #000000 !important;
+    font-size: 1em !important;
+    height: 50px !important;
 }
 
 nav#menu ul li a:hover {
-    opacity: 0.7;
-    border-radius: 5px;  /* Rounded corners for hover */
+    opacity: 0.7 !important;
+    border-radius: 5px !important;
 }
 
 nav#menu ul li:nth-child(5) {
-    background-color: black; 
-    border-radius: 8em;
-    padding: 20px 20px;
-    display: inline-block;
-    transition: opacity 0.3s;;
-
+    background-color: black !important;
+    border-radius: 8em !important;
+    padding: 20px 20px !important;
+    display: inline-block !important;
+    transition: opacity 0.3s !important;
 }
 
 nav#menu ul li:nth-child(5) a:hover {
-    opacity: 0.7;
-    border-radius: 5px;  /* Rounded corners for hover */
+    opacity: 0.7 !important;
+    border-radius: 5px !important;
 }
 
 nav#menu ul li:nth-child(5) a {
-    color: white;
-
+    color: white !important;
 }
 
 nav#assignments {
-    background-color: #ffffff;
-    padding: 0;
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
 }
+
+
+
 
 .full-width-image {
     width: 100vw;  /* Full viewport width */
@@ -161,7 +162,7 @@ form button
     display: center;
 }
 
-button:hover
+form button:hover
 {
     opacity: 0.7;
     border-radius: 20px;
