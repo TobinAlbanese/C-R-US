@@ -319,7 +319,7 @@ const schedulingSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
-const Scheduling = mongoose.model("Scheduling", schedulingSchema);
+
 
 // API endpoint to fetch events
 app.get("/api/Scheduling", async (req, res) => {

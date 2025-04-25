@@ -37,35 +37,17 @@
     </header>
 
 
-<!-- START OF ASSIGNED TASKS -->
 
-<div class = "headerText">
-    <b>Assigned Tasks</b>
-</div>
-
-<div class="task-box">
-    <div class="task-header">
-        <h3>Client Name</h3>
-    </div>
-    <div class="task-content">
-        <p><strong>Service:</strong> Service goes here.</p>
-        <p><strong>Date:</strong> MM/DD/YYYY</p>
-        <p><strong>Time:</strong> 00:00 AM</p>
-        <p><strong>Comments:</strong> Comments go here</p>
-    </div>
-</div>
-
-<!-- END OF ASSIGNED TASKS -->
 
 
 <div class = "headerText">
-    <b>Schedule an Appointment</b>
+    <b>Schedule</b>
 </div>
 
 
 <!-- START OF CALENDAR  -->
 
-<cal>
+<div class="cal">
     <div class="calendar">
       <div class="calendar-header">
         <button id="prev-month">&lt;</button>
@@ -79,7 +61,18 @@
   
     <script src="/C-R-US/public/assets/js/scheduleEmployeeCalendar.js"></script>
 
-</cal>
+</div>
+
+<div id="popup-overlay" class="overlay hidden"></div>
+<div id="custom-popup" class="popup hidden">
+  <div class="popup-content">
+    <p id="popup-message"></p>
+    <div class="popup-buttons">
+      <button id="popup-confirm">Confirm</button>
+      <button id="popup-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- END OF CALENDAR -->
 
