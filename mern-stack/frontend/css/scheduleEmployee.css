@@ -168,3 +168,33 @@ footer {
       background: #909091;
       color: #ffffff !important;
     }
+
+    
+    .task-box {
+        display: grid;
+        grid-template-columns: auto auto; /* Allow columns to adjust based on content */
+        gap: 10px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px 0;
+        margin-left: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        width: auto; /* Let the width adjust based on content */
+        max-width: 350px; /* Optional: Limit the maximum width */
+        word-wrap: break-word; /* Ensure long words break to fit inside the box */
+        overflow-wrap: break-word; /* Break long words to fit inside the box */
+        overflow: hidden; /* Prevent content from spilling out */
+        box-sizing: border-box; /* Include padding and border in the box size */
+    }
+
+    .task-header, .task-content {
+        grid-column: span 2;
+        font-size: 1.2em;
+        color: #000000;
+        word-wrap: break-word; /* Ensure long words break to fit inside */
+        overflow-wrap: break-word; /* Break long words to fit inside */
+        white-space: normal; /* Allow text to wrap to the next line */
+        overflow: hidden; /* Prevent text from spilling out */
+        text-overflow: ellipsis; /* Optional: Add ellipsis for overflowing text */
+    }

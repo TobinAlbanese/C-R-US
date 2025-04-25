@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/services.css">
     <link rel="stylesheet" href="/css/scheduleEmployee.css">
+    <link rel="stylesheet" href="/css/scheduleEmployeeCalendar.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -36,22 +37,51 @@
     </header>
 
 
+<!-- START OF ASSIGNED TASKS -->
+
+<div class = "headerText">
+    <b>Assigned Tasks</b>
+</div>
+
+<div class="task-box">
+    <div class="task-header">
+        <h3>Client Name</h3>
+    </div>
+    <div class="task-content">
+        <p><strong>Service:</strong> Service goes here.</p>
+        <p><strong>Date:</strong> MM/DD/YYYY</p>
+        <p><strong>Time:</strong> 00:00 AM</p>
+        <p><strong>Comments:</strong> Comments go here</p>
+    </div>
+</div>
+
+<!-- END OF ASSIGNED TASKS -->
+
 
 <div class = "headerText">
     <b>Schedule an Appointment</b>
 </div>
-<p>Dentist:<br>
-<select> 
-    <option value="Option1"> Value </option>
-    <option value="Option2"> Value1 </option>
-    <option value="Option3"> Value2 </option>
-    </select>
-</p>
 
 
+<!-- START OF CALENDAR  -->
 
+<cal>
+    <div class="calendar">
+      <div class="calendar-header">
+        <button id="prev-month">&lt;</button>
+        <h2 id="month-year">April 2025</h2>
+        <button id="next-month">&gt;</button>
+      </div>
+      <div class="calendar-grid" id="calendar-grid">
+        <!-- Days will be dynamically inserted here -->
+      </div>
+    </div>
+  
+    <script src="/C-R-US/public/assets/js/scheduleEmployeeCalendar.js"></script>
 
+</cal>
 
+<!-- END OF CALENDAR -->
 
 
     <footer>
