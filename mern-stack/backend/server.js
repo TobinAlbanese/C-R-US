@@ -6,6 +6,8 @@ import User from "./config/user.js";
 import mongoose from "mongoose";
 import { seedUsers } from "./config/seed.js";
 import bcrypt from "bcryptjs";
+import session from "express-session";
+import connectMongo from 'connect-mongo';
 const app = express();
 app.use(express.json());
 const __dirname = path.resolve();
@@ -17,17 +19,52 @@ app.use(cors());
 // MongoDB URI from environment variables
 const mongoURI = process.env.MONGO_URI;
 mongoose
-  .connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
+async function startServer() {
+  try {
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
     console.log("MongoDB Connected");
-    seedUsers();
-  })
-  .catch((err) => {
-    console.log("Error connecting to MongoDB:", err);
+
+    await mongoose.connection.collection("sessions").deleteMany({});
+
+    await seedUsers();
+
+  } catch (err) {
+    console.error("Error connecting to MongoDB or starting server:", err);
+  }
+}
+
+startServer();
+
+
+  const MongoStore = connectMongo.create({
+    mongoUrl: mongoURI, 
+    collectionName: "sessions" 
   });
+
+
+
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || "yourSecretKey",
+      resave: false,
+      saveUninitialized: true,
+      store: MongoStore,
+      cookie: {
+        httpOnly: true,
+        secure: false,
+        maxAge: 60000000,
+      },
+    })
+  );
+  
+
+
+
 
 
 // Serve static files
@@ -35,13 +72,21 @@ app.use(
   "/C-R-US/public",
   express.static(path.join(__dirname, "../../C-R-US/public"))
 );
+
+
+
+
+
+
 app.use(express.static(path.join(__dirname, "../frontend/")));
-
-
 // Serve the index page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
+
+
+
+
 
 
 // Login route to authenticate users
@@ -49,12 +94,8 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Log before searching for user
-    console.log("Checking user login for email:", email);
 
-    // Find user by email
     const user = await User.findOne({ email });
-    console.log("User found:", user); 
 
     if (!user) {
       return res.json({
@@ -62,26 +103,13 @@ app.post("/login", async (req, res) => {
         message: "Incorrect email or password.",
       });
     }
-
-    // Debugging: Log before comparing password
-    console.log("Stored hash:", user.password); // Print the hash stored in DB
-    console.log("Entered password:", password); // Print the entered password
-
-    // Compare entered password with stored hash using bcrypt
-    console.log("Starting bcrypt comparison...");
     const isMatch = await bcrypt.compare(password, user.password);
-
-    // Debugging: Print bcrypt internal process
-    console.log("bcrypt.compare process: ");
-    console.log("Password provided:", password);
-    console.log("Stored hash:", user.password);
-    console.log("Comparison result:", isMatch);
 
     if (!isMatch) {
       return res.json({ success: false, message: "Incorrect password." });
     }
 
-    // If password matches, return success and user role
+    req.session.userId = user._id;
     return res.json({ success: true, role: user.role });
   } catch (error) {
     console.error("Error during login:", error);
@@ -90,9 +118,40 @@ app.post("/login", async (req, res) => {
 });
 
 
+
+
+
+app.post('/logout', (req, res) => {
+  req.session.userId = null;
+  req.session.role = null;
+
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      return res.status(500).json({ success: false, message: 'Logout failed.' });
+    }
+    res.clearCookie('connect.sid', {path: '/' });
+    res.json({ success: true });
+  });
+});
+
+
+
+
+app.get('/getBookedTimes', async (req, res) => {
+  const appointments = await Appointment.find({
+    status: { $in: ["pending", "confirmed"] }, 
+    date: req.query.date 
+  });
+  res.json({ bookedTimes: appointments.map(a => a.time) });
+});
+
+
+
+
+
 //User create account route 
 app.post("/userCreateAccount", async (req, res) => {
-  console.log("Received data:", req.body);
   const { email, password, confirmPassword } = req.body;
 
   if (!email || !password || !confirmPassword) {
@@ -124,6 +183,115 @@ app.post("/userCreateAccount", async (req, res) => {
 
 
 
+import { Appointment } from "./config/app.js"; 
+app.post('/appointment', async (req, res) => {
+  const { date, time, service, comment } = req.body;
+
+  if (!date || !time || !service) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
+
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "User not logged in" });
+    }
+
+    const existingApp = await Appointment.findOne({
+      date,
+      time,
+      service,
+      comments: comment,
+      status: { $ne: "completed" },
+      user: userId,
+    });
+
+    if (existingApp) {
+      return res.status(400).json({ error: 'You already booked this appointment.' });
+    }
+
+    const newApp = new Appointment({
+      date,
+      time,
+      service,
+      comments: comment,
+      user: userId,
+      status: 'pending',
+    });
+
+    const savedApp = await newApp.save();
+    res.status(200).json({ success: true, appointment: savedApp });
+
+  } catch (err) {
+    console.error("Failed to save appointment:", err);
+    return res.status(500).json({ error: 'Failed to save appointment' });
+  }
+});
+
+
+
+
+import { Check } from "./config/check.js";
+app.post('/api/checkout', async (req, res) => {
+  console.log("Full request body:", req.body);
+  
+  try {
+    const { shipInfo, payInfo, appDate } = req.body;
+    console.log("Extracted data:", { shipInfo, payInfo, appDate });
+
+    const newCheck = new Check({
+      shipInfo,
+      payInfo,
+      appDate,
+    });
+
+    // Validate before saving
+    await newCheck.validate(); 
+    
+    const savedCheck = await newCheck.save();
+    console.log("Saved document:", savedCheck);
+
+    res.status(200).json({ 
+      success: true, 
+      message: "Checkout saved successfully.",
+      data: savedCheck 
+    });
+  } catch (error) {
+    console.error("Full error:", error);
+    
+    if (error.name === 'ValidationError') {
+      console.error("Validation errors:", error.errors);
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.errors
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || "Server error while saving checkout.",
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+
+
+app.post('/api/confirm-appointment', async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+    await Appointment.updateOne(
+      { _id: appointmentId },
+      { $set: { status: "confirmed" } }
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Confirmation failed" });
+  }
+});
+
+
 // Redirect route based on role
 app.post("/redirect", (req, res) => {
   const { role } = req.body;
@@ -141,10 +309,22 @@ app.post("/redirect", (req, res) => {
 });
 
 
+
+
+
+
+
 // Example API route
 app.get("/products", (req, res) => {
   res.send("This is the products route");
 });
+
+
+
+
+
+
+
 
 
 // Start the server

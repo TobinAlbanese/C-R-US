@@ -224,6 +224,19 @@ h2 {
     font-weight: bold;
 }
 
+.time-slot.disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.flatpickr-day.fully-booked {
+    background-color: #ddd !important;
+    color: #999 !important;
+    pointer-events: none;
+}
 
 #schedule #service-of-appointment-label {
     position: absolute;
@@ -265,6 +278,16 @@ h2 {
     background-color: #5ea2e0;  /* Blue color */
     color: white;  /* White text */
     cursor: pointer;
+}
+
+.time-slot.disabled {
+    background-color: #d3d3d3;  
+    cursor: not-allowed;
+}
+
+.time-slot:disabled {
+    background-color: #d3d3d3;  
+    cursor: not-allowed;
 }
 
 .service-select-container {

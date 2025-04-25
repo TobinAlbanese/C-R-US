@@ -1,154 +1,160 @@
-import express from "express";
-import dotenv from "dotenv";
-import path from "path";
-import { connectDB } from "./config/db.js";
-import User from "./config/user.js";
-import mongoose from "mongoose";
-import { seedUsers } from "./config/seed.js";
-import bcrypt from "bcryptjs";
-const app = express();
-app.use(express.json());
-const __dirname = path.resolve();
-dotenv.config();
-app.use(express.urlencoded({ extended: true }));
-import cors from "cors";
-app.use(cors()); 
+document.addEventListener('DOMContentLoaded', () => {
+  // Form elements
+  const form = document.querySelector('form');
+  const firstName = document.getElementById("firstName");
+  const lastName = document.getElementById("lastName");
+  const email = document.getElementById("email");
+  const address = document.getElementById("address");
+  const city = document.getElementById("city");
+  const state = document.getElementById("state");
+  const zip = document.getElementById("zip");
+  const cardName = document.getElementById("cardName");
+  const cardNumber = document.getElementById("cardNumber");
+  const expDate = document.getElementById("expDate");
+  const cvv = document.getElementById("cvv");
+  const submitButton = document.getElementById("submit-button");
+  const orderSection = document.getElementById('order');
 
-// MongoDB URI from environment variables
-const mongoURI = process.env.MONGO_URI;
-mongoose
-  .connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("MongoDB Connected");
-    seedUsers();
-  })
-  .catch((err) => {
-    console.log("Error connecting to MongoDB:", err);
-  });
+  const appointmentData = JSON.parse(localStorage.getItem('appointmentData')) || {};
+  console.log("Loaded appointment data:", appointmentData);
 
-
-// Serve static files
-app.use(
-  "/C-R-US/public",
-  express.static(path.join(__dirname, "../../C-R-US/public"))
-);
-app.use(express.static(path.join(__dirname, "../frontend/")));
-
-
-// Serve the index page
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
-});
-
-
-// Login route to authenticate users
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Log before searching for user
-    console.log("Checking user login for email:", email);
-
-    // Find user by email
-    const user = await User.findOne({ email });
-    console.log("User found:", user); 
-
-    if (!user) {
-      return res.json({
-        success: false,
-        message: "Incorrect email or password.",
-      });
-    }
-
-    // Debugging: Log before comparing password
-    console.log("Stored hash:", user.password); // Print the hash stored in DB
-    console.log("Entered password:", password); // Print the entered password
-
-    // Compare entered password with stored hash using bcrypt
-    console.log("Starting bcrypt comparison...");
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    // Debugging: Print bcrypt internal process
-    console.log("bcrypt.compare process: ");
-    console.log("Password provided:", password);
-    console.log("Stored hash:", user.password);
-    console.log("Comparison result:", isMatch);
-
-    if (!isMatch) {
-      return res.json({ success: false, message: "Incorrect password." });
-    }
-
-    // If password matches, return success and user role
-    return res.json({ success: true, role: user.role });
-  } catch (error) {
-    console.error("Error during login:", error);
-    return res.status(500).json({ success: false, message: "Server error" });
-  }
-});
-
-
-//User create account route 
-app.post("/userCreateAccount", async (req, res) => {
-  console.log("Received data:", req.body);
-  const { email, password, confirmPassword } = req.body;
-
-  if (!email || !password || !confirmPassword) {
-    return res.status(400).json({ success: false, message: "Email and password are required." });
+  if (!appointmentData || !appointmentData.date) {
+    alert("Please complete your appointment first.");
+    window.location.href = '/appointment.html';
+    return;
   }
 
-  if (password !== confirmPassword) {
-    return res.status(400).json({ success: false, message: "Passwords do not match." });
+  function displayOrderSummary() {
+    const appointmentDate = appointmentData.date || 'Not specified';
+    const appointmentTime = appointmentData.time || 'Not specified';
+    const appointmentService = appointmentData.service || 'Not specified';
+    const appointmentPrice = appointmentData.price ? `$${appointmentData.price}` : '$0.00';
+
+    orderSection.innerHTML = `
+      <div class="order-summary">
+        <div class="left-column">
+          <div class="order-line"><span class="label">Appointment Date:</span> <span class="value">${appointmentDate}</span></div>
+          <div class="order-line"><span class="label">Appointment Time:</span> <span class="value">${appointmentTime}</span></div>
+        </div>
+        <div class="right-column">
+          <div class="order-line"><span class="label">Service:</span> <span class="value">${appointmentService}</span></div>
+          <div class="order-line"><span class="label">Price:</span> <span class="value">${appointmentPrice}</span></div>
+        </div>
+      </div>
+    `;
   }
 
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: "User already exists." });
+  displayOrderSummary();
+
+  function validateField(field) {
+    const value = field.value.trim();
+    let isValid = true;
+    let errorMessage = '';
+
+    switch (field.id) {
+      case 'firstName':
+      case 'lastName':
+      case 'cardName':
+        isValid = value.length >= 2;
+        errorMessage = 'Must be at least 2 characters';
+        break;
+      case 'email':
+        isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        errorMessage = 'Invalid email format';
+        break;
+      case 'cardNumber':
+        const cardNum = value.replace(/\s/g, '');
+        isValid = /^\d{16}$/.test(cardNum);
+        errorMessage = 'Must be 16 digits';
+        break;
+      case 'expDate':
+        isValid = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(value);
+        errorMessage = 'Use MM/YY format';
+        break;
+      case 'cvv':
+        isValid = /^\d{3,4}$/.test(value);
+        errorMessage = 'Must be 3-4 digits';
+        break;
+      default:
+        isValid = value.length > 0;
+        errorMessage = 'This field is required';
     }
 
-    const newUser = new User({
-      email, password, role: "user" // Default role for new users 
+    field.style.borderColor = isValid ? '' : '#ff4444';
+    const errorElement = field.nextElementSibling;
+    if (errorElement && errorElement.classList.contains('error-message')) {
+      errorElement.textContent = isValid ? '' : errorMessage;
+    }
+
+    return isValid;
+  }
+
+  function validateForm() {
+    let isFormValid = true;
+    [firstName, lastName, email, address, city, state, zip, cardName, cardNumber, expDate, cvv].forEach(field => {
+      if (!validateField(field)) {
+        isFormValid = false;
+      }
     });
-
-    await newUser.save();
-    res.json({ success: true, message: "User created successfully." });
-
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ success: false, message: "An error occurred." });
+    return isFormValid;
   }
-});
 
+  submitButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+    
+    if (!validateForm()) {
+      alert('Please correct the errors in the form');
+      return;
+    }
 
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
 
-// Redirect route based on role
-app.post("/redirect", (req, res) => {
-  const { role } = req.body;
+    try {
+      const checkoutData = {
+        shipInfo: {
+          firstName: firstName.value.trim(),
+          lastName: lastName.value.trim(),
+          email: email.value.trim(),
+          address: address.value.trim(),
+          city: city.value.trim(),
+          state: state.value.trim(),
+          zip: zip.value.trim()
+        },
+        payInfo: {
+          cardName: cardName.value.trim(),
+          cardNumber: cardNumber.value.replace(/\s/g, ''),
+          expDate: expDate.value.trim(),
+          cvv: cvv.value.trim()
+        },
+        appDate: `${appointmentData.date} at ${appointmentData.time}`,
+        service: appointmentData.service,
+        price: appointmentData.price
+      };
 
-  switch (role) {
-    case "employee":
-      return res.json({ redirectUrl: "/EmployeeViewPage.html" });
-    case "admin":
-      return res.json({ redirectUrl: "/adminViewPage.html" });
-    case "user":
-      return res.json({ redirectUrl: "/userHP.html" });
-    default:
-      return res.json({ redirectUrl: "/index.html" });
-  }
-});
+      checkoutData.appointmentId = appointmentData._id;
+      checkoutData.status = "confirmed";
+      console.log("appDate is:", appointmentData.date);
 
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(checkoutData)
+      });
 
-// Example API route
-app.get("/products", (req, res) => {
-  res.send("This is the products route");
-});
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Checkout failed');
+      }
 
-
-// Start the server
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Server started at http://localhost:${PORT}`);
+      window.location.href = "/paymentConfirmation.html";
+      
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      alert(`Payment failed: ${error.message}`);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Complete Purchase';
+    }
+  });
 });
