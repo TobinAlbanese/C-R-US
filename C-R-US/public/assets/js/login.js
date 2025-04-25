@@ -6,7 +6,6 @@ const maxFailedAttempts = 15;
 
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
-
   if (lockout) {
     return;
   }
@@ -40,10 +39,13 @@ function loginUser(email, password) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
+        sessionStorage.setItem("userId", data.userId); 
+        sessionStorage.setItem("userRole", data.role);
+
         failedAttempts = 0; // Reset failed attempts on successful login
         lockout = false; // Reset lockout status
         hideErrorMessage();
-        console.log("Logged in successfully!");
+
         redirectToPage(data.role);
       } else {
         failedAttempts++;
@@ -70,7 +72,6 @@ function loginUser(email, password) {
 
         if (failedAttempts >= maxFailedAttempts) {
           lockout = true;
-          console.log("User locked out due to too many failed attempts.");
 
           // Remove the error message and show lockout message
           const lockoutMessage = document.createElement("p");
@@ -136,11 +137,17 @@ function toggleLinks(show) {
 }
 
 function redirectToPage(role) {
-  if (role === "admin") {
-    window.location.href = "/adminViewPage.html";
-  } else if (role === "employee") {
-    window.location.href = "/employeeViewPage.html";
+  let redirectPage = sessionStorage.getItem('redirectAfterLogin');
+  if (redirectPage) {
+      window.location.href = redirectPage;
+      sessionStorage.removeItem('redirectAfterLogin');  
   } else {
-    window.location.href = "/userHP.html";
+      if (role === "admin") {
+          window.location.href = "/adminViewPage.html";
+      } else if (role === "employee") {
+          window.location.href = "/employeeViewPage.html";
+      } else {
+          window.location.href = "/userHP.html";
+      }
   }
 }

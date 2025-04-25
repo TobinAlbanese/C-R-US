@@ -189,13 +189,206 @@ h2 {
 
 #schedule {
     background-color: #ebecec;
-    height: 40em;
+    height: 20em;
     display: flex;
     align-items: last baseline;
+    position: relative; /* Ensures the calendar is positioned relative to the schedule section */
+    padding-top: 50px;
+}
+
+
+/* Position the flatpickr calendar in the top-left corner of the schedule section */
+#schedule .flatpickr-calendar {
+    position: absolute;
+    top: 60px; /* Add some space from the top */
+    left: 65px; /* Add some space from the left */
+    margin: 0;  /* Remove any default margin or padding */
+}
+
+/* Ensure that the "Date:" label stays above the calendar */
+#schedule #date-of-appointment-label {
+    position: absolute;
+    top: 25px;
+    left: 65px; /* Same left position as the calendar for alignment */
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 
 
+#schedule #time-of-appointment-label {
+    position: absolute;
+    top: 25px;
+    left: 425px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.time-slot.disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.flatpickr-day.fully-booked {
+    background-color: #ddd !important;
+    color: #999 !important;
+    pointer-events: none;
+}
+
+#schedule #service-of-appointment-label {
+    position: absolute;
+    top: 25px;
+    left: 645px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+
+
+.time-slot-container {
+    position: absolute;
+    top: 55px; /* Just below the label */
+    left: 425px; /* Same left as label for alignment */
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 10px;
+}
+
+.time-slot {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f7f7f7;
+    cursor: pointer;
+    color: #000000;
+}
+
+.time-slot:hover {
+    background: #e0e0e0;
+}
+
+
+.time-slot.selected {
+    background-color: #5ea2e0;  /* Blue color */
+    color: white;  /* White text */
+    cursor: pointer;
+}
+
+.time-slot.disabled {
+    background-color: #d3d3d3;  
+    cursor: not-allowed;
+}
+
+.time-slot:disabled {
+    background-color: #d3d3d3;  
+    cursor: not-allowed;
+}
+
+.service-select-container {
+    position: absolute;
+    top: 55px;
+    left: 645px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 10px;
+    width: 260px;
+}
+
+.service-option {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f7f7f7;
+    cursor: pointer;
+    color: #000000;
+    text-align: left;
+    font-size: 1em;
+    
+}
+
+.service-option:hover {
+    background: #e0e0e0;
+}
+
+.service-option.selected {
+    background-color: #5ea2e0;
+    color: white;
+}
+
+.service-group-label {
+    font-weight: bold;
+    font-size: 1.1em;
+    background: #f7f7f7;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+
+}
+
+.comments-container {
+    position: absolute;
+    top: auto;
+    left: 960px;
+    bottom: 80px; /* Just above the button */
+    width: 260px;
+}
+
+.comments-container label {
+    position: absolute;
+    top: 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 2em;
+    margin-left: 15px;
+}
+
+.comments-container textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: sans-serif;
+    font-size: 1em;
+    resize: vertical;
+    border: 1px solid #ccc;
+    margin-bottom: 4.7em;
+    margin-top: 2.2em;
+    margin-left: 15px;
+}
+
+
+
+
+.submit-container {
+    margin-left: 960px;
+    display: flex;
+    justify-content: flex-end; /* Pushes button to the right */
+    margin-bottom: 17px ; 
+ }
+  
+  .submit-button {
+    height: 3em;
+    padding: 10px 20px;
+  }
+  
+  /* Hide the input box that appears below the date picker calendar */
+.flatpickr-input {
+    display: none; /* This hides the small input box below the calendar */
+}
+
+/* Hide the input box that appears below the time slots (if any) */
+.flatpickr-time {
+    display: none; /* This hides the small input box below the visible time slots */
+}
 
 button
 {
@@ -222,12 +415,6 @@ button
     border: 2px solid black;
 }
 
-
-
-
-
-
-
 /* Section 3 */
 
 #feedback {
@@ -251,6 +438,7 @@ button
     font-family: sans-serif;
     font-size: 2em;
     font-weight: bold;
+    margin-left: 1.5em;
 }
 
 #feedback button {
@@ -263,7 +451,7 @@ button
     height: 3em;
     font-family: sans-serif;
     transition: background-color 0.3s, color 0.3s;
-   margin-right: 2em;
+   margin-right: 2.2em;
 }
 
 
