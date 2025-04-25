@@ -7,29 +7,6 @@
 /*comment*/ 
 /*-----------------------Header-----------------------*/
 
-.buttonSubmitTimesheet{
-    color:white;
-    background-color: #000000;
-    font-size: 15px;
-    text-align: center;
-    border-radius:20px;
-    border-color: #4080AF;
-    font-weight: bold;
-    padding: 15px 20px;
-    float: right;
-    margin: 4em 4em 80em 80em;
-    cursor: pointer;
-    position: absolute;
-    
-}
-.buttonSubmitTimesheet:hover{
-    opacity: 0.8;
-    border-radius: 20px;
-}
-
-
-
-
 header {
     background-color: #ffffff;
     text-align: left;
@@ -134,23 +111,50 @@ nav#assignments {
 }
 
 
+/*----------------------Button------------------------*/
+.buttonSubmitTimesheet{
+    color:white;
+    background-color: #000000;
+    font-size: 15px;
+    text-align: center;
+    border-radius:20px;
+    font-weight: bold;
+    padding: 24px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    right: 5em;
+    top: 20em;
+    cursor: pointer;
+}
+.buttonSubmitTimesheet:hover{
+    opacity: 0.8;
+    border-radius: 20px;
+}
+
+.date-controls {
+    margin: 2em 4em;
+}
+
+
 /*----------------------Table-------------------------*/
 
 .timesheetTable{
-    height: 50vh;
-    display: grid;
     margin: 0 auto;
     justify-content: center;
     align-items: center;
     color: lightslategray;
     font-size: 0.9rem;
     background-color: white;
-    
+    padding-top: 10em;
+    padding-bottom: 2em;
 }
 table{
     table-layout: fixed;
     width: 90%;
-    margin-left: 4em;
+    margin: 0 auto;
     border-collapse: collapse;
     box-shadow: 20px 20px 20px 5px rgb(221, 221, 238);
     background-color: white;
@@ -168,7 +172,46 @@ tbody{
     padding: 1rem 2rem;
 }
 tr:nth-child(even){
-    background-color: lightgray;
+    background-color: rgb(230, 230, 230);
+}
+
+td {
+    padding: 0.6em;
+    vertical-align: middle;
+}
+
+.timesheetTable input,
+.timesheetTable textarea {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: 1.25rem;
+    width: 100%;
+    text-align: center;
+    font-weight: normal;
+    color: lightslategray;
+}
+
+
+input [type = "time"] {
+    font-family: inherit;
+    width: 100%;
+    padding: 0.6em;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+    appearance: none;
+}
+.locked-input {
+    background-color: rgb(136, 136, 136) !important;
+    color: rgb(154, 154, 154) !important;
+    border: none !important;
+    cursor: not-allowed !important;
 }
 
 
