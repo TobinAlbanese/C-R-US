@@ -5,16 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    console.log("Form submission prevented");
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
-
-    console.log("Form found:", form);
-
-    // Frontend validation for email and password format
-    console.log("Password before validation:", password);
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailRegex.test(email)) {
       alert("Please enter a valid email address.");
@@ -34,10 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Proceed to create user account
-    console.log("Email:", email);
-    console.log("Password:", password);
-
     createUserAccount(email, password, confirmPassword); // Pass confirmPassword as well
   });
 
@@ -45,10 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.querySelector('button[type="submit"]');
     submitButton.disabled = true;
 
-    // Debugging: Log the values of the fields
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Confirm Password:", confirmPassword);
 
     fetch(`/userCreateAccount`, {
       method: "POST",
@@ -59,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Data received from server:", data);
         submitButton.disabled = false;
 
         if (data.success) {
@@ -101,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function redirectToPage() {
-    console.log("Redirecting to login page...");
     window.location.replace("/login.html"); // Redirect to login page after successful account creation
   }
 });

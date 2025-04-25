@@ -16,8 +16,6 @@ export async function seedUsers() {
     const existingUser = await User.findOne({ email });
 
     if (!existingUser) {
-      console.log(`Creating user: ${email}`);
-
       const newUser = new User({
         email,
         password: user.password, 
@@ -26,7 +24,6 @@ export async function seedUsers() {
 
       try {
         await newUser.save();
-        console.log(`User ${email} saved to the database`);
       } catch (err) {
         console.log(`Error saving user ${email}: ${err}`);
       }

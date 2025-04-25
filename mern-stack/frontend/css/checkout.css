@@ -177,10 +177,58 @@ h2 {
 #order {
     background-color: #ebecec;
     height: 15em;
-    display: flex;
     align-items: center;
 }
 
+.order-summary {
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Important for vertical alignment */
+    padding: 1.5em;
+    border-radius: 10px;
+    margin-right: 130px;
+    margin-top: 11px;
+  }
+  
+  .left-column {
+    margin-left: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+  }
+  
+  .right-column {
+   
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2em;
+
+  }
+  
+  .order-line {
+    padding: 1.5em;
+    min-width: 350px;
+    max-width: fit-content;
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    font-size: 1.1em;
+    background-color: #f9f9f9;
+
+  }
+  
+  .order-line .label {
+    font-weight: bold;
+    margin-right: 0.5em;
+
+  }
+  
+  .order-line .value {
+    color: #333;
+
+  }
+  
 
 
 
@@ -231,7 +279,7 @@ h2 {
 
 
 form#shipping-form {
-    margin-top: 2em;
+    margin-top: 0;
     width: 100%;
     padding: 2em;
     box-sizing: border-box;

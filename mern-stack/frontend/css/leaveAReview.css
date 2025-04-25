@@ -1,4 +1,3 @@
-
 header {
     background-color: #ffffff;
     text-align: left;
@@ -25,13 +24,36 @@ header h1 {
     font-weight: bold;
 }
 
+header button
+ {
+    background-color: black;
+    color:white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 1.5em;
+    cursor: pointer;
+    height: 2em;
+    font-family: sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 1em ;
 
+
+}
+
+
+
+
+ header button:hover
+{
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 2px solid black;
+}
 
 nav#menu { 
     background-color: transparent;
     padding: 0;
     margin-left: auto;
-    font-family: sans-serif;
 }
 
 nav#menu ul {
@@ -68,25 +90,6 @@ nav#menu ul li a:hover {
 }
 
 
-nav#menu ul li:nth-child(5) {
-    background-color: black; 
-    border-radius: 8em;
-    padding: 20px 20px;
-    display: inline-block;
-    transition: opacity 0.3s;;
-
-}
-
-nav#menu ul li:nth-child(5) a:hover {
-    opacity: 0.7;
-    border-radius: 5px;  /* Rounded corners for hover */
-}
-
-nav#menu ul li:nth-child(5) a {
-    color: white;
-
-}
-
 
 nav#assignments {
     background-color: #ffffff;
@@ -97,6 +100,8 @@ nav#assignments {
     justify-content: space-between;
     align-items: center;
 }
+
+
 
 review {
     font-family: sans-serif;
