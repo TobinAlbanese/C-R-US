@@ -174,11 +174,63 @@ h2 {
 
 #appointment {
     background-color: #ebecec;
-    height: 15em;
     display: flex;
-    align-items: center;
+    justify-content: flex-start; /* Aligns the left column to the left and pushes the right column to the right */
+    padding: 20px;
+    gap: 30px; /* Adds space between columns */
+    flex-wrap: wrap;
+    max-width: 100%; /* Optional: You can set a max width for the container */
 }
 
+#appointment .appointments-column {
+    flex: 1; /* Ensures both columns take equal space initially */
+    min-width: 300px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    align-items: center; /* Center the items vertically */
+}
+
+
+#appointment .appointments-column:first-child {
+    margin-left: 8em; /* Push the last column (right column) to the far right */
+}
+
+#appointment .appointments-column:last-child {
+    margin-left: 15em; /* Push the last column (right column) to the far right */
+}
+
+#appointment .appointments-column h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #000000;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+#appointment .appointment-item {
+    background-color: #fff;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+#appointment .appointment-item p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+@media screen and (max-width: 768px) {
+    #appointment {
+        flex-direction: column; /* Stacks columns vertically on smaller screens */
+    }
+
+    #appointment .appointments-column:last-child {
+        margin-left: 0; /* Remove left margin on smaller screens */
+    }
+}
 
 
 
