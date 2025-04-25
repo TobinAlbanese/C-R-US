@@ -25,20 +25,20 @@
             </ul>
         </nav>
         
-        <a href="login.html"><button>Login</button></a>
+        <button id="logoutBtn">Sign Out</button>
     </header>
 
     <main>
         <h2>Checkout</h2>
 
         <section id="headings">
-            <p2>My Order</p2>
+            <p class="section-title">My Order</p>
         </section>
 
         <section id="order"></section>
 
         <section id="headings">
-            <p2>Shipping</p2>
+            <p class="Shipping">Shipping</p> 
         </section>
 
         <section id="shipping">
@@ -84,7 +84,7 @@
         </section>
 
         <section id="headings">
-            <p2>Payment Method</p2>
+            <p class="section-title">Payment Method</p>
         </section>
 
         <section id="method">
@@ -97,6 +97,7 @@
                 <div class="form-group">
                     <label for="cardNumber">Card Number</label>
                     <input type="text" id="cardNumber" name="cardNumber" placeholder="1111 2222 3333 4444" autocomplete="cc-number" maxlength="19" required>
+                    <span class="error-message"></span>
                 </div>
 
                 <div class="form-group-row">
@@ -113,7 +114,7 @@
         </section>
 
         <div class="submit-container">
-            <button type="submit" id="submit-button" class="submit-button">Complete Purchase</button>
+            <button type="button" id="submit-button">Complete Purchase</button>
         </div>
     </main>
 
@@ -126,76 +127,16 @@
         <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
     </footer>
 
+    <script src="../../C-R-US/public/assets/js/checkout.js" type="module"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const appointmentService = localStorage.getItem('appointmentService');
-            const appointmentDate = localStorage.getItem('appointmentDate');
-            const appointmentTime = localStorage.getItem('appointmentTime');
-            const appointmentPrice = localStorage.getItem('appointmentPrice');
-
-            const orderSection = document.getElementById('order');
-
-            if (appointmentDate && appointmentTime && appointmentService) {
-                orderSection.innerHTML = `
-                    <div class="order-summary">
-                        <div class="left-column">
-                            <div class="order-line"><span class="label">Appointment Date:</span> <span class="value">${appointmentDate}</span></div>
-                            <div class="order-line"><span class="label">Appointment Time:</span> <span class="value">${appointmentTime}</span></div>
-                        </div>
-                        <div class="right-column">
-                            <div class="order-line"><span class="label">Service:</span> <span class="value">${appointmentService}</span></div>
-                            <div class="order-line"><strong>Price:</strong> $${appointmentPrice}</div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                orderSection.innerHTML = `<p>No appointment details found.</p>`;
-            }
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+          const response = await fetch('/logout', { method: 'POST' });
+          const data = await response.json();
+          if (data.success) {
+            window.location.href = '/login.html'; 
+            localStorage.clear(); 
+          }
         });
-
-        // Submission logic
-        document.addEventListener('DOMContentLoaded', () => {
-            const firstName = document.getElementById("firstName");
-            const lastName = document.getElementById("lastName");
-            const email = document.getElementById("email");
-            const address = document.getElementById("address");
-            const city = document.getElementById("city");
-            const state = document.getElementById("state");
-            const zip = document.getElementById("zip");
-            const cardName = document.getElementById("cardName");
-            const cardNumber = document.getElementById("cardNumber");
-            const expDate = document.getElementById("expDate");
-            const cvv = document.getElementById("cvv");
-            const submitButton = document.getElementById("submit-button");
-
-            submitButton.addEventListener('click', (event) => {
-                event.preventDefault();
-
-                if (!firstName.value.trim() || !lastName.value.trim() || !email.value.trim() || !address.value.trim() || !city.value.trim() || !state.value.trim() || !zip.value.trim() || !cardName.value.trim() || !cardNumber.value.trim() || !expDate.value.trim() || !cvv.value.trim()) {
-                    alert('Please fill out all required fields.');
-                    return;
-                }
-
-                try {
-                    localStorage.setItem('firstName', firstName.value.trim());
-                    localStorage.setItem('lastName', lastName.value.trim());
-                    localStorage.setItem('email', email.value.trim());
-                    localStorage.setItem('address', address.value.trim());
-                    localStorage.setItem('city', city.value.trim());
-                    localStorage.setItem('state', state.value.trim());
-                    localStorage.setItem('zip', zip.value.trim());
-                    localStorage.setItem('cardName', cardName.value.trim());
-                    localStorage.setItem('cardNumber', cardNumber.value.trim());
-                    localStorage.setItem('expDate', expDate.value.trim());
-                    localStorage.setItem('cvv', cvv.value.trim());
-
-                    window.location.href = "/paymentConfirmation.html";
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Something went wrong. Please try again.\n\n' + error.message);
-                }
-            });
-        });
-    </script>
+      </script>
 </body>
 </html>

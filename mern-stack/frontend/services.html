@@ -27,7 +27,7 @@
         <nav id="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="appointment.html">Book</a></li>
+                <li><a href="#" onclick="handleBookingClick()">Book</a>
                 <li><a href="about.html">About</a></li>
                 <li><a href="services.html">Services</a></li>
             </ul>
@@ -110,6 +110,20 @@
         <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
 
     </footer>
+    <script>
+        function handleBookingClick() {
+          sessionStorage.clear();
+          localStorage.clear();
+          const userLoggedIn = sessionStorage.getItem('userId');
+      
+          if (!userLoggedIn) {
+            sessionStorage.setItem('redirectAfterLogin', 'appointment.html');
+            window.location.href = 'login.html';
+          } else {
+            window.location.href = 'appointment.html';
+          }
+        }
+      </script>
 </body>
 </html>
         

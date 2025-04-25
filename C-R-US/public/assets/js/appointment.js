@@ -8,26 +8,120 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('date-of-appointment');
     const submitButton = document.getElementById('submit-button');
     const comment = document.getElementById('comments');
+    const errorMessage = document.createElement('p');
+    errorMessage.id = 'error-message';
+    errorMessage.style.color = 'red';
+    errorMessage.style.display = 'none'; 
+    document.body.appendChild(errorMessage);
 
-    let selectedServicePrice = 0; // Variable to store the selected service price
+    let bookedTimes = [];
+    let selectedDate = ""; 
 
-    // Handle time selection
+    const button = document.querySelector('#myButton');
+    if (button) {
+        if (bookedTimes.length === 0) {
+          button.disabled = true;
+          button.style.backgroundColor = 'grey';
+          button.style.cursor = 'not-allowed'; // Optional: change cursor to indicate disabled
+        } else {
+          button.disabled = false;
+          button.style.backgroundColor = '';
+          button.style.cursor = 'pointer';
+        }
+      }
+
+      async function fetchBookedTimes() {
+        const response = await fetch('/getBookedTimes');
+        if (response.ok) {
+            const data = await response.json();
+            bookedTimes = data.bookedTimes;
+            const fullyBookedDates = data.fullyBookedDates || [];
+    
+            console.log("Booked times:", bookedTimes);
+            console.log("Fully booked dates:", fullyBookedDates);
+    
+            updateTimeSlots();
+            disableFullyBookedDates(fullyBookedDates);
+        }
+    }
+    
+    
+
+    function updateTimeSlots() {
+        const date = selectedDate.trim();
+        let availableSlotFound = false;
+    
+        timeButtons.forEach(button => {
+            const buttonTime = button.textContent.trim();
+    
+            const isBooked = bookedTimes.some(
+                booking => booking.date === date && booking.time === buttonTime
+            );
+    
+            if (isBooked) {
+                button.disabled = true;
+                button.classList.add('disabled');
+                button.title = 'This time slot is already booked';
+            } else {
+                button.disabled = false;
+                button.classList.remove('disabled');
+                button.title = '';
+                availableSlotFound = true;
+            }
+        });
+    
+        const timeSlotContainer = document.getElementById('time-slot-container'); 
+        if (!availableSlotFound) {
+            timeSlotContainer.classList.add('fully-booked');
+            timeSlotContainer.style.pointerEvents = 'none';
+            timeSlotContainer.style.opacity = '0.5';
+        } else {
+            timeSlotContainer.classList.remove('fully-booked');
+            timeSlotContainer.style.pointerEvents = '';
+            timeSlotContainer.style.opacity = '';
+        }
+    }
+    
+    function disableFullyBookedDates(datesArray) {
+        
+        dateInput.addEventListener('input', () => {
+            const selected = dateInput.value;
+            if (datesArray.includes(selected)) {
+                alert("All time slots are booked for this day. Please select another.");
+                dateInput.value = ''; 
+            }
+        });
+    
+        dateInput.setAttribute('data-disabled-dates', JSON.stringify(datesArray)); 
+    }
+    
+
+    dateInput.addEventListener('change', (event) => {
+        selectedDate = event.target.value; 
+        fetchBookedTimes(); 
+    });
+
     timeButtons.forEach(button => {
         button.addEventListener('click', (event) => {
             event.preventDefault();
+    
+            if (button.disabled) {
+                errorMessage.textContent = "This time slot is already booked. Please choose another.";
+                errorMessage.style.display = 'block';
+                return;
+            }
+    
             timeButtons.forEach(btn => {
                 btn.classList.remove('selected');
-                btn.setAttribute('aria-pressed', 'false');
             });
-
+    
             button.classList.add('selected');
-            button.setAttribute('aria-pressed', 'true');
             hiddenTimeInput.value = button.textContent;
-            console.log("Time selected:", hiddenTimeInput.value);
+            errorMessage.style.display = 'none'; 
         });
     });
+    
 
-    // Handle service selection
     serviceButtons.forEach(button => {
         button.addEventListener('click', (event) => {
             event.preventDefault();
@@ -39,48 +133,79 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('selected');
             button.setAttribute('aria-pressed', 'true');
             serviceInput.value = button.dataset.value;
-            selectedServicePrice = parseFloat(button.dataset.price); // Get the price from the data-price attribute
-            console.log("Service selected:", serviceInput.value, "Price:", selectedServicePrice);
+            selectedServicePrice = parseFloat(button.dataset.price);
         });
     });
 
-    // Form submission
-    submitButton.addEventListener('click', (event) => {
-        event.preventDefault();
-
+    submitButton.addEventListener('click', async (event) => {
         if (!serviceInput.value.trim()) {
             alert('Please select a service.');
             return;
         }
-
+        
         if (!dateInput.value.trim()) {
             alert('Please select a date.');
             return;
         }
-
+        
         if (!hiddenTimeInput.value.trim()) {
             alert('Please select a time slot.');
             return;
         }
+    
+        if (submitButton.disabled) return;
+        submitButton.disabled = true;
+
+        const appointmentDate = dateInput.value.trim();
+        const appointmentTime = hiddenTimeInput.value.trim();
+        const appointmentService = serviceInput.value.trim();
+        const appointmentComment = comment.value.trim();
+
+        if (bookedTimes.some(booking => booking.date === appointmentDate && booking.time === appointmentTime)) {
+            alert("This time slot is already booked. Please choose another.");
+            submitButton.disabled = false;
+            return;
+        }
 
         try {
-            const appointmentDate = dateInput.value.trim();
-            const appointmentTime = hiddenTimeInput.value.trim();
-            const appointmentService = serviceInput.value.trim();
-            const appointmentComment = comment.value.trim();
+            const response = await fetch('/appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    date: appointmentDate,
+                    time: appointmentTime,
+                    service: appointmentService,
+                    comment: appointmentComment
+                })
+            });
 
-            // Store the data in localStorage
-            localStorage.setItem('appointmentDate', appointmentDate);
-            localStorage.setItem('appointmentTime', appointmentTime);
-            localStorage.setItem('appointmentService', appointmentService);
-            localStorage.setItem('appointmentComment', appointmentComment);
-            localStorage.setItem('appointmentPrice', selectedServicePrice.toFixed(2)); // Store the price as a string with 2 decimal places
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error("Failed to book appointment. Server says: " + errorText);
+            }
 
-            // Redirect to checkout.html
-            window.location.href = "/checkout.html";
+            const result = await response.json();
+
+            if (result.success) {
+                localStorage.setItem('appointmentData', JSON.stringify({
+                    date: appointmentDate,
+                    time: appointmentTime,
+                    service: appointmentService,
+                    comment: appointmentComment,
+                    status: 'pending', 
+                    price: selectedServicePrice,
+                }));
+                window.location.href = '/checkout.html';
+            } else {
+                throw new Error("Server did not confirm success.");
+            }
+
         } catch (error) {
-            console.error('Error:', error);
-            alert('Something went wrong. Please try again.\n\n' + error.message);
+            console.error("An error occurred during the booking process:", error);
+        } finally {
+            submitButton.disabled = false;
         }
     });
 });

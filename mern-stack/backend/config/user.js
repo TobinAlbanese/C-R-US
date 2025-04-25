@@ -13,10 +13,7 @@ const userSchema = new mongoose.Schema({
 //matching password method
 userSchema.methods.matchPassword = async function (enteredPassword) {
   try {
-    console.log("Entered password:", enteredPassword);
-    console.log("Stored hash:", this.password);
     const isMatch = await bcrypt.compare(enteredPassword, this.password);
-    console.log("bcrypt comparison result:", isMatch);
     return isMatch;
   } catch (error) {
     console.error("Error comparing passwords:", error);

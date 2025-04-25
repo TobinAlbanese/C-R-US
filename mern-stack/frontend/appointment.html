@@ -15,24 +15,24 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <link rel="stylesheet" href="/css/appointment.css">
-</head>
 
+</head>
 <body>
 
 <header>
-    <a href="index.html">
+    <a href="userHP.html">
         <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
     </a>
     <h1>Cavities R US Dental Clinic</h1>
     <nav id="menu">
         <ul>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="userHP.html">Home</a></li>
             <li><a href="appointment.html">Book</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="services.html">Services</a></li>
         </ul>
     </nav>
-    <a href="login.html"><button>Login</button></a>
+    <a href="login.html" id="logoutBtn"><button>Sign Out</button></a>
 </header>
 
 <main>
@@ -50,7 +50,7 @@
         <p2>Schedule an Appointment</p2>
     </section>
 
-    <form id="appointment-form" action="/appointments" method="POST">
+    <form id="appointment-form" action="/appointment" method="POST">
         <section id="schedule">
             <div class="appointment-date">
                 <div class="form-section">
@@ -86,7 +86,7 @@
                     <input type="hidden" id="time-of-appointment" name="time" required>
                 </div>
             </div>
-
+  
             <!-- Services Section -->
             <div class="form-section">
                 <label for="service-of-appointment" id="service-of-appointment-label">Select Service:</label>
@@ -149,34 +149,61 @@
 
 <!-- Flatpickr Script -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="../../C-R-US/public/assets/js/appointment.js"></script>
 <script>
     flatpickr("#date-of-appointment", {
         inline: true,
         minDate: "today"
     });
 
-    // Handle service selection buttons
-    document.querySelectorAll('.service-option').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelectorAll('.service-option').forEach(btn => btn.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('service-of-appointment').value = this.dataset.value;
-        });
-    });
 
-    // Handle time slot buttons
-    document.querySelectorAll('.time-slot').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelectorAll('.time-slot').forEach(btn => btn.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('time-of-appointment').value = this.textContent;
-        });
+document.querySelectorAll('.service-option').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.service-option').forEach(btn => btn.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('service-of-appointment').value = this.dataset.value;
+        localStorage.setItem('appointmentService', this.dataset.value);
+        localStorage.setItem('appointmentPrice', this.dataset.price);  
     });
+});
+
+document.querySelectorAll('.time-slot').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.time-slot').forEach(btn => btn.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('time-of-appointment').value = this.textContent;
+        localStorage.setItem('appointmentTime', this.textContent);
+    });
+});
+
 </script>
-
-<script src="/C-R-US/public/assets/js/appointment.js"></script>
-
+<script>
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      const response = await fetch('/logout', { method: 'POST' });
+      const data = await response.json();
+      if (data.success) {
+        window.location.href = '/login.html'; 
+        sessionStorage.removeItem('userId');
+        localStorage.removeItem('userId'); 
+        localStorage.removeItem('role');
+        sessionStorage.removeItem('userRole');
+        localStorage.clear();
+      }
+    });
+  </script>
+  <script>
+    function handleBookingClick() {
+      const userLoggedIn = sessionStorage.getItem('userId');
+  
+      if (!userLoggedIn) {
+        sessionStorage.setItem('redirectAfterLogin', 'appointment.html');
+        window.location.href = 'login.html';
+      } else {
+        window.location.href = 'appointment.html';
+      }
+    }
+  </script>
 </body>
 </html>

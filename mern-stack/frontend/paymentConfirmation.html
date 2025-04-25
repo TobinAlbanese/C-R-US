@@ -29,7 +29,7 @@
                     <li><a href="services.html">Services</a></li>
                 </ul>
             </nav>
-            <a href="login.html"><button>Login</button></a>
+            <a href="login.html" id="logoutBtn"><button>Sign Out</button></a>
         </header>
         
         <main>
@@ -64,14 +64,17 @@
         <script src="/C-R-US/public/assets/js/login.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                const appointmentService = localStorage.getItem("appointmentService");
-                const appointmentDate = localStorage.getItem("appointmentDate");
-                const appointmentTime = localStorage.getItem("appointmentTime");
-                const appointmentPrice = localStorage.getItem("appointmentPrice");
-            
+                const appointmentData = localStorage.getItem("appointmentData");
                 const orderSummary = document.getElementById("orderSummary");
             
-                if (appointmentDate && appointmentTime && appointmentService && appointmentPrice) {
+                if (appointmentData) {
+                    const data = JSON.parse(appointmentData);
+            
+                    const appointmentService = data.service;
+                    const appointmentDate = data.date;
+                    const appointmentTime = data.time;
+                    const appointmentPrice = localStorage.getItem("appointmentPrice");  // Assuming you store the price separately
+
                     orderSummary.innerHTML = `
                         <div><span class="label">Service:</span> <span>${appointmentService}</span></div>
                         <div><span class="label">Date:</span> <span>${appointmentDate}</span></div>
@@ -81,8 +84,24 @@
                 } else {
                     orderSummary.innerHTML = `<p>Order details not found. Please try again.</p>`;
                 }
+                
+                localStorage.removeItem('appointmentData');
+                localStorage.removeItem('appointmentService');
+                localStorage.removeItem('appointmentDate');
+                localStorage.removeItem('appointmentTime');
+                localStorage.removeItem('appointmentPrice');
             });
-            </script>
             
+            </script>
+            <script>
+                document.getElementById('logoutBtn').addEventListener('click', async () => {
+                  const response = await fetch('/logout', { method: 'POST' });
+                  const data = await response.json();
+                  if (data.success) {
+                    window.location.href = '/login.html'; 
+                    localStorage.clear();
+                  }
+                });
+              </script>        
     </body>
 </html>
