@@ -6,10 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const prevBtn = document.getElementById("prev-month");
     const nextBtn = document.getElementById("next-month");
   
-    let currentDate = new Date(2025, 3); // April is month 3 (0-indexed)
+    let currentDate = new Date();
   
     let events = {
-        //"2025-04-27": "Example" // example. Delete this.
+        
 
     };
 
@@ -17,18 +17,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function fetchEvents() {
         try {
-          const response = await fetch("/products/Scheduling");
+          const response = await fetch("/api/Scheduling");
           if (!response.ok) {
             throw new Error("Failed to fetch events");
           }
           const data = await response.json();
+          console.log("Fetched events from API:", data); // Log the fetched data
       
           // Transform the data into the format expected by the calendar
           events = data.reduce((acc, event) => {
             acc[event.date] = event.client;
             return acc;
           }, {});
-      
+
+          
+          
+          console.log("Transformed events:", events); // Log the transformed events
           renderCalendar(currentDate); // Re-render the calendar after fetching events
         } catch (error) {
           console.error("Error fetching events:", error);

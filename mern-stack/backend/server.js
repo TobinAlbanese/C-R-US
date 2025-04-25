@@ -142,16 +142,19 @@ app.post("/redirect", (req, res) => {
 
 // START OF: SCHEDULING DB
 
-// Define the schema and model for the "Scheduling" collection
+// MongoDB Schema and Model for Scheduling
 const schedulingSchema = new mongoose.Schema({
-  date: { type: String, required: true }, // e.g., "2025-04-27"
-  client: { type: String, required: true },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  service: { type: String, required: true },
+  comments: { type: String },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const Scheduling = mongoose.model("Scheduling", schedulingSchema);
 
 // API endpoint to fetch events
-app.get("/products/Scheduling", async (req, res) => {
+app.get("/api/Scheduling", async (req, res) => {
   try {
     const events = await Scheduling.find({});
     console.log("Fetched events from MongoDB:", events); // Log the fetched data
