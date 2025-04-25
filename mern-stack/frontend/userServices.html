@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+    <title>Cavities R US - Dental Clinic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/services.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+       
+
+       
+        
+    </style>
+</head>
+
+
+<body>
+
+    <header>
+        <a href="index.html">
+            <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
+        </a>
+        <h1>Cavities R US Dental Clinic</h1>
+        <nav id="menu">
+            <ul>
+                <li><a href="userHp.html">Home</a></li>
+                <li><a href="#" onclick="handleBookingClick()">Book</a>
+                <li><a href="userAbout.html">About</a></li>
+                <li><a href="userServices.html">Services</a></li>
+            </ul>
+        </nav>
+        <a href="login.html"><button>Sign out</button></a>
+
+    </header>
+    
+
+    
+       
+
+        <main>
+
+            <h2>Dental Services</h2>
+
+
+            <section id="description">
+                
+                <img src="/C-R-US/public/assets/images/servicesSmileAd.PNG" width="250" height="165" alt="A woman smiling" style="float: left; margin-right: 10px;">
+                <p2>Cavities R US offers many different services, including standard dental care as well as specialized treatments. Our goal is to make sure you meet all your dental needs!</p2>
+            </section>
+
+
+
+            <section id="services">
+                <div class="service-box-1" >
+
+                   <h3>Standard Services</h3> 
+
+                   
+                    <ul>
+                        <li><p1>Dental Exams</p1></li>
+                        <li><p1>Dental Cleanings & Prevention</p1></li>
+                        <li><p1>Composite Filling</p1></li>
+                        <li><p1>Crowns</p1></li>
+                        <li><p1>Crown Lengthening</p1></li>
+                        <li><p1>Full Dentures & Partial Dentures</p1></li>
+                        <li><p1>Root Canal Therapy</p1></li>
+                        <li><p1>Dental X-rays</p1></li>
+        
+                    </ul>
+
+                </div>
+
+                <div class="service-box-2" >
+
+                    <h3>Specialized Services</h3> 
+ 
+                    
+                     <ul>
+                         <li><p2>Porcelain Crowns</p2></li>
+                         <li><p2>Zirconia Crowns</p2></li>
+                         <li><p2>Porcelain Veneers</p2></li>
+                         <li><p2>Restorations</p2></li>
+                         <li><p2>Scaling and Root Planning</p2></li>
+                         <li><p2>Sealants</p2></li>
+                         
+         
+                     </ul>
+ 
+                 </div>
+
+
+
+            </section>
+            
+           
+        </main>
+
+    
+    
+
+    <footer>
+        Cavities R US Dental Clinic
+        <br>
+        <a href="https://www.facebook.com/login.php/" class="fa fa-facebook"></a>
+        <a href="https://www.linkedin.com/home" class="fa fa-linkedin"></a>
+        <a href="https://www.youtube.com/account_advanced" class="fa fa-youtube"></a>
+        <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
+
+    </footer>
+    <script>
+        function handleBookingClick() {
+          sessionStorage.clear();
+          localStorage.clear();
+          const userLoggedIn = sessionStorage.getItem('userId');
+      
+          if (!userLoggedIn) {
+            sessionStorage.setItem('redirectAfterLogin', 'appointment.html');
+            window.location.href = 'login.html';
+          } else {
+            window.location.href = 'appointment.html';
+          }
+        }
+      </script>
+</body>
+</html>
+        
