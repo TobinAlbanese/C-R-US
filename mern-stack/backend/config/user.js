@@ -31,12 +31,10 @@ userSchema.pre("save", async function (next) {
     return next();
   }
 
-  console.log("Before hashing, password:", this.password); // Log the password before hashing
   if (!this.password.startsWith("$2a$")) {
     try {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
-      console.log("Hashed password:", this.password); // Log the hashed password
     } catch (error) {
       console.error("Error hashing password:", error);
       return next(error);

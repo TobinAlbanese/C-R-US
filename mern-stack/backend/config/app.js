@@ -5,10 +5,11 @@ const appSchema = new mongoose.Schema({
   time: { type: String, required: true },
   service: { type: String, required: true },
   comments: { type: String },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },  // Reference to the User who created the appointment
+  status: { type: String, default: 'pending' },  
+  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
 });
 
-appSchema.index({ date: 1, time: 1, service: 1 }, { unique: true });  // Enforce unique date, time, and service combination
+appSchema.index({ date: 1, time: 1, service: 1 }, { unique: true });  
 const Appointment = mongoose.model("Scheduling", appSchema, "Scheduling");
 
 export { Appointment };

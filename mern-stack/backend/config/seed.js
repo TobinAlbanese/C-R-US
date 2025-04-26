@@ -2,7 +2,7 @@ import User from "./user.js";
 console.log('Seed.js loaded');
 const users = {
   "king.glory11@gmail.com": { password: "A123", role: "employee", firstName: "King", lastName: "Glory" },
-  "tobinmgraham@csus.edu": { password: "A123", role: "employee", firstName: "Tobin", lastName: "Graham" },
+  "tobinmgraham@csus.edu": { password: "A123", role: "user", firstName: "Tobin", lastName: "Graham" },
   "alyssamjimenez@csus.edu": { password: "A123", role: "employee", firstName: "Alyssa", lastName: "Jimenez" },
   "imranahmad@csus.edu": { password: "A123", role: "employee", firstName: "Imran", lastName: "Ahmad" },
   "rylandporter@csus.edu": { password: "A123", role: "employee", firstName: "Ryland", lastName: "Porter" },

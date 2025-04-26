@@ -8,16 +8,16 @@ const checkSchema = new mongoose.Schema({
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
-    zip: { type: String, required: true },
+    zip: { type: String, required: true }
   },
   payInfo: {
     cardName: { type: String, required: true },
     cardNumber: { type: String, required: true },
     expDate: { type: String, required: true },
-    cvv: { type: String, required: true },
+    cvv: { type: String, required: true }
   },
   appDate: {
-    type: Object, 
+    type: String, 
     required: true,
   },
   orderDate: {

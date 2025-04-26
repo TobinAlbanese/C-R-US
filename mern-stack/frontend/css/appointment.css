@@ -1,7 +1,7 @@
 
 
 header {
-    background-color: #ffffff;
+    background-color: #ffffff !important;
     text-align: left;
     padding: 20px 0;
     position: relative;
@@ -276,19 +276,8 @@ h2 {
     font-weight: bold;
 }
 
-.time-slot.disabled {
-    background-color: #ccc;
-    color: #666;
-    cursor: not-allowed;
-    pointer-events: none;
-    opacity: 0.6;
-}
 
-.flatpickr-day.fully-booked {
-    background-color: #ddd !important;
-    color: #999 !important;
-    pointer-events: none;
-}
+
 
 #schedule #service-of-appointment-label {
     position: absolute;
@@ -324,22 +313,16 @@ h2 {
 .time-slot:hover {
     background: #e0e0e0;
 }
-
-
 .time-slot.selected {
-    background-color: #5ea2e0;  /* Blue color */
-    color: white;  /* White text */
-    cursor: pointer;
+    background-color: #437fb8; 
+    color: white;
 }
 
 .time-slot.disabled {
-    background-color: #d3d3d3;  
-    cursor: not-allowed;
-}
-
-.time-slot:disabled {
-    background-color: #d3d3d3;  
-    cursor: not-allowed;
+    background-color: white;
+    color: white;
+    pointer-events: none; 
+    opacity: 0.8;
 }
 
 .service-select-container {
@@ -372,7 +355,7 @@ h2 {
 }
 
 .service-option.selected {
-    background-color: #5ea2e0;
+    background-color: #437fb8;
     color: white;
 }
 
@@ -423,7 +406,7 @@ h2 {
 .submit-container {
     margin-left: 960px;
     display: flex;
-    justify-content: flex-end; /* Pushes button to the right */
+    justify-content: flex-end;
     margin-bottom: 17px ; 
  }
   
@@ -432,15 +415,15 @@ h2 {
     padding: 10px 20px;
   }
   
-  /* Hide the input box that appears below the date picker calendar */
 .flatpickr-input {
-    display: none; /* This hides the small input box below the calendar */
+    display: none; 
 }
 
-/* Hide the input box that appears below the time slots (if any) */
+
 .flatpickr-time {
-    display: none; /* This hides the small input box below the visible time slots */
+    display: none; 
 }
+
 
 button
 {

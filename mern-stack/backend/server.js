@@ -12,12 +12,15 @@ import connectMongo from 'connect-mongo';
 const app = express();
 app.use(express.json());
 const __dirname = path.resolve();
+import nodemailer from "nodemailer";
 dotenv.config();
 app.use(express.urlencoded({ extended: true }));
 import cors from "cors";
 app.use(cors()); 
 
-// MongoDB URI from environment variables
+
+import { Check } from "./config/check.js";
+import { Appointment } from "./config/app.js"; 
 const mongoURI = process.env.MONGO_URI;
 mongoose
 async function startServer() {
@@ -89,6 +92,40 @@ app.get("/", (req, res) => {
 
 
 
+//User create account route 
+app.post("/userCreateAccount", async (req, res) => {
+  const { email, password, confirmPassword, firstName, lastName } = req.body;
+
+  if (!email || !password || !confirmPassword) {
+    return res.status(400).json({ success: false, message: "Email and password are required." });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ success: false, message: "Passwords do not match." });
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "User already exists." });
+    }
+
+    const newUser = new User({
+      email, password, role: "user", firstName, lastName, // Default role for new users 
+    });
+
+    await newUser.save();
+    res.json({ success: true, message: "User created successfully." });
+
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
+  }
+});
+
+
+
+
 
 // Login route to authenticate users
 app.post("/login", async (req, res) => {
@@ -110,13 +147,19 @@ app.post("/login", async (req, res) => {
       return res.json({ success: false, message: "Incorrect password." });
     }
 
-    req.session.userId = user._id;
+    req.session.userId = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    };
     return res.json({ success: true, role: user.role });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
+
 
 
 
@@ -139,53 +182,8 @@ app.post('/logout', (req, res) => {
 
 
 
-app.get('/getBookedTimes', async (req, res) => {
-  const appointments = await Appointment.find({
-    status: { $in: ["pending", "confirmed"] }, 
-    date: req.query.date 
-  });
-  res.json({ bookedTimes: appointments.map(a => a.time) });
-});
 
-
-
-
-
-//User create account route 
-app.post("/userCreateAccount", async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
-
-  if (!email || !password || !confirmPassword) {
-    return res.status(400).json({ success: false, message: "Email and password are required." });
-  }
-
-  if (password !== confirmPassword) {
-    return res.status(400).json({ success: false, message: "Passwords do not match." });
-  }
-
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: "User already exists." });
-    }
-
-    const newUser = new User({
-      email, password, role: "user", firstName: user.firstName, lastName: user.lastName, // Default role for new users 
-    });
-
-    await newUser.save();
-    res.json({ success: true, message: "User created successfully." });
-
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ success: false, message: "An error occurred." });
-  }
-});
-
-
-
-import { Appointment } from "./config/app.js"; 
-app.post('/appointment', async (req, res) => {
+app.post('/api/appointment', async (req, res) => {
   const { date, time, service, comment } = req.body;
 
   if (!date || !time || !service) {
@@ -215,16 +213,16 @@ app.post('/appointment', async (req, res) => {
       date,
       time,
       service,
-      comments: comment,
+      comments: comment || '',
       user: userId,
       status: 'pending',
     });
 
     const savedApp = await newApp.save();
+    console.log("Appointment saved:", savedApp);
     res.status(200).json({ success: true, appointment: savedApp });
-
   } catch (err) {
-    console.error("Failed to save appointment:", err);
+    console.error("Error:", err);
     return res.status(500).json({ error: 'Failed to save appointment' });
   }
 });
@@ -232,25 +230,65 @@ app.post('/appointment', async (req, res) => {
 
 
 
-import { Check } from "./config/check.js";
+
 app.post('/api/checkout', async (req, res) => {
   console.log("Full request body:", req.body);
-  
+
   try {
-    const { shipInfo, payInfo, appDate } = req.body;
-    console.log("Extracted data:", { shipInfo, payInfo, appDate });
+    const { checkoutData} = req.body; 
+    const { shipInfo, payInfo, appDate, service, price, appointmentId } = checkoutData;
+
+    console.log("Extracted data:", { shipInfo, payInfo, appDate, checkoutData });
 
     const newCheck = new Check({
       shipInfo,
       payInfo,
       appDate,
+      service,
+      price,
+      appointmentId,
+      status: "confirmed"
     });
 
-    // Validate before saving
     await newCheck.validate(); 
-    
+
     const savedCheck = await newCheck.save();
     console.log("Saved document:", savedCheck);
+
+    const userId = req.session.userId; 
+    if (!userId || !userId.id) {
+      return res.status(401).json({ error: "User not logged in" });
+    }
+    
+    const user = await User.findById(userId.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'Appointment Confirmation',
+      html: `
+        <h1>Thank you for your appointment!</h1>
+        <p><strong>Service:</strong> ${service}</p>
+        <p><strong>Date:</strong> ${appDate}</p>
+        <p><strong>Time:</strong> ${appDate}</p>
+        <p><strong>Price:</strong> $${price}</p>
+        <p>We look forward to seeing you!</p>
+      `
+    };
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    await transporter.sendMail(mailOptions);
+    console.log("Confirmation email sent successfully.");
 
     res.status(200).json({ 
       success: true, 
@@ -259,7 +297,7 @@ app.post('/api/checkout', async (req, res) => {
     });
   } catch (error) {
     console.error("Full error:", error);
-    
+
     if (error.name === 'ValidationError') {
       console.error("Validation errors:", error.errors);
       return res.status(400).json({
@@ -268,7 +306,7 @@ app.post('/api/checkout', async (req, res) => {
         errors: error.errors
       });
     }
-    
+
     res.status(500).json({ 
       success: false, 
       message: error.message || "Server error while saving checkout.",
@@ -279,28 +317,32 @@ app.post('/api/checkout', async (req, res) => {
 
 
 
-app.post('/api/confirm-appointment', async (req, res) => {
+
+
+
+app.get('/api/booked-times', async (req, res) => {
+  const { date } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ success: false, message: "Date is required." });
+  }
+
   try {
-    const { appointmentId } = req.body;
-    await Appointment.updateOne(
-      { _id: appointmentId },
-      { $set: { status: "confirmed" } }
-    );
-    res.json({ success: true });
+    const bookings = await Appointment.find({ date }); 
+    const bookedTimes = bookings.map(booking => booking.time); 
+    res.json({ bookedTimes });
   } catch (error) {
-    res.status(500).json({ error: "Confirmation failed" });
+    console.error("Error fetching booked times:", error);
+    res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
 
 
 
 
-
-
-const Scheduling = mongoose.model("Scheduling");
 app.get("/api/assign-tasks", async (req, res) => {
   try {
-    const tasks = await Scheduling.find();  
+    const tasks = await Appointment.find();  
     const users = await User.find();  
     
     const tasksWithUsers = tasks.map(task => {
