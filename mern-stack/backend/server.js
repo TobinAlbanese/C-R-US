@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db.js";
 import User from "./config/user.js";
-console.log(User);
 import mongoose from "mongoose";
 import { seedUsers } from "./config/seed.js";
 import bcrypt from "bcryptjs";
@@ -182,6 +181,31 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
+//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the
+import { timeOffEmployee } from "./config/timeOff.js"; 
+app.post("/timeOffEmployee", async (req, res) => {
+  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
+
+  try {
+
+    const newTimeOffEmployee = await timeOffEmployee.insertOne({
+      Employee,
+      timeOffType,
+      timeOffComments,
+      timeOffDate,
+      timeOffStartTime,
+      timeOffEndTime,
+    });
+
+    console.log(Employee);
+    await newTimeOffEmployee.save();
+    res.json({ success: true, message: "User created successfully." });
+
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
+  }
+});
 
 
 import { Appointment } from "./config/app.js"; 
