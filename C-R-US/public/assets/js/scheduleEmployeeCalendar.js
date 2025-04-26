@@ -7,79 +7,62 @@ document.addEventListener("DOMContentLoaded", function () {
     const nextBtn = document.getElementById("next-month");
   
     let currentDate = new Date();
-  
-    let events = {
-        
-
-    };
-
-
 
     async function fetchEvents() {
-        try {
-          const response = await fetch("/api/Scheduling");
-          if (!response.ok) {
-            throw new Error("Failed to fetch events");
-          }
-          const data = await response.json();
-          console.log("Fetched events from API:", data); // Log the fetched data
-      
-          // Transform the data into the format expected by the calendar
-          events = data.reduce((acc, event) => {
-            acc[event.date] = event.client;
-            return acc;
-          }, {});
-         
-        
-
-          
-          
-          console.log("Transformed events:", events); // Log the transformed events
-          renderCalendar(currentDate); // Re-render the calendar after fetching events
-        } catch (error) {
-          console.error("Error fetching events:", error);
+      try {
+        const response = await fetch("/api/Scheduling");
+        if (!response.ok) {
+          throw new Error("Failed to fetch events");
         }
+        const data = await response.json();
+        console.log("Fetched events from API:", data); // Log the fetched data
+    
+        // Transform the data into the format expected by the calendar
+        events = data.reduce((acc, event) => {
+          const { date, time, service, comments, user } = event;
+          if (!acc[date]) {
+            acc[date] = [];
+          }
+          acc[date].push({ time, service, comments, user });
+          return acc;
+        }, {});
+    
+        console.log("Transformed events:", events); // Log the transformed events
+        renderCalendar(currentDate); // Re-render the calendar after fetching events
+      } catch (error) {
+        console.error("Error fetching events:", error);
       }
+    }
 
-      // EX. DELETE THIS
+
+
+      // ---------------EX. DELETE THIS BLOCK WHEN DB IS WORKING--------------------
       async function fetchEvents() {
         try {
           // Example data to force-load
           events = {
             "2025-04-14": [
-              { time: "08:00 AM", description: "Dental Exams" },
-              { time: "02:00 PM", description: "Team Meeting" },
-              { time: "03:00 PM", description: "Team Meeting" },
-              { time: "04:00 PM", description: "Team Meeting" },
-              { time: "05:00 PM", description: "Team Meeting" },
-              { time: "06:00 PM", description: "Team Meeting" }
+              { user: "Susan", time: "08:00 AM", service: "Dental Exam", comments: "Pain in lower right teeth." },
+              { user: "Bob", time: "10:00 AM", service: "Dental Exam", comments: "Pain in top molars." }
             ],
             "2025-04-24": [
-              { time: "08:00 AM", description: "Dental Exams" },
-              { time: "02:00 PM", description: "Team Meeting" },
-              { time: "03:00 PM", description: "Team Meeting" },
-              { time: "04:00 PM", description: "Team Meeting" },
-              { time: "05:00 PM", description: "Team Meeting" },
-              { time: "06:00 PM", description: "Team Meeting" }
+              { user: "Jerry", time: "08:00 AM", service: "Dental Cleanings & Prevention", comments: "Routine check up." },
+              { user: "Barbara", time: "09:00 AM", service: "Dental Cleanings & Prevention", comments: "Routine check up." },
+              { user: "Mike", time: "10:00 AM", service: "Dental Exam", comments: "Client concern: Blemish on front teeth." }
             ],
             "2025-04-26": [
-              { time: "10:00 AM", description: "Project Deadline" }
-            ],
-            "2025-04-30": [
-              { time: "08:00 AM", description: "Dental Exams" },
-              { time: "02:00 PM", description: "Team Meeting" },
-              { time: "03:00 PM", description: "Team Meeting" },
-              { time: "04:00 PM", description: "Team Meeting" },
-              { time: "05:00 PM", description: "Team Meeting" },
-              { time: "06:00 PM", description: "Team Meeting" }
+              { user: "Susan", time: "10:00 AM", service: "Composite Filling", comments: "Cavity in lower right molar." }
             ],
           };
-      
           renderCalendar(currentDate); // Re-render the calendar with example data
         } catch (error) {
           console.error("Error fetching events:", error);
         }
       }
+      // ---------------EX. DELETE THIS BLOCK WHEN DB IS WORKING--------------------
+
+      
+
     fetchEvents();
   
     function renderCalendar(date) {
@@ -119,9 +102,15 @@ document.addEventListener("DOMContentLoaded", function () {
               const eventBar = document.createElement("div");
               eventBar.classList.add("event-bar");
     
+              // Store event details in data attributes for later use
+              eventBar.dataset.user = event.user;
+              eventBar.dataset.time = event.time;
+              eventBar.dataset.service = event.service;
+              eventBar.dataset.comments = event.comments;
+    
               const eventText = document.createElement("span");
               eventText.classList.add("event-text");
-              eventText.textContent = `${event.time} - ${event.description}`;
+              eventText.textContent = `${event.time} - ${event.service}`;
     
               eventBar.appendChild(eventText);
               dayCell.appendChild(eventBar);
@@ -140,25 +129,29 @@ document.addEventListener("DOMContentLoaded", function () {
       eventBars.forEach(eventBar => {
         eventBar.addEventListener("click", function (event) {
           event.stopPropagation(); // Prevent the click from bubbling up to parent elements
-          const eventName = this.textContent; // Get the event name from the text content
     
-          // Show the custom pop-up
-          showCustomPopup(`Are you sure you want to take this task: "${eventName}"?`, () => {
-            alert(`You accepted the task: "${eventName}"`);
-          });
+          // Extract event details from data attributes
+          const user = this.dataset.user;
+          const time = this.dataset.time;
+          const service = this.dataset.service;
+          const comments = this.dataset.comments;
+    
+          // Show the custom pop-up with the event details
+          showCustomPopup(
+            `User: <strong>${user}</strong><br>Time: <strong>${time}</strong><br>Service: <strong>${service}</strong><br>Comments: <strong>${comments}</strong>`
+          );
         });
       });
     }
   
-  function showCustomPopup(message, onConfirm) {
+  function showCustomPopup(message) {
     const popup = document.getElementById("custom-popup");
     const popupMessage = document.getElementById("popup-message");
     const confirmButton = document.getElementById("popup-confirm");
-    const cancelButton = document.getElementById("popup-cancel");
     const overlay = document.getElementById("popup-overlay");
   
     // Set the message
-    popupMessage.textContent = message;
+    popupMessage.innerHTML = message;
   
     // Show the pop-up and overlay
     popup.classList.remove("hidden");
@@ -166,13 +159,6 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Handle Confirm Button Click
     confirmButton.onclick = () => {
-      popup.classList.add("hidden"); // Hide the pop-up
-      overlay.classList.add("hidden"); // Hide the overlay
-      if (onConfirm) onConfirm(); // Call the confirm callback
-    };
-  
-    // Handle Cancel Button Click
-    cancelButton.onclick = () => {
       popup.classList.add("hidden"); // Hide the pop-up
       overlay.classList.add("hidden"); // Hide the overlay
     };
