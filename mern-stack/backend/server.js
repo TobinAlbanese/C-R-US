@@ -15,6 +15,7 @@ dotenv.config();
 app.use(express.urlencoded({ extended: true }));
 import cors from "cors";
 app.use(cors()); 
+import { EmployeeTask } from "./config/TASKS.js";
 
 // MongoDB URI from environment variables
 const mongoURI = process.env.MONGO_URI;
@@ -316,8 +317,31 @@ app.post('/api/confirm-appointment', async (req, res) => {
   }
 });
 
+//HARKS STUFF
+app.post("/api/assignTask", async (req, res) => {
+  const { type, assignTo, assignedBy } = req.body;
 
+  if (!type || !assignTo || !assignedBy) {
+    return res.status(400).json({ success: false, message: "Missing required fields." });
+  }
 
+  try {
+    const newTask = new EmpolyeeTask({
+      service: type,
+      user: assignTo,
+      assignedBy: assignedBy,
+      date: new Date().toISOString().split("T")[0], // Current date
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Current time
+    });
+
+    await newTask.save();
+    res.json({ success: true, message: "Task assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning task:", error);
+    res.status(500).json({ success: false, message: "Error assigning task" });
+  }
+});
+//HARKS STUFF
 
 
 

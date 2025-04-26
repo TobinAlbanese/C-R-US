@@ -36,7 +36,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 row.appendChild(assignToDiv);
                 row.appendChild(assignedByDiv);
                 row.appendChild(createdOnDiv);
-
+/*
+                row.addEventListener("click", () => {
+                    const previouslySelected = document.querySelector(".task-row.selected");
+                    if (previouslySelected) {
+                        previouslySelected.classList.remove("selected");
+                    }
+                    row.classList.add("selected");
+                });
+*/
                 if (task.schedulingId) {
                     const scheduling = task.scheduling; 
                     if (scheduling) {
@@ -100,3 +108,58 @@ function createAdminDropdown(admins, selectedId) {
 
     return select;
 }
+/*
+function submitTaskToEmployees(typeDiv, assignToDiv, assignedByDiv, createdOnDiv, row) {
+    const submitButton = document.getElementById("submitButton");
+    submitButton.disabled = true;
+    
+        const taskData = {
+            type: typeDiv.textContent,
+            assignTo: assignToDiv.querySelector("select").value,
+            assignedBy: assignedByDiv.querySelector("select").value,
+        }
+
+        fetch(`/assignTask`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(taskData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            submitButton.disabled = false;
+    
+            if (data.success) {
+                hideErrorMessage();
+                row.remove(); // Remove the task row after successful submission
+            } else {
+              displayErrorMessage(
+                data.message || "An error occurred. Please try again."
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            submitButton.disabled = false;
+            alert("An error occurred. Please try again.");
+          });
+      }
+
+      const globalSubmitButton = document.getElementById("submitButton");
+
+globalSubmitButton.addEventListener("click", () => {
+  const selectedRow = document.querySelector(".task-row.selected");
+  if (!selectedRow) {
+    alert("Please select a task row first.");
+    return;
+  }
+
+  const typeDiv = selectedRow.children[0];
+  const assignToDiv = selectedRow.children[1];
+  const assignedByDiv = selectedRow.children[2];
+  const createdOnDiv = selectedRow.children[3];
+
+  submitTaskToEmployees(typeDiv, assignToDiv, assignedByDiv, createdOnDiv, selectedRow);
+});
+*/

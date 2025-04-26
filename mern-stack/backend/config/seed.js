@@ -7,7 +7,7 @@ const users = {
   "imranahmad@csus.edu": { password: "A123", role: "employee", firstName: "Imran", lastName: "Ahmad" },
   "rylandporter@csus.edu": { password: "A123", role: "employee", firstName: "Ryland", lastName: "Porter" },
   "lol@csus.edu": { password: "A123", role: "user", firstName: "Lol", lastName: "User" },
-  "hsuppal@csus.edu": { password: "A123", role: "admin", firstName: "Harsimran", lastName: "Suppal" },
+  "hsuppal@csus.edu": { password: "A123", role: "admin", firstName: "Harkeerat", lastName: "Uppal" },
 };
 
 
