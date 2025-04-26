@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db.js";
 import User from "./config/user.js";
-console.log(User);
 import mongoose from "mongoose";
 import { seedUsers } from "./config/seed.js";
 import bcrypt from "bcryptjs";
@@ -17,6 +16,7 @@ dotenv.config();
 app.use(express.urlencoded({ extended: true }));
 import cors from "cors";
 app.use(cors()); 
+import { EmployeeTask } from "./config/TASKS.js";
 
 
 import { Check } from "./config/check.js";
@@ -183,7 +183,74 @@ app.post('/logout', (req, res) => {
 
 
 
+<<<<<<< HEAD
 app.post('/api/appointment', async (req, res) => {
+=======
+
+
+
+
+//User create account route 
+app.post("/userCreateAccount", async (req, res) => {
+  const { email, password, confirmPassword } = req.body;
+
+  if (!email || !password || !confirmPassword) {
+    return res.status(400).json({ success: false, message: "Email and password are required." });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ success: false, message: "Passwords do not match." });
+  }
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "User already exists." });
+    }
+
+    const newUser = new User({
+      email, password, role: "user", firstName: user.firstName, lastName: user.lastName, // Default role for new users 
+    });
+
+    await newUser.save();
+    res.json({ success: true, message: "User created successfully." });
+
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
+  }
+});
+
+//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the
+import { timeOffEmployee } from "./config/timeOff.js"; 
+app.post("/timeOffEmployee", async (req, res) => {
+  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
+
+  try {
+
+    const newTimeOffEmployee = await timeOffEmployee.insertOne({
+      Employee,
+      timeOffType,
+      timeOffComments,
+      timeOffDate,
+      timeOffStartTime,
+      timeOffEndTime,
+    });
+
+    console.log(Employee);
+    await newTimeOffEmployee.save();
+    res.json({ success: true, message: "User created successfully." });
+
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
+  }
+});
+
+
+import { Appointment } from "./config/app.js"; 
+app.post('/appointment', async (req, res) => {
+>>>>>>> 288c5095ab5feae1c22f7b92240dc972ec3b84d1
   const { date, time, service, comment } = req.body;
 
   if (!date || !time || !service) {
@@ -337,8 +404,31 @@ app.get('/api/booked-times', async (req, res) => {
   }
 });
 
+//HARKS STUFF
+app.post("/api/assignTask", async (req, res) => {
+  const { type, assignTo, assignedBy } = req.body;
 
+  if (!type || !assignTo || !assignedBy) {
+    return res.status(400).json({ success: false, message: "Missing required fields." });
+  }
 
+  try {
+    const newTask = new EmpolyeeTask({
+      service: type,
+      user: assignTo,
+      assignedBy: assignedBy,
+      date: new Date().toISOString().split("T")[0], // Current date
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Current time
+    });
+
+    await newTask.save();
+    res.json({ success: true, message: "Task assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning task:", error);
+    res.status(500).json({ success: false, message: "Error assigning task" });
+  }
+});
+//HARKS STUFF
 
 app.get("/api/assign-tasks", async (req, res) => {
   try {

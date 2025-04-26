@@ -37,27 +37,10 @@
     </header>
 
 
-<!-- START OF ASSIGNED TASKS -->
-
-<div class = "headerText">
-    <b>Assigned Tasks</b>
-</div>
-
-<div class="task-box">
-    <div class="task-header">
-        <h3>Client Name</h3>
-    </div>
-    <div class="task-content">
-        <p><strong>Service:</strong> Service goes here.</p>
-        <p><strong>Date:</strong> MM/DD/YYYY</p>
-        <p><strong>Time:</strong> 00:00 AM</p>
-        <p><strong>Comments:</strong> Comments go here</p>
-    </div>
-</div>
-
-<!-- END OF ASSIGNED TASKS -->
 
 
+
+    
 <div class = "headerText">
     <b>Schedule</b>
 </div>
@@ -79,43 +62,21 @@
   
     <script src="/C-R-US/public/assets/js/scheduleEmployeeCalendar.js"></script>
 
-</cal>
+</div>
+
+<div id="popup-overlay" class="overlay hidden"></div>
+<div id="custom-popup" class="popup hidden">
+  <div class="popup-content">
+    <p id="popup-message"></p>
+    <div class="popup-buttons">
+      <button id="popup-confirm">Okay</button>
+    </div>
+  </div>
+</div>
 
 <!-- END OF CALENDAR -->
 
-<script src="../../C-R-US/public/assets/js/scheduleEmployeeCalendar.js" type="module"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const res = await fetch("/api/scheduled-appointments");
-        const data = await res.json();
-  
-        if (data.success) {
-          console.log("Appointments:", data.appointments);
-          const container = document.getElementById("appointmentsContainer");
-          container.innerHTML = ""; 
-  
-          data.appointments.forEach((appt) => {
-            const div = document.createElement("div");
-            div.innerHTML = `
-              <h3>Appointment for: ${appt.shipInfo.firstName} ${appt.shipInfo.lastName}</h3>
-              <p>Email: ${appt.shipInfo.email}</p>
-              <p>Address: ${appt.shipInfo.address}, ${appt.shipInfo.city}, ${appt.shipInfo.state}, ${appt.shipInfo.zip}</p>
-              <p>Appointment Date: ${appt.payInfo.appDate}</p>
-              <p>Status: ${appt.payInfo.status}</p>
-              <hr>
-            `;
-            container.appendChild(div);
-          });
-        } else {
-          console.error("Failed to load appointments");
-        }
-      } catch (err) {
-        console.error("Error fetching appointments:", err);
-      }
-    });
-  </script>
-  
+
     <footer>
         Cavities R US Dental Clinic
         <br>
