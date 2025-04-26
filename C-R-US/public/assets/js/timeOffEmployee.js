@@ -1,4 +1,5 @@
 
+var Employee = "thisEmployee"
 var startTimeSelect = document.getElementById("time-off-start");
 var endTimeSelect = document.getElementById("time-off-end")
 
@@ -44,24 +45,50 @@ for(var i = 0; i < options.length; i++) {
 var timeOffSubmit = document.getElementById("time-off-submit");
 timeOffSubmit.addEventListener("click", function(){
 
+    //Get data from HTML document
     var timeOffType = document.getElementById("time-off-type").value;
     var timeOffComments = document.getElementById("time-off-comments-textarea").value;
     var timeOffDate = document.getElementById("time-off-date").value;
     var timeOffStartTime = document.getElementById("time-off-start").value;
     var timeOffEndTime = document.getElementById("time-off-end").value
 
+    //Send an alert of Time Off Requested
     alert('Time Off Request Has Been Submitted! \n\n'
+        +   'Time Off Employee: ' + Employee + '\n'
         +   'Time Off Type: ' + timeOffType + '\n'
         +   'Time Off Comments: ' + timeOffComments + '\n'
         +   'Time Off Date: ' + timeOffDate + '\n'
         +   'Time Off Start Time: ' + timeOffStartTime + '\n'
         +   'Time Off End Time: ' + timeOffEndTime);
-
-
-    redirectToPage("employee");
+    
+    //Perform the Time Off Request to add into db
+    fetch(`/timeOffEmployee`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime }), // Include confirmPassword in the request
+      })
+        .then((response) => response.json())
+        .then((data) => {
+  
+          if (data.success) {
+            alert("Success: Time Off Posted");
+          } else {
+            alert("Failure: Time Off Not Posted");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred. Please try again.");
+        });
+        
+        
 });
 
+
 //Used to redirect to correct page after submission
+/*
 function redirectToPage(role) {
     if (role === "admin") {
       window.location.href = "/adminViewPage.html";
@@ -71,3 +98,4 @@ function redirectToPage(role) {
       window.location.href = "/index.html";
     }
   }
+*/
