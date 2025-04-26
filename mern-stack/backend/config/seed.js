@@ -1,14 +1,15 @@
 import User from "./user.js";
 console.log('Seed.js loaded');
 const users = {
-  "king.glory11@gmail.com": { password: "A123", role: "employee" },
-  "tobinmgraham@csus.edu": { password: "A123", role: "employee" },
-  "alyssamjimenez@csus.edu": { password: "A123", role: "employee" },
-  "imranahmad@csus.edu": { password: "A123", role: "employee" },
-  "rylandporter@csus.edu": { password: "A123", role: "employee" },
-  "lol@csus.edu": { password: "A123", role: "user" },
-  "hsuppal@csus.edu": { password: "A123", role: "admin" },
+  "king.glory11@gmail.com": { password: "A123", role: "employee", firstName: "King", lastName: "Glory" },
+  "tobinmgraham@csus.edu": { password: "A123", role: "employee", firstName: "Tobin", lastName: "Graham" },
+  "alyssamjimenez@csus.edu": { password: "A123", role: "employee", firstName: "Alyssa", lastName: "Jimenez" },
+  "imranahmad@csus.edu": { password: "A123", role: "employee", firstName: "Imran", lastName: "Ahmad" },
+  "rylandporter@csus.edu": { password: "A123", role: "employee", firstName: "Ryland", lastName: "Porter" },
+  "lol@csus.edu": { password: "A123", role: "user", firstName: "Lol", lastName: "User" },
+  "hsuppal@csus.edu": { password: "A123", role: "admin", firstName: "Harsimran", lastName: "Suppal" },
 };
+
 
 export async function seedUsers() {
   for (const email in users) {
@@ -20,6 +21,8 @@ export async function seedUsers() {
         email,
         password: user.password, 
         role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
       });
 
       try {

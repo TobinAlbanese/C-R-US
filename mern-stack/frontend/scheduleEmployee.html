@@ -42,6 +42,7 @@
 <div class = "headerText">
     <b>Assigned Tasks</b>
 </div>
+<div id = "appointmentsContainer"></div>
 
 <div class="task-box">
     <div class="task-header">
@@ -77,13 +78,43 @@
       </div>
     </div>
   
-    <script src="/C-R-US/public/assets/js/scheduleEmployeeCalendar.js"></script>
-
 </cal>
 
 <!-- END OF CALENDAR -->
 
-
+<script src="../../C-R-US/public/assets/js/scheduleEmployeeCalendar.js" type="module"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch("/api/scheduled-appointments");
+        const data = await res.json();
+  
+        if (data.success) {
+          console.log("Appointments:", data.appointments);
+          const container = document.getElementById("appointmentsContainer");
+          container.innerHTML = ""; 
+  
+          data.appointments.forEach((appt) => {
+            const div = document.createElement("div");
+            div.innerHTML = `
+              <h3>Appointment for: ${appt.shipInfo.firstName} ${appt.shipInfo.lastName}</h3>
+              <p>Email: ${appt.shipInfo.email}</p>
+              <p>Address: ${appt.shipInfo.address}, ${appt.shipInfo.city}, ${appt.shipInfo.state}, ${appt.shipInfo.zip}</p>
+              <p>Appointment Date: ${appt.payInfo.appDate}</p>
+              <p>Status: ${appt.payInfo.status}</p>
+              <hr>
+            `;
+            container.appendChild(div);
+          });
+        } else {
+          console.error("Failed to load appointments");
+        }
+      } catch (err) {
+        console.error("Error fetching appointments:", err);
+      }
+    });
+  </script>
+  
     <footer>
         Cavities R US Dental Clinic
         <br>
