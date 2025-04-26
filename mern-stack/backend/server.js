@@ -182,7 +182,7 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
-//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
+//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the
 import { timeOffEmployee } from "./config/timeOff.js"; 
 app.post("/timeOffEmployee", async (req, res) => {
   const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
