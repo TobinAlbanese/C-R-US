@@ -1,26 +1,35 @@
-import express from "express";
+//Core
+import path from "path"; 
 import dotenv from "dotenv";
-import path from "path";
-import { connectDB } from "./config/db.js";
-import User from "./config/user.js";
-import mongoose from "mongoose";
-import { seedUsers } from "./config/seed.js";
-import bcrypt from "bcryptjs";
-import session from "express-session";
-import connectMongo from 'connect-mongo';
-const app = express();
-app.use(express.json());
-const __dirname = path.resolve();
-import nodemailer from "nodemailer";
-dotenv.config();
-app.use(express.urlencoded({ extended: true }));
-import cors from "cors";
-app.use(cors()); 
-import { EmployeeTask } from "./config/TASKS.js";
-
-
-import { Check } from "./config/check.js";
+//thirdParty
+import express from "express"; 
+import mongoose from "mongoose"; 
+import bcrypt from "bcryptjs"; 
+import session from "express-session"; 
+import connectMongo from 'connect-mongo'; 
+import nodemailer from "nodemailer"; 
+import cors from "cors"; 
+// Custom modules
+import { connectDB } from "./config/db.js"; 
+import User from "./config/user.js"; 
+import { seedUsers } from "./config/seed.js"; 
+import { Check } from "./config/check.js"; 
 import { Appointment } from "./config/app.js"; 
+//Express
+const app = express();
+//Middleware setup
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+app.use(cors()); 
+//path for directory solution
+const __dirname = path.resolve();
+//loads .env file
+dotenv.config();
+console.log(User); 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Mongo API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 const mongoURI = process.env.MONGO_URI;
 mongoose
 async function startServer() {
@@ -40,19 +49,12 @@ async function startServer() {
     console.error("Error connecting to MongoDB or starting server:", err);
   }
 }
-
 startServer();
-
-
-  const MongoStore = connectMongo.create({
+const MongoStore = connectMongo.create({
     mongoUrl: mongoURI, 
     collectionName: "sessions" 
-  });
-
-
-
-
-  app.use(
+});
+app.use(
     session({
       secret: process.env.SESSION_SECRET || "yourSecretKey",
       resave: false,
@@ -64,35 +66,27 @@ startServer();
         maxAge: 60000000,
       },
     })
-  );
+);
   
-
-
-
-
-
-// Serve static files
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Public Route API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.use(
   "/C-R-US/public",
   express.static(path.join(__dirname, "../../C-R-US/public"))
 );
 
-
-
-
-
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Direction Path API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.use(express.static(path.join(__dirname, "../frontend/")));
-// Serve the index page
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
 
-
-
-
-
-//User create account route 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Create Account API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post("/userCreateAccount", async (req, res) => {
   const { email, password, confirmPassword, firstName, lastName } = req.body;
 
@@ -111,7 +105,7 @@ app.post("/userCreateAccount", async (req, res) => {
     }
 
     const newUser = new User({
-      email, password, role: "user", firstName, lastName, // Default role for new users 
+      email, password, role: "user", firstName, lastName, 
     });
 
     await newUser.save();
@@ -123,11 +117,9 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
-
-
-
-
-// Login route to authenticate users
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Login API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -159,12 +151,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Logout API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post('/logout', (req, res) => {
   req.session.userId = null;
   req.session.role = null;
@@ -180,77 +169,10 @@ app.post('/logout', (req, res) => {
 });
 
 
-
-
-
-<<<<<<< HEAD
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Appointment API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post('/api/appointment', async (req, res) => {
-=======
-
-
-
-
-//User create account route 
-app.post("/userCreateAccount", async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
-
-  if (!email || !password || !confirmPassword) {
-    return res.status(400).json({ success: false, message: "Email and password are required." });
-  }
-
-  if (password !== confirmPassword) {
-    return res.status(400).json({ success: false, message: "Passwords do not match." });
-  }
-
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: "User already exists." });
-    }
-
-    const newUser = new User({
-      email, password, role: "user", firstName: user.firstName, lastName: user.lastName, // Default role for new users 
-    });
-
-    await newUser.save();
-    res.json({ success: true, message: "User created successfully." });
-
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ success: false, message: "An error occurred." });
-  }
-});
-
-//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the
-import { timeOffEmployee } from "./config/timeOff.js"; 
-app.post("/timeOffEmployee", async (req, res) => {
-  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
-
-  try {
-
-    const newTimeOffEmployee = await timeOffEmployee.insertOne({
-      Employee,
-      timeOffType,
-      timeOffComments,
-      timeOffDate,
-      timeOffStartTime,
-      timeOffEndTime,
-    });
-
-    console.log(Employee);
-    await newTimeOffEmployee.save();
-    res.json({ success: true, message: "User created successfully." });
-
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ success: false, message: "An error occurred." });
-  }
-});
-
-
-import { Appointment } from "./config/app.js"; 
-app.post('/appointment', async (req, res) => {
->>>>>>> 288c5095ab5feae1c22f7b92240dc972ec3b84d1
   const { date, time, service, comment } = req.body;
 
   if (!date || !time || !service) {
@@ -294,10 +216,9 @@ app.post('/appointment', async (req, res) => {
   }
 });
 
-
-
-
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Checkout API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post('/api/checkout', async (req, res) => {
   console.log("Full request body:", req.body);
 
@@ -382,11 +303,9 @@ app.post('/api/checkout', async (req, res) => {
   }
 });
 
-
-
-
-
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Booked-Times API for our Appointment Page
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get('/api/booked-times', async (req, res) => {
   const { date } = req.query;
 
@@ -404,32 +323,9 @@ app.get('/api/booked-times', async (req, res) => {
   }
 });
 
-//HARKS STUFF
-app.post("/api/assignTask", async (req, res) => {
-  const { type, assignTo, assignedBy } = req.body;
-
-  if (!type || !assignTo || !assignedBy) {
-    return res.status(400).json({ success: false, message: "Missing required fields." });
-  }
-
-  try {
-    const newTask = new EmpolyeeTask({
-      service: type,
-      user: assignTo,
-      assignedBy: assignedBy,
-      date: new Date().toISOString().split("T")[0], // Current date
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Current time
-    });
-
-    await newTask.save();
-    res.json({ success: true, message: "Task assigned successfully." });
-  } catch (error) {
-    console.error("Error assigning task:", error);
-    res.status(500).json({ success: false, message: "Error assigning task" });
-  }
-});
-//HARKS STUFF
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Assign-Tasks API for fetching data from Scheduling/Users into our admin page
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get("/api/assign-tasks", async (req, res) => {
   try {
     const tasks = await Appointment.find();  
@@ -454,14 +350,9 @@ app.get("/api/assign-tasks", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-// Redirect route based on role
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Redirection API for URL
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post("/redirect", (req, res) => {
   const { role } = req.body;
 
@@ -477,28 +368,16 @@ app.post("/redirect", (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-// Example API route
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Products API For Mongo
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get("/products", (req, res) => {
   res.send("This is the products route");
 });
 
-
-
-
-
-
-
-
-
-// Start the server
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Server Run API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
