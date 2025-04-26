@@ -308,6 +308,33 @@ app.post("/redirect", (req, res) => {
   }
 });
 
+// START OF: SCHEDULING DB
+
+// MongoDB Schema and Model for Scheduling
+const schedulingSchema = new mongoose.Schema({
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  service: { type: String, required: true },
+  comments: { type: String },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+});
+
+
+
+// API endpoint to fetch events
+app.get("/api/Scheduling", async (req, res) => {
+  try {
+    const events = await Scheduling.find({});
+    console.log("Fetched events from MongoDB:", events); // Log the fetched data
+    res.json(events);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
+});
+
+// END OF: SCHEDULING DB
+
 
 
 

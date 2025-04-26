@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/services.css">
     <link rel="stylesheet" href="/css/scheduleEmployee.css">
+    <link rel="stylesheet" href="/css/scheduleEmployeeCalendar.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -37,21 +38,42 @@
 
 
 
+
+
 <div class = "headerText">
-    <b>Schedule an Appointment</b>
+    <b>Schedule</b>
 </div>
-<p>Dentist:<br>
-<select> 
-    <option value="Option1"> Value </option>
-    <option value="Option2"> Value1 </option>
-    <option value="Option3"> Value2 </option>
-    </select>
-</p>
 
 
+<!-- START OF CALENDAR  -->
 
+<div class="cal">
+    <div class="calendar">
+      <div class="calendar-header">
+        <button id="prev-month">&lt;</button>
+        <h2 id="month-year">April 2025</h2>
+        <button id="next-month">&gt;</button>
+      </div>
+      <div class="calendar-grid" id="calendar-grid">
+        <!-- Days will be dynamically inserted here -->
+      </div>
+    </div>
+  
+    <script src="/C-R-US/public/assets/js/scheduleEmployeeCalendar.js"></script>
 
+</div>
 
+<div id="popup-overlay" class="overlay hidden"></div>
+<div id="custom-popup" class="popup hidden">
+  <div class="popup-content">
+    <p id="popup-message"></p>
+    <div class="popup-buttons">
+      <button id="popup-confirm">Okay</button>
+    </div>
+  </div>
+</div>
+
+<!-- END OF CALENDAR -->
 
 
     <footer>
