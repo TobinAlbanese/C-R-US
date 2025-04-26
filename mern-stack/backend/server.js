@@ -353,7 +353,6 @@ app.post("/redirect", (req, res) => {
 
 
 
-
 // Example API route
 app.get("/products", (req, res) => {
   res.send("This is the products route");

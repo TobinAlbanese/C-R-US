@@ -123,6 +123,7 @@ h2{
     font-size: 40px;
     text-align: center;
     line-height: 50px;
+    margin-top: 0;
 }
 
 .buttonSchedule{
@@ -150,9 +151,18 @@ h2{
 
 }
 .container{
-  display: flex;
-  justify-content: space-around;
-  flex-direction: row;
+    padding: 6em 0;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+}
+.container button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container a {
+    text-decoration: none;
 }
 
 
