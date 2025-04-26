@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Form elements
   const form = document.querySelector('form');
   const firstName = document.getElementById("firstName");
   const lastName = document.getElementById("lastName");

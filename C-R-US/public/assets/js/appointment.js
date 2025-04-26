@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bookedTimes.length === 0) {
           button.disabled = true;
           button.style.backgroundColor = 'grey';
-          button.style.cursor = 'not-allowed'; // Optional: change cursor to indicate disabled
+          button.style.cursor = 'not-allowed'; 
         } else {
           button.disabled = false;
           button.style.backgroundColor = '';

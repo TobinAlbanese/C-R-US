@@ -1,67 +1,47 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" href="/css/assignTasksStyle.css">
-        <title>Assign Tasks</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/css/assignTasksStyle.css">
+    <title>Assign Tasks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="css/services.css">
-        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-        <style>
-           
-    
-           
-            
-        </style>
-    </head>
-    <body>
-        <header>
-            <a href="index.html">
-                <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
-            </a>
-            <h1>Cavities R US Dental Clinic</h1>
-            <nav id="menu">
-                <ul>
-                    <li><a href="adminViewPage.html">Home</a></li>
-                    <li><a href="manageAppointments.html">Manage</a></li>
-                    <li><a href="assignTasks.html">Assign</a></li>
-                    <li><a href="approveHours.html">Approve</a></li>
-    
-                </ul>
-            </nav>
-            <a href="index.html"><button>Sign Out</button></a>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/services.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <a href="index.html">
+            <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
+        </a>
+        <h1>Cavities R US Dental Clinic</h1>
+        <nav id="menu">
+            <ul>
+                <li><a href="adminViewPage.html">Home</a></li>
+                <li><a href="manageAppointments.html">Manage</a></li>
+                <li><a href="assignTasks.html">Assign</a></li>
+                <li><a href="approveHours.html">Approve</a></li>
+            </ul>
+        </nav>
+        <a href="index.html"><button>Sign Out</button></a>
+    </header>
 
-        </header>
-        
+    <nav class="h2">
+        <h2>Assign Tasks</h2>
+    </nav>
 
-<nav class="h2">
-<h2>
-<p3>Assign Tasks</p3>
-</h2>
-</nav>        
-
-<div class="container">
-    <div>       
-       <b>Type</b>
+    <div class="container">
+        <div><b>Type</b></div>
+        <div><b>Assign To</b></div>
+        <div><b>Assigned By</b></div>
+        <div><b>Created On</b></div>
     </div>
-    <div> 
-        <b>Assign To</b>
-    </div>  
-    <div>
-       <b>Assigned By</b>    
+
+    <div class="container2">
+        <!-- Data will be inserted dynamically here -->
     </div>
-    <div>
-        <b>Created On</b>      
-    </div>   
-</div>
 
-<div class = "space">
-    blank
-</div>
+    <script src="../../c-r-us/public/assets/js/assignTask.js"></script>
 
-
-<div class="container2">
-    blank
-</div>
-
+</body>
+</html>

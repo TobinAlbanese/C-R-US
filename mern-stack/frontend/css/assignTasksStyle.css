@@ -138,17 +138,51 @@ h2{
     color: #F7F7F7;
 }
 
-.container2{
+.container2 {
     margin-top: 100px;
     width: 1000px;
-    height: 500px;
+    height: auto; 
     display: flex;
-    justify-content: space-around;
-    flex-direction: row;
+    flex-direction: column; 
     background-color: #F7F7F7;
-    color: #F7F7F7;
-    padding : 20px;
+    color: black; 
+    padding: 20px;
     margin: 0 auto;
     border-radius: 15px;
 }
-  
+
+.task-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 8px;
+}
+
+.task-row div {
+    flex: 1;  
+    margin-right: 10px;
+}
+
+.task-row select {
+    width: 90%;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+.container div {
+    color: black;
+    font-weight: bold;
+}
+
+.container2 div {
+    color: black;
+}
+
+.container2 div {
+    padding: 5px;
+    text-align: left;
+}

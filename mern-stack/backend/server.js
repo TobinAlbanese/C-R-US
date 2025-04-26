@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import path from "path";
 import { connectDB } from "./config/db.js";
 import User from "./config/user.js";
-//import timeOff from "./config/timeOff.js";
 import mongoose from "mongoose";
 import { seedUsers } from "./config/seed.js";
 import bcrypt from "bcryptjs";
@@ -170,7 +169,7 @@ app.post("/userCreateAccount", async (req, res) => {
     }
 
     const newUser = new User({
-      email, password, role: "user" // Default role for new users 
+      email, password, role: "user", firstName: user.firstName, lastName: user.lastName, // Default role for new users 
     });
 
     await newUser.save();
@@ -318,6 +317,42 @@ app.post('/api/confirm-appointment', async (req, res) => {
 });
 
 
+
+
+
+
+const Scheduling = mongoose.model("Scheduling");
+app.get("/api/assign-tasks", async (req, res) => {
+  try {
+    const tasks = await Scheduling.find();  
+    const users = await User.find();  
+    
+    const tasksWithUsers = tasks.map(task => {
+      return {
+        type: task.service,
+        assignTo: task.user ? task.user.toString() : null,
+        assignedBy: task.assignedBy ? task.assignedBy.toString() : null, 
+        schedule:{
+          date: task.date,
+          time: task.time,
+        }
+      };
+    });
+
+    res.json({ success: true, tasks: tasksWithUsers, users: users });
+  } catch (err) {
+    console.error("Error fetching tasks:", err);
+    res.json({ success: false, message: "Error fetching tasks" });
+  }
+});
+
+
+
+
+
+
+
+
 // Redirect route based on role
 app.post("/redirect", (req, res) => {
   const { role } = req.body;
@@ -333,6 +368,8 @@ app.post("/redirect", (req, res) => {
       return res.json({ redirectUrl: "/index.html" });
   }
 });
+
+
 
 
 
