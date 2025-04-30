@@ -1,107 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Confirmation</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/paymentConfirmation.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/css/paymentConfirmation.css"/>
 
-    <style>
-        body {
-            background-color: white;
-        }
-    </style>
+  <style>
+    body {
+      background-color: white;
+    }
+  </style>
 </head>
-    <body>
+<body>
 
-        <header>
-            <a href="index.html">
-                <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
-            </a>
-            <h1>Cavities R US Dental Clinic</h1>
-            <nav id="menu">
-                <ul>
-                    <li><a href="userHP.html">Home</a></li>
-                    <li><a href="appointment.html">Book</a></li>
-                    <li><a href="userAbout.html">About</a></li>
-                    <li><a href="userServices.html">Services</a></li>
-                </ul>
-            </nav>
-            <a href="login.html" id="logoutBtn"><button>Sign Out</button></a>
-        </header>
-        
-        <main>
-            <div class="create-account-form">    
-                <form id="loginForm">
-                    <span class="checkmark">&#10004;</span>
-                    <h2> Payment Successful! </h2>
-                    <h4> Thank you for your puchase! <br> An order confirmation has been sent to your email </h4>
-                    <h3> Order Summary</h3>
+  <header>
+    <a href="index.html">
+      <img src="/C-R-US/public/assets/images/CRUSLogo.png" alt="Cavities R US Logo" width="65" height="65">
+    </a>
+    <h1>Cavities R US Dental Clinic</h1>
+    <nav id="menu">
+      <ul>
+        <li><a href="userHP.html">Home</a></li>
+        <li><a href="appointment.html">Book</a></li>
+        <li><a href="userAbout.html">About</a></li>
+        <li><a href="userServices.html">Services</a></li>
+      </ul>
+    </nav>
+    <a href="login.html" id="logoutBtn"><button>Sign Out</button></a>
+  </header>
+  
+  <main>
+    <div class="create-account-form">    
+      <form id="confirmationForm">
+        <span class="checkmark">&#10004;</span>
+        <h2> Payment Successful! </h2>
+        <h4> Thank you for your purchase! <br> A confirmation email has been sent. </h4>
+        <h3> Order Summary</h3>
+        <div id="orderSummary" class="summary-box"></div>
+        <button type="button" id="resendEmailBtn" class="createAcc-btn">Resend Email</button>
+      </form>
+    </div>
+  </main>
 
-                    <!--Embed Order Summary-->
-                    <div id="orderSummary" class="summary-box">
-                        <!-- Filled in by JS -->
-                    </div>
+  <footer>
+    Cavities R US Dental Clinic<br>
+    <a href="https://www.facebook.com/login.php/" class="fa fa-facebook"></a>
+    <a href="https://www.linkedin.com/home" class="fa fa-linkedin"></a>
+    <a href="https://www.youtube.com/account_advanced" class="fa fa-youtube"></a>
+    <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
+  </footer>
 
+  <!-- Sign-out handler -->
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      const response = await fetch('/logout', { method: 'POST' });
+      const data = await response.json();
+      if (data.success) {
+        window.location.href = '/login.html'; 
+        localStorage.clear();
+      }
+    });
+  </script>  
 
-                    <button type="submit" class="createAcc-btn">Resend Email</button>                      
-                   
-                </form>
-            </div>
-        </main>
+  <!-- Display Order Summary -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const appointmentData = JSON.parse(localStorage.getItem("appointmentData") || "{}");
+      const shipInfo = JSON.parse(localStorage.getItem("checkoutShipInfo") || "{}");
+      const orderSummary = document.getElementById("orderSummary");
 
-        <footer>
-            Cavities R US Dental Clinic
-            <br>
-            <a href="https://www.facebook.com/login.php/" class="fa fa-facebook"></a>
-            <a href="https://www.linkedin.com/home" class="fa fa-linkedin"></a>
-            <a href="https://www.youtube.com/account_advanced" class="fa fa-youtube"></a>
-            <a href="https://www.instagram.com/accounts/login/?hl=en" class="fa fa-instagram"></a>
-        </footer>
+      if (appointmentData.service && appointmentData.date && appointmentData.time) {
+        const appointmentPrice = appointmentData.price || localStorage.getItem("appointmentPrice") || "0.00";
 
-        <script src="/C-R-US/public/assets/js/login.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const appointmentData = localStorage.getItem("appointmentData");
-                const orderSummary = document.getElementById("orderSummary");
-            
-                if (appointmentData) {
-                    const data = JSON.parse(appointmentData);
-            
-                    const appointmentService = data.service;
-                    const appointmentDate = data.date;
-                    const appointmentTime = data.time;
-                    const appointmentPrice = localStorage.getItem("appointmentPrice");  // Assuming you store the price separately
+        orderSummary.innerHTML = `
+          <div><span class="label">Name:</span> <span>${shipInfo.firstName || ''} ${shipInfo.lastName || ''}</span></div>
+          <div><span class="label">Email:</span> <span>${shipInfo.email || ''}</span></div>
+          <div><span class="label">Service:</span> <span>${appointmentData.service}</span></div>
+          <div><span class="label">Date:</span> <span>${appointmentData.date}</span></div>
+          <div><span class="label">Time:</span> <span>${appointmentData.time}</span></div>
+          <div><span class="label">Total:</span> <span>$${appointmentPrice}</span></div>
+        `;
+      } else {
+        orderSummary.innerHTML = `<p>Order details not found. Please try again.</p>`;
+      }
+    });
+  </script>
 
-                    orderSummary.innerHTML = `
-                        <div><span class="label">Service:</span> <span>${appointmentService}</span></div>
-                        <div><span class="label">Date:</span> <span>${appointmentDate}</span></div>
-                        <div><span class="label">Time:</span> <span>${appointmentTime}</span></div>
-                        <div><span class="label">Total:</span> <span>$${appointmentPrice}</span></div>
-                    `;
-                } else {
-                    orderSummary.innerHTML = `<p>Order details not found. Please try again.</p>`;
-                }
-                
-                localStorage.removeItem('appointmentData');
-                localStorage.removeItem('appointmentService');
-                localStorage.removeItem('appointmentDate');
-                localStorage.removeItem('appointmentTime');
-                localStorage.removeItem('appointmentPrice');
-            });
-            
-            </script>
-            <script>
-                document.getElementById('logoutBtn').addEventListener('click', async () => {
-                  const response = await fetch('/logout', { method: 'POST' });
-                  const data = await response.json();
-                  if (data.success) {
-                    window.location.href = '/login.html'; 
-                    localStorage.clear();
-                  }
-                });
-              </script>        
-    </body>
+  <!-- Resend Email Button -->
+  <script>
+    document.getElementById('resendEmailBtn').addEventListener('click', async () => {
+      const appointmentData = JSON.parse(localStorage.getItem("appointmentData") || "{}");
+      const shipInfo = JSON.parse(localStorage.getItem("checkoutShipInfo") || "{}");
+
+      if (!shipInfo.email) {
+        alert("Missing email info. Cannot resend.");
+        return;
+      }
+
+      const payload = {
+        shipInfo,
+        appointmentData: {
+          service: appointmentData.service,
+          date: appointmentData.date,
+          time: appointmentData.time,
+          price: appointmentData.price || localStorage.getItem("appointmentPrice") || "0.00"
+        }
+      };
+
+      try {
+        const response = await fetch("/api/resend-confirmation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert("Confirmation email resent successfully.");
+        } else {
+          alert("Failed to resend email: " + (result.message || "Unknown error"));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("An error occurred while resending email.");
+      }
+    });
+  </script>
+
+</body>
 </html>
