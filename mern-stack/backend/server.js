@@ -255,7 +255,7 @@ app.post('/api/checkout', async (req, res) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: user.email,
+      to: shipInfo.email,
       subject: 'Appointment Confirmation',
       html: `
         <h1>Thank you for your appointment!</h1>
@@ -300,6 +300,51 @@ app.post('/api/checkout', async (req, res) => {
       message: error.message || "Server error while saving checkout.",
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Resend Confirmation Email API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post('/api/resend-confirmation', async (req, res) => {
+  const { shipInfo, appointmentData } = req.body;
+
+  if (!shipInfo || !appointmentData) {
+    return res.status(400).json({ success: false, message: "Missing required data." });
+  }
+
+  const { email } = shipInfo;
+  const { service, date, time, price } = appointmentData;
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Appointment Confirmation - Resent',
+    html: `
+      <h1>Your Appointment Confirmation</h1>
+      <p><strong>Service:</strong> ${service}</p>
+      <p><strong>Date:</strong> ${date}</p>
+      <p><strong>Time:</strong> ${time}</p>
+      <p><strong>Price:</strong> $${price}</p>
+      <p>This is a copy of your original confirmation email.</p>
+    `
+  };
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Resent confirmation email to", email);
+    res.status(200).json({ success: true, message: "Confirmation email resent." });
+  } catch (err) {
+    console.error("Failed to resend confirmation:", err);
+    res.status(500).json({ success: false, message: "Email sending failed." });
   }
 });
 

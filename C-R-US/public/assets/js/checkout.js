@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         status: "pending", // initially pending until confirmed
         appointmentId: appointmentData.appointmentId
       };
+      localStorage.setItem('checkoutShipInfo', JSON.stringify(checkoutData.shipInfo));
 
       console.log("Checkout data:", checkoutData);
 
@@ -197,6 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const checkoutConfirmed = await processCheckout(checkoutData);
 
       if (checkoutConfirmed) {
+        localStorage.setItem('checkoutShipInfo', JSON.stringify(checkoutData.shipInfo));
+
         window.location.href = "/paymentConfirmation.html";
       }
 
