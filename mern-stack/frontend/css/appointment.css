@@ -182,54 +182,58 @@ h2 {
     max-width: 100%; /* Optional: You can set a max width for the container */
 }
 
-#appointment .appointments-column {
-    flex: 1; /* Ensures both columns take equal space initially */
-    min-width: 300px;
+
+.appointment-dropdown {
+    flex:1;
     background-color: #f7f7f7;
     border-radius: 10px;
-    padding: 20px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    align-items: center; /* Center the items vertically */
+    padding: 20;
+    min-width: 600px;
+    margin: 0 auto 20px auto;
+    overflow: hidden;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
 }
 
-
-#appointment .appointments-column:first-child {
-    margin-left: 8em; /* Push the last column (right column) to the far right */
-}
-
-#appointment .appointments-column:last-child {
-    margin-left: 15em; /* Push the last column (right column) to the far right */
-}
-
-#appointment .appointments-column h3 {
-    margin-top: 0;
-    font-size: 20px;
+/* Dropdown toggle BUTTON */
+.dropdown-toggle {
+    background-color: #f7f7f7;
     color: #000000;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+    width: 100%;
+    min-height: 100px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: sans-serif;
 }
 
-#appointment .appointment-item {
+/* Dropdown content panel */
+.dropdown-content {
+    display: none;
+    background-color: #ffffff;
+    padding: 1em 1.5em;
+    border-top: 1px solid #ccc;
+    border-radius: 0 0 10px 10px;
+}
+
+/* Individual appointment item */
+.dropdown-content .appointment-item {
     background-color: #fff;
     margin-bottom: 12px;
     padding: 12px;
     border-radius: 6px;
     border: 1px solid #ddd;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-#appointment .appointment-item p {
+.dropdown-content .appointment-item p {
     margin: 4px 0;
     font-size: 14px;
-}
-
-@media screen and (max-width: 768px) {
-    #appointment {
-        flex-direction: column; /* Stacks columns vertically on smaller screens */
-    }
-
-    #appointment .appointments-column:last-child {
-        margin-left: 0; /* Remove left margin on smaller screens */
-    }
+    color: #000;
 }
 
 
