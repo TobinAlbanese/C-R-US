@@ -1,4 +1,15 @@
 document.addEventListener("DOMContentLoaded", async () => {
+   
+    const submitButton = document.getElementById('submit-Tasks');
+
+    
+        if(submitButton) {
+            submitButton.addEventListener("click", taskSubmission);
+        }else {
+            alert("FAILED to submit button");
+        }
+        
+
     try {
         const res = await fetch("/api/assign-tasks");
         const data = await res.json();
@@ -32,19 +43,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const createdOnDiv = document.createElement("div");
                 createdOnDiv.textContent = `${task.schedule?.date || "N/A"} ${task.schedule?.time || ""}`;
 
+                const selectDiv = document.createElement("div");
+                const checkBox = document.createElement('input');
+                checkBox.type = 'checkbox';
+                selectDiv.appendChild(checkBox);
+
                 row.appendChild(typeDiv);
                 row.appendChild(assignToDiv);
                 row.appendChild(assignedByDiv);
                 row.appendChild(createdOnDiv);
-/*
-                row.addEventListener("click", () => {
-                    const previouslySelected = document.querySelector(".task-row.selected");
-                    if (previouslySelected) {
-                        previouslySelected.classList.remove("selected");
-                    }
-                    row.classList.add("selected");
-                });
-*/
+                row.appendChild(selectDiv);
+
                 if (task.schedulingId) {
                     const scheduling = task.scheduling; 
                     if (scheduling) {
@@ -63,8 +72,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
     } catch (err) {
-        console.error("Error loading tasks:", err);
+        console.error("Error loading tasks: at tobins part", err);
     }
+    
 });
 
 // Creates dropdown for Employees
@@ -108,58 +118,80 @@ function createAdminDropdown(admins, selectedId) {
 
     return select;
 }
-/*
-function submitTaskToEmployees(typeDiv, assignToDiv, assignedByDiv, createdOnDiv, row) {
-    const submitButton = document.getElementById("submitButton");
-    submitButton.disabled = true;
+
+
+function taskSubmission() {
+    const submitButton = document.getElementById('submit-Tasks');
+    if (!submitButton) {
+        console.error("Submit button not found!");
+        return;
+    }
+    const allRows = document.querySelectorAll(".task-row");
+    let tasksToSubmit = [];
+    const tasksToRemove = [];
+
     
-        const taskData = {
-            type: typeDiv.textContent,
-            assignTo: assignToDiv.querySelector("select").value,
-            assignedBy: assignedByDiv.querySelector("select").value,
+    allRows.forEach(row => {
+        const checkBox = row.querySelector("input[type='checkbox']");
+        if(checkBox && checkBox.checked) {
+            const typeDiv = row.children[0];
+            const assignToDiv = row.children[1];
+            const assignedByDiv = row.children[2];
+            const createdOnDiv = row.children[3];
+
+            tasksToSubmit.push({
+                type: typeDiv.textContent,
+                assignTo: assignToDiv.querySelector("select").value,
+                assignedBy: assignedByDiv.querySelector("select").value,
+                createdOn: createdOnDiv.textContent
+            });
+            tasksToRemove.push(row);
+        }
+    });
+        if(tasksToSubmit.length === 0) {
+            alert("Please select at least one task to submit.");
+            return;
         }
 
-        fetch(`/assignTask`, {
-          method: "POST",
-          headers: {
+        submitButton.disabled = true;
+
+
+       fetch('/api/assignTasks', {
+        method: "POST",
+        headers: {
             "Content-Type": "application/json",
-          },
-          body: JSON.stringify(taskData),
-        })
-          .then((response) => response.json())
-          .then((data) => {
+        },
+        body: JSON.stringify(tasksToSubmit),
+       })
+        .then((response) => response.json())
+        .then((data) => {
             submitButton.disabled = false;
-    
             if (data.success) {
-                hideErrorMessage();
-                row.remove(); // Remove the task row after successful submission
-            } else {
-              displayErrorMessage(
-                data.message || "An error occurred. Please try again."
-              );
+                alert("Tasks submitted successfully!");
+                console.log("Tasks submitted successfully:", data)
+                // Remove the submitted rows from the UI
+                tasksToRemove.forEach(row => {
+                 //   const row = document.querySelector(`.task-row:has(div:contains('${task.type}'))`);
+                   // if (row) {
+                     console.log("Removing row:", row);
+                        row.remove();
+                   // }
+                });
+               tasksToSubmit = [];
             }
-          })
-          .catch((error) => {
+            else {
+                alert("Failed to submit tasks. Please try again.");
+                console.error("Error submitting tasks:", data.message);
+            }
+        }
+        )
+        .catch((error) => {
             console.error("Error:", error);
             submitButton.disabled = false;
-            alert("An error occurred. Please try again.");
-          });
-      }
+            alert("An error occurred. Please try again. at catch error block");
+        });
 
-      const globalSubmitButton = document.getElementById("submitButton");
 
-globalSubmitButton.addEventListener("click", () => {
-  const selectedRow = document.querySelector(".task-row.selected");
-  if (!selectedRow) {
-    alert("Please select a task row first.");
-    return;
-  }
 
-  const typeDiv = selectedRow.children[0];
-  const assignToDiv = selectedRow.children[1];
-  const assignedByDiv = selectedRow.children[2];
-  const createdOnDiv = selectedRow.children[3];
 
-  submitTaskToEmployees(typeDiv, assignToDiv, assignedByDiv, createdOnDiv, selectedRow);
-});
-*/
+}

@@ -15,6 +15,7 @@ import User from "./config/user.js";
 import { seedUsers } from "./config/seed.js"; 
 import { Check } from "./config/check.js"; 
 import { Appointment } from "./config/app.js"; 
+import { EmployeeTask } from "./config/TASKS.js";
 //Express
 const app = express();
 //Middleware setup
@@ -116,6 +117,42 @@ app.post("/userCreateAccount", async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
+
+///////////////////////////HARKKKKK
+
+app.post('/api/assignTasks', async (req, res) => {
+  const tasksToSubmit = req.body;
+
+  try { 
+    for (const task of tasksToSubmit) {
+    console.log("Processing task:", task);
+    const {type, assignTo, assignedBy, createdOn } = task;
+
+    const [taskDate, taskTime] = createdOn.split(" ");
+
+    const newEmployeeTask = new EmployeeTask({
+      date: taskDate,
+      time: taskTime,
+      service: type,
+      commments:'',
+      assignedBy: assignedBy,
+      user: assignTo,
+    });
+    await newEmployeeTask.save();
+
+  }
+  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning tasks:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
+    }
+    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
+  }
+});
+
+////////////////////HARKKKKK
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
