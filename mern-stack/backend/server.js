@@ -260,7 +260,6 @@ app.post('/api/checkout', async (req, res) => {
       html: `
         <h1>Thank you for your appointment!</h1>
         <p><strong>Service:</strong> ${service}</p>
-        <p><strong>Date:</strong> ${appDate}</p>
         <p><strong>Time:</strong> ${appDate}</p>
         <p><strong>Price:</strong> $${price}</p>
         <p>We look forward to seeing you!</p>
