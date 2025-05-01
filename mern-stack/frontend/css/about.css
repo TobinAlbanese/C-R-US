@@ -1,22 +1,4 @@
-/*fixes the image to match the size of the browser widnow*/
-img{
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .full-width-image img {
-    width: 100%;
-    height: 100%;
-  }
 
-  h4 {
-    color: #000000;  
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: 1em;
-    height: 50px;
-    padding-left: 20px;
-    padding-top: 20px;
-}
 header {
     background-color: #ffffff;
     text-align: left;
@@ -31,11 +13,12 @@ header {
 header a img {
     margin-right: 15px; /* Adds spacing between the logo and the text */
     padding-left: 20px;
+    padding-top: 5px;
 }
 
 header h1 {
     margin: 0; /* Removes any margin around the header text */
-    padding-top: 30px;
+    padding-top: 2px;
     padding-left: 0;
     color: #000000; /* Ensure the color is black */
     font-family: sans-serif;
@@ -43,31 +26,7 @@ header h1 {
     font-weight: bold;
 }
 
-header button
- {
-    background-color: black;
-    color:white;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 1.5em;
-    cursor: pointer;
-    height: 2em;
-    font-family: sans-serif;
-    transition: background-color 0.3s, color 0.3s;
-    margin-right: 1em ;
 
-
-}
-
-
-
-
- header button:hover
-{
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-    border: 2px solid black;
-}
 
 nav#menu { 
     background-color: transparent;
@@ -121,76 +80,327 @@ nav#assignments {
 }
 
 
-
-
-/* Set uniform size for service images */
-.card-img-top {
-    width: 100%;             
-    height: 450px;             
-    object-fit: cover;       
-}
-
-/* Set consistent font size and font family for service section */
-.card-title {
-    font-size: 1.25rem;     
-    font-family: 'Arial', sans-serif; 
-}
-
-.card-text {
-    font-size: 1rem;          
-    font-family: 'Arial', sans-serif; 
-}
-
-
-/* Style for View Services Button */
-.btn-view-services {
-    background-color: #000000; /* Same color as navbar */
-    color: rgb(255, 255, 255);
-    padding: 25px 60px;
-    font-size: 28px;
+button
+ {
+    background-color: black;
+    color:white;
+    padding: 10px;
     border-radius: 8px;
-    text-decoration: none;
-    display: inline-block;
+    font-size: 1.5em;
+    cursor: pointer;
+    height: 2em;
+    font-family: sans-serif;
     transition: background-color 0.3s, color 0.3s;
+    margin-right: 1em ;
+
+
 }
 
-.btn-view-services:hover {
-    background-color: rgb(255, 255, 255);
-    color: rgb(0, 0, 0); /* Matching navbar color */
-    border: 2px solid black;
-}
 
-/* Style for Leave a review Button */
-.btn-review {
-    background-color: #000000; 
-    color: rgb(255, 255, 255);
-    padding: 25px 60px;
-    font-size: 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.3s, color 0.3s;
-}
 
-.btn-review:hover {
+
+ button:hover
+{
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     border: 2px solid black;
 }
 
 
-/* Style for a dynamic background */
-.dynamic-background {
-    background-size: cover;
-    background-position: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 1;
+main-header{
+    text-align: left;
+    padding: 100px;
+    white-space: nowrap;
 }
+main-header top {
+    font-weight: bold;
+    font-size: larger;
+}
+main-header bottom {
+    font-weight: lighter;
+    font-size: large;
+    padding: 100px;
+}
+
+
+section {
+    margin: 2em 0; /* Add space between sections */
+   padding: 1em;
+    clear: both; /* Clear floats if there are any */
+}
+
+
+
+
+body { 
+    background-color: #fff;
+    color: #0d0d0e;
+    font-family: sans-serif; 
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+
+
+p1 {
+    color: #000000;
+    margin-top: 50px;
+    padding-left: 10px; /* Add padding to create space from the floated image */
+    padding-right: 10px; /* Add padding to create space from the floated image */
+}
+
+p2 {
+    color: #ffffff;
+    margin-top: 50px;
+    padding-left: 10px; /* Add padding to create space from the floated image */
+    padding-right: 10px;  
+}
+
+/*Main Header*/
+main-header{
+    text-align: left;
+    white-space: nowrap;
+}
+main-header top {
+    font-weight: bold;
+    font-size: larger;
+}
+main-header bottom {
+    font-weight: lighter;
+    font-size: large;
+    margin-bottom: 0px;
+}
+
+  
+
+  /*about us section*/
+
+  .about-us-section {
+    padding: 3em 2em 1em 2em;
+    background-color: #ebecec;
+    max-width: 1260px;
+    margin-left: 95px;
+  }
+  
+  
+
+
+  .about-us-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    align-items: flex-start; /* Vertical alignment */
+  }
+  
+  
+  .about-us-text {
+    flex: 1 1 50%;
+    font-size: 1em;
+    color: #000;
+    font-family: sans-serif;
+    line-height: 1.6;
+  }
+  
+  .about-us-image {
+    flex: 1 1 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .about-us-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  
+  
+
+
+frImage {
+    display: flex;
+    justify-content: center;
+}
+frImage img {
+    width: 85%;
+    height: auto;
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+}
+
+
+.full-width-image {
+    width: 100vw;  /* Full viewport width */
+    overflow: hidden; /* Prevents scrolling issues */
+}
+
+.full-width-image img {
+    width: 100%;  /* Makes the image span the full width of its container */
+    height: auto; /* Keeps aspect ratio */
+    height: 70vh; /* Sets the height to 80% of the viewport height */
+}
+
+
+
+.staff-section {
+    background-color: #ebecec;
+    padding: 3em 2em;
+    text-align: center;
+    max-width: 1260px;
+    margin: 0 auto;
+  }
+  
+  .staff-section h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+  }
+  
+  .staff-section h2 {
+    font-size: 1.2em;
+    color: #444;
+    margin-bottom: 2em;
+  }
+  
+  .staff-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8em;
+    justify-content: center;
+  }
+  
+  .staff-card {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .staff-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .staff-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+  
+  .staff-info {
+    padding: 1em;
+  }
+  
+  .staff-info h3 {
+    font-size: 1.25em;
+    margin: 0.5em 0 0.25em;
+  }
+  
+  .staff-info p {
+    margin: 0.25em 0;
+    font-size: 1em;
+    color: #333;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .staff-card {
+      width: 90%;
+    }
+  }
+  
+
+
+
+
+/*Directions Section*/
+.directions-section {
+    background-color: #ebecec;
+    max-width: 1250px;
+    margin-left: 105px;
+    padding: 3em 2em;
+  }
+  
+  .directions-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2em;
+  }
+  
+  .directions-text {
+    flex: 1 1 45%;
+  }
+  
+  .directions-heading {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 3em;
+  }
+  
+  .directions-heading h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .directions-heading img {
+    width: 50px;
+    height: auto;
+  }
+  
+  .directions-info h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 1.2em;
+    margin-top: 1em;
+    margin-bottom: 0.2em;
+  }
+  
+  .directions-info img {
+    width: 25px;
+    height: auto;
+  }
+  
+  .directions-info p {
+    margin-left: 35px;
+    font-size: 1em;
+    margin-bottom: 5em;
+  }
+  
+  .directions-map {
+    flex: 1 1 50%;
+    min-width: 300px;
+  }
+/* Reusable container for side alignment */
+.section-inner {
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 0 2em;
+    
+  }
+    
+.section-inner h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+
+
+
+
+
+
+
+
 
 /*-----------------------Footer-----------------------*/
 
@@ -276,4 +486,40 @@ footer #rights {
     .fa-instagram {
       background: linear-gradient(to right,#f9ce34, #ee2a7b, #6228d7);
       color: #ffffff !important;
-    }  
+    }
+  
+
+/* Media Query for 960px and below */
+@media (max-width: 960px) {
+    nav#menu, nav#assignments {
+        width: 200px; /* Adjust width for smaller screens */
+        padding: 0.5em; /* Adjust padding */
+    }
+
+    main {
+        margin: 0; /* Remove side margins */
+        padding: 1em; /* Adjust padding */
+    }
+
+    .video {
+        width: 100%; /* Make video container full width */
+    }
+
+    .video iframe {
+        height: auto; /* Adjust height for responsiveness */
+    }
+
+    table {
+        width: 100%; /* Make table full width */
+    }
+
+    nav#menu, nav#assignments {
+        position: relative; /* Change to relative positioning for smaller screens */
+        width: 100%; /* Full width for smaller screens */
+        box-shadow: none; /* Remove box shadow */
+    }
+
+    footer {
+        position: relative; /* Change to relative positioning for smaller screens */
+    }
+}
