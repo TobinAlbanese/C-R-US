@@ -61,13 +61,13 @@ timeOffSubmit.addEventListener("click", function(){
         +   'Time Off Start Time: ' + timeOffStartTime + '\n'
         +   'Time Off End Time: ' + timeOffEndTime);
     
-    //Perform the Time Off Request to add into db
+    //Perform the Time Off Request to add into db, was working.
     fetch(`/timeOffEmployee`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime }), // Include confirmPassword in the request
+        body: JSON.stringify({ Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime }),
       })
         .then((response) => response.json())
         .then((data) => {
