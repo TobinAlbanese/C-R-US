@@ -7,7 +7,7 @@
 
 
 
-p{
+main p{
   padding: 10px;
   line-height: 35px;
 }
@@ -118,6 +118,8 @@ nav#assignments {
 }
 
 
+/*-----------------------Footer-----------------------*/
+
 footer { 
   background-color: #ffffff;
   font-size: 1em;
@@ -133,39 +135,72 @@ footer {
  
 }
 
+footer #name {
+  font-weight: bold;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  font-size: 1em;
+}
+.footer-contact,
+.footer-follow {
+  flex: 1;
+}
+
+.footer-follow {
+  margin-right: 2em;
+  text-align: right;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+footer #footer-contact-info{
+  font-size: 0.9em;
+}
+
+footer #rights {
+  font-size: 0.8em;
+  margin: 0.5em 0;
+  text-align: center;
+}
+
 .fa {
-  padding: 5px;
-  font-size: 10px;
-  width: 15px;
+  padding: 7px;
+  font-size: 20px;
+  width: 25px;
   text-align: center;
   text-decoration: none;
-  margin: 5px 2px;
+
   border-radius: 50%;
-  margin-top: 5em;
+  margin-top: 0.8em;
+  border: solid gray 0.5px;
 }
 
 .fa:hover {
     opacity: 0.7;
 }
 
-.fa-facebook {
-  background: #909091;
+  .fa-facebook {
+  background: #1877F2;
   color: #ffffff !important;
+  }
 
-}
-
-.fa-linkedin {
-    background: #909091;
+  .fa-linkedin {
+    background: #0077B5;
     color: #ffffff !important;
   }
   
   .fa-youtube {
-    background: #909091;
+    background: #FF0000;
     color: #ffffff !important;
   }
   
   .fa-instagram {
-    background: #909091;
+    background: linear-gradient(to right,#f9ce34, #ee2a7b, #6228d7);
     color: #ffffff !important;
   }
 
