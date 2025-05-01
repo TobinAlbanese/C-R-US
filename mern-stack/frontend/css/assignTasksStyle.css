@@ -151,6 +151,10 @@ h2{
     border-radius: 15px;
 }
 
+.input[type="checkbox"] {
+    margin-right: 10px;
+}
+
 .task-row {
     display: flex;
     flex-direction: row;
@@ -189,7 +193,7 @@ h2{
 
 .submitButtonContainer{
     display: flex;
-    margin-left: auto;
+    margin-right: right;
 }
 
 #submitButton {
