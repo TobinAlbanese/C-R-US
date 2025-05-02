@@ -17,6 +17,7 @@ import { Check } from "./config/check.js";
 import { Appointment } from "./config/app.js"; 
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
+import { LoggedHours } from "./config/hours.js";
 //Express
 const app = express();
 //Middleware setup
@@ -118,10 +119,12 @@ app.post("/userCreateAccount", async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
+
 ///////////////////////////IMRAN
 
 //timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
 import { timeOffEmployee } from "./config/timeOff.js"; 
+import { error } from "console";
 app.post("/timeOffEmployee", async (req, res) => {
 
   const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
@@ -239,8 +242,8 @@ app.post('/api/appointment', async (req, res) => {
       user: userId,
       status: 'pending',
     });
-
     const savedApp = await newApp.save();
+    
     console.log("Appointment saved:", savedApp);
     res.status(200).json({ success: true, appointment: savedApp });
   } catch (err) {
@@ -482,6 +485,77 @@ app.get("/api/assign-tasks", async (req, res) => {
   }
 });
 
+
+//fetch previous apps
+app.get('/api/appsPast', async (req, res) => {
+  try{
+    const today = new Date().toISOString().split('T')[0];
+    const userId = req.session.userId;
+    if(!userId) return res.status(401).json({ error: "User not logged in"});
+
+    const pastApps = await PastApps.find({
+      user: userId,
+      date: {$lt: today},
+    }).sort({ date: -1 });
+    res.json({ past: pastApps});
+    } catch (err) {
+      console.error("Error fetching past appointments:", err);
+      res.status(500).json({ error: 'Failed to fetch past appointments' });
+    }
+  });
+
+//fetch upcoming apps
+app.get('/api/appsUpcoming', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const userId = req.session.userId;
+    if (!userId) return res.status(401).json({ error: "User not logged in" });
+
+    const upcomingApps = await PastApps.find({
+      user: userId,
+      date: { $gte: today }
+    }).sort({ date: 1 });
+
+    res.json({ upcoming: upcomingApps });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch upcoming appointments' });
+  }
+});
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Log Hours
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post('/api/log-hours', async (req, res) => {
+  const logs = req.body;
+  console.log("Received log data:", logs);
+
+  if (!Array.isArray(logs) || logs.length === 0) {
+    return res.status(400).json({ error: 'No log entries received.' });
+  }
+
+  const userId = req.session.userId;
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "User not logged in." });
+  }
+
+  try {
+    const savedLogs = await Promise.all(logs.map(async ({ date, startTime, endTime, totalHours, comments }) => {
+      if (!date || !startTime || !endTime) throw new Error('Missing required fields.');
+      const newLog = new LoggedHours({ user: userId, date, startTime, endTime, totalHours, comments });
+      return await newLog.save();
+    }));
+
+    console.log("Hours saved:", savedLogs);
+    res.status(200).json({ success: true, message: "Hours successfully logged." });
+  } catch (error) {
+    console.error("Error logging hours:", error);
+    res.status(500).json({ success: false, message: "Failed to log hours." });
+  }
+});
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Redirection API for URL
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -514,3 +588,21 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
