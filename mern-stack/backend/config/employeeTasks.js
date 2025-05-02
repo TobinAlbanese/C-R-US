@@ -6,6 +6,9 @@ const taskSchema = new mongoose.Schema({
   service: { type: String, required: true },
   comments: { type: String },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  firstName: { type: String },
+  lastName: { type: String },
+  email: { type: String },
 });
 
 taskSchema.index({ date: 1, time: 1, service: 1, user: 1}, { unique: true });
