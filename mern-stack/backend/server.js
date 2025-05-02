@@ -493,6 +493,8 @@ app.get("/api/assign-tasks", async (req, res) => {
     
     const tasksWithUsers = tasks.map(task => {
       return {
+        _id: task._id.toString(),
+     //   user: task.user.toString(),
         type: task.service,
         assignTo: task.user ? task.user.toString() : null,
         assignedBy: task.assignedBy ? task.assignedBy.toString() : null, 
@@ -510,6 +512,47 @@ app.get("/api/assign-tasks", async (req, res) => {
   }
 });
 
+app.post("/api/assign-tasks", async (req, res) => {
+  try {
+
+    console.log("Received request body:", req.body);
+
+
+    const { user, admin, service, date, time, comments } = req.body;
+    console.log("Parsed data:", { user, admin, service, date, time, comments });
+    const newTask = new Appointment({
+      user,
+      service,
+      date,
+      time,
+      comments
+    });
+    await newTask.save();
+    res.status(200).json({ success: true, message: "Task assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning task:", error);
+    res.status(500).json({ success: false, message: "Failed to assign task." });
+  }
+});
+
+app.post("/api/delete-task", async (req, res) => {
+  try {
+    const { taskIds } = req.body;
+    console.log("Received task ID to delete:", taskIds);
+    if (!taskIds) {
+      return res.status(400).json({ success: false, message: "Task ID is required." });
+    }
+    const deletedTask = await Appointment.deleteMany({_id: { $in: taskIds}});
+    if (!deletedTask) {
+      return res.status(404).json({ success: false, message: "Task not found." });
+    }
+    console.log("Deleted task:", deletedTask);
+    res.status(200).json({ success: true, message: "Task deleted successfully." }); 
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).json({ success: false, message: "Failed to delete task." });
+  }
+});
 
 //fetch previous apps
 app.get('/api/appsPast', async (req, res) => {

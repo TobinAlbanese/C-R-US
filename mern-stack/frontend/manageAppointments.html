@@ -34,20 +34,70 @@
 
         </header>
         
-
-<nav class="h2">
 <h2>
-<p3>Manage Appointments</p3>
+Manage Appointments
 </h2>
-</nav>        
 
-<p>Dentist:<br>
-    <select> 
-        <option value="Option1"> Value </option>
-        <option value="Option2"> Value1 </option>
-        <option value="Option3"> Value2 </option>
-        </select>
-    </p>
+<div class="create-Appointment" id="create-Appointment-Form">
+    <form id="createAppointmentForm" class="form-container">
+      <h1>Create Appointment</h1>
+  
+      <div>
+        <label for="type"><b>Type</b></label>
+        <input type="text" id="type" placeholder="Enter Service" name="type" required>  
+      </div>
+      
+      <div>
+        <label for="date"><b>Date</b></label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      
+      <div>
+        <label for="time"><b>Time</b></label>
+        <input type="time" id="time" name="time" required>
+      </div>
+    
+      <div>
+        <label for="assignTo"><b>Assign To</b></label>
+        <div id="assignToWrapper"></div>
+      </div>
+
+      <div>
+        <label for="assignedBy"><b>Assigned By</b></label>
+        <div id="assignByWrapper"></div>
+      </div>
+  
+      <button type="submit" id ="create" class="btn">Create</button>
+      <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+  </div>
+
+
+  <div class="container">
+    <div><b>Type</b></div>
+    <div><b>Assign To</b></div>
+    <div><b>Assigned By</b></div>
+    <div><b>Created On</b></div>
+    <div><b>Select</b></div>
+</div>
+
+  <div class="container2">
+</div>
+
+
+<div class= "button-row">
+<div class="createButtonContainer">
+    <button type="button" id="create-Appointment-Button">Create Appointment</button>
+</div> 
+<div class="deleteButtonContainer">
+    <button type="button" id="delete-Tasks">Delete Selected</button>
+</div>
+</div>
+
+<script src="../../../C-R-US/public/assets/js/manageAppointments.js"></script>
+
+</body>
+</html>
 
 <!-----------------------Footer----------------------->
 
