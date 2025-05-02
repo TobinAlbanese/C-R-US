@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
 const LogHoursSchema = new mongoose.Schema({
-  date: { type: String, required: true },
-  startTime: { type: String},
-  endTime: { type: String},
-  totalHours: { type: String},
-  comments: { type: String },
-  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    email: { type: String, required: true },
+    firstName: { type: String, required: true },
+        lastName: { type: String, required: true },
+    date: { type: String, required: true },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    totalHours: { type: String, required: true },
+    comments: { type: String },
 });
 
 const LoggedHours = mongoose.model('LoggedHours', LogHoursSchema, 'LoggedHours');
