@@ -18,6 +18,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedServicePrice = 0;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// fetch past & upcomign appointments
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+async function pastApps() {
+    const response = await fetch('/api/appsPast');
+    const data = await response.json();
+    displayApps(data.past, 'past-appointments');
+}
+async function upcomingApps() {
+    const response = await fetch('/api/appsUpcoming');
+    const data = await response.json();
+    displayApps(data.upcoming, 'upcoming-appointments');
+}
+function displayApps(appointments, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = ''; 
+    if (!appointments || appointments.length === 0) {
+        container.innerHTML = '<p>No appointments found.</p>';
+        return;
+    }
+    appointments.forEach(app => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+        <p><strong>${app.service}</strong> on ${app.date} at ${app.time}</p>
+        <p>Status: ${app.status}</p>
+        <p>Comments: ${app.comments}</p>
+        `;
+    container.appendChild(div);
+  });
+}
+pastApps();
+upcomingApps();
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // calendar section for taken dates
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     async function fetchBookedTimes(date) {
