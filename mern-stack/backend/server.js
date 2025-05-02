@@ -17,6 +17,7 @@ import { Check } from "./config/check.js";
 import { Appointment } from "./config/app.js"; 
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
+
 import { LoggedHours } from "./config/hours.js";
 //Express
 const app = express();
@@ -129,16 +130,30 @@ app.post("/timeOffEmployee", async (req, res) => {
 
   const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
 
+  //Validate that necessary fields were submitted
+  if (!timeOffType || !timeOffDate || !timeOffStartTime || !timeOffEndTime) {
+    return res.status(400).json({ success: false, message: "All fields except comments are required"});
+  }
+
+
+  //Get userId from req.session and put the id value in for Employee
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  //Insert the data gotten from the time off submition and save to database
   try {
     const newTimeOffEmployee = await timeOffEmployee.insertOne({
-      Employee,
+      Employee: userId.id,
       timeOffType,
       timeOffComments,
       timeOffDate,
       timeOffStartTime,
       timeOffEndTime,
     });
-
+    
     console.log(Employee);
     await newTimeOffEmployee.save();
 
@@ -401,6 +416,7 @@ app.get('/api/booked-times', async (req, res) => {
   }
 });
 
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // multi-function API for assigning and deleting tasks
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -414,13 +430,10 @@ app.post('/api/assignTasks', async (req, res) => {
     }
 
     for (const task of tasksToSubmit) {
-      console.log("Processing task:", task);
-      const {type, assignTo, assignedBy, createdOn } = task;
-      const taskDate = createdOn.split(" ")[0];
-      const taskTime = createdOn.split(" ").slice(1).join(" ");
-
-      const assignedEmp = await User.findById(assignTo).select("firstName lastName email");
-      const { firstName, lastName, email } = assignedEmp;
+    console.log("Processing task:", task);
+    const {type, assignTo, assignedBy, createdOn } = task;
+    const taskDate = createdOn.split(" ")[0];
+    const taskTime = createdOn.split(" ").slice(1).join(" ");
 
       const newEmployeeTask = new EmployeeTask({
         date: taskDate,
@@ -467,6 +480,7 @@ app.post('/api/assignTasks', async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
   }
 });
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Assign-Tasks API for fetching data from Scheduling/Users into our admin page
@@ -620,3 +634,48 @@ app.listen(PORT, () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Log Hours
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post('/api/log-hours', async (req, res) => {
+  const { date, startTime, endTime, comments } = req.body;
+  
+  if (!date || !startTime || !endTime) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
+
+  try {
+    const userId = req.session.userId;
+    if (!userId){
+      return res.status(401).json({success:false, message: "User not logged in."});
+    }
+
+    const log = new LoggedHours ({
+      user: userId,
+      date,
+      startTime,
+      endTime,
+      comments,
+    });
+    const savedLog = await log.save();
+    console.log("Hours saved:", savedLog);
+    res.status(200).json({ success: true, message: "Hours successfully logged"});
+    
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ success: false, message: "Failed to log hours." });
+  }
+});
