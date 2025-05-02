@@ -119,6 +119,75 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
+=======
+///////////////////////////IMRAN
+
+//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
+import { timeOffEmployee } from "./config/timeOff.js"; 
+app.post("/timeOffEmployee", async (req, res) => {
+
+  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
+
+  try {
+    const newTimeOffEmployee = await timeOffEmployee.insertOne({
+      Employee,
+      timeOffType,
+      timeOffComments,
+      timeOffDate,
+      timeOffStartTime,
+      timeOffEndTime,
+    });
+
+    console.log(Employee);
+    await newTimeOffEmployee.save();
+
+    res.json({ success: true, message: "User created successfully." });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
+  }
+});
+///////////////////////////END OF IMRAN
+
+
+///////////////////////////HARKKKKK
+
+app.post('/api/assignTasks', async (req, res) => {
+  const tasksToSubmit = req.body;
+
+  try { 
+    for (const task of tasksToSubmit) {
+    console.log("Processing task:", task);
+    const {type, assignTo, assignedBy, createdOn } = task;
+
+    const [taskDate, taskTime] = createdOn.split(" ");
+
+    const newEmployeeTask = new EmployeeTask({
+      date: taskDate,
+      time: taskTime,
+      service: type,
+      commments:'',
+      assignedBy: assignedBy,
+      user: assignTo,
+    });
+    await newEmployeeTask.save();
+
+  }
+  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning tasks:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
+    }
+    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
+  }
+});
+
+////////////////////HARKKKKK
+
+
+>>>>>>> 6f230f153e32c670c5ec5df04c66cb017a7bd0f2
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
