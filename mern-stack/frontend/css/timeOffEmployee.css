@@ -110,6 +110,78 @@ nav#assignments {
 
 
 
+/*-----------------------Main Content-----------------------*/
+/* Replaces Bootstrap's .container and .row */
+.container-custom {
+    padding: 20px 20px; /* reduced top/bottom padding */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.row-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* reduced gap between rows */
+    margin-bottom: 10px; /* optional: add space below rows */
+}
+
+
+.column-custom {
+    flex: 1 1 45%;
+    min-width: 400px;
+}
+
+/* Optional: Improve spacing between fields */
+.column-custom select,
+.column-custom textarea,
+.column-custom input,
+.column-custom button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+#time-off-date {
+    max-width: 100%;
+    border: none;
+    font-size: 1em;
+    margin-top: 0px;
+}
+
+#time-off-date.flatpickr-input {
+    display: none !important;
+}
+
+/* Adjusts the inline flatpickr calendar positioning */
+
+#time-off-date-label {
+    margin-bottom: 0px;
+    display: inline-block;
+}
+
+
+#time-off-submit {
+    display: block;
+    margin-left: auto;
+    margin-top: 20px;
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.5em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-family: sans-serif;
+}
+
+#time-off-submit:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+}
+
+
 /*-----------------------Footer-----------------------*/
 
 footer { 

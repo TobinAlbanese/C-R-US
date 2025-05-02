@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.querySelector('#timesheet tbody');
     const submitBut = document.querySelector('.buttonSubmitTimesheet');
+    const seePayrollBut = document.querySelector('.seePayroll');
+    const timesheetTable = document.querySelector('.timesheetTable');
+    const payrollContainer = document.querySelector('.payroll-container');
 
     const today = new Date();
     const year = today.getFullYear();
@@ -94,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Failed to save log hours.");
         }
     });
-});
+
 
 function autocalcTotalHours(start, end) {
     if (start && end) {
@@ -149,3 +152,66 @@ async function postLogHours(data) {
         return null;
     }
 }
+
+
+async function togglePayroll () {
+    console.log('Toggle Payroll button clicked'); // Debugging log
+    timesheetTable.classList.toggle('hidden');
+    payrollContainer.classList.toggle('visible');
+
+    if (timesheetTable.classList.contains('hidden')) {
+        seePayrollBut.textContent = 'See Timesheet';
+        await loadPayrollData();
+    }
+    else {
+        seePayrollBut.textContent = 'See Payroll';
+    }
+}
+
+async function loadPayrollData() {
+    try {
+        const response = await fetch('/api/approvedHours', {
+            credentials: 'include'
+        });
+        
+        if (!response.ok) throw new Error('Failed to load payroll data');
+        
+        const payrollData = await response.json();
+        displayPayrollData(payrollData);
+    } catch (error) {
+        console.error('Error loading payroll data:', error);
+        document.getElementById('payrollData').innerHTML = 
+            '<p>Error loading payroll information. Please try again later.</p>';
+    }
+}
+
+function displayPayrollData(data) {
+    const payrollDataElement = document.getElementById('payroll-data'); // Select the payroll table container
+
+    let html = `
+        <table class="payroll-table">
+            <thead>
+                <tr>
+                    <th>Time Logged</th>
+                    <th>Calculated Pay</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    // Loop through the data and create table rows
+    data.forEach(period => {
+        html += `
+            <tr>
+                <td>${period.timeLogged}</td>
+                <td>$${parseFloat(period.calculatedPay).toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    payrollDataElement.innerHTML = html; // Insert the table into the container
+}
+
+seePayrollBut.addEventListener('click', togglePayroll);
+});

@@ -17,8 +17,9 @@ import { Check } from "./config/check.js";
 import { Appointment } from "./config/app.js"; 
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
-
 import { LoggedHours } from "./config/hours.js";
+import { ApprovedHours } from "./config/ApprovedHours.js";
+
 //Express
 const app = express();
 //Middleware setup
@@ -692,5 +693,76 @@ app.post('/api/log-hours', async (req, res) => {
   } catch (error) {
     console.error("Error: ", error);
     res.status(500).json({ success: false, message: "Failed to log hours." });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Fetch Logged Hours API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.get("/api/log-hours", async (req, res) => {
+  try {
+    
+    // Fetch hours from the 'LoggedHours' collection
+    const hours = await LoggedHours.find();
+
+    // Return the tasks as JSON
+    res.status(200).json(hours);
+  } catch (error) {
+    console.error("Error fetching logged hours:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch logged hours." });
+  }
+});
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Post Approved Hours API 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+app.post('/api/approve-hours', async (req, res) => {
+  const approvedHours = req.body;
+
+  try {
+      // Save approved hours to the ApprovedHours collection
+      const savedApprovedHours = await Promise.all(
+          approvedHours.map(async (hour) => {
+              const newApprovedHour = new ApprovedHours({
+                  firstName: hour.firstName,
+                  lastName: hour.lastName,
+                  timeLogged: hour.timeLogged,
+                  calculatedPay: hour.calculatedPay,
+                  originalId: hour.id, // Save the original ID for reference
+              });
+              return await newApprovedHour.save();
+          })
+      );
+
+      // Delete the approved hours from the LoggedHours collection
+      const idsToDelete = approvedHours.map((hour) => hour.id); // Collect IDs of approved hours
+      await LoggedHours.deleteMany({ _id: { $in: idsToDelete } });
+
+      res.status(200).json({
+          success: true,
+          message: "Hours approved and removed from LoggedHours.",
+          data: savedApprovedHours,
+      });
+  } catch (error) {
+      console.error("Error approving hours:", error);
+      res.status(500).json({ success: false, message: "Failed to approve hours." });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Get Approved Hours API 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+
+app.get('/api/approvedHours', async (req, res) => {
+  try {
+      // Fetch all approved hours from the database
+      const approvedHours = await ApprovedHours.find();
+      res.status(200).json(approvedHours); // Send the data as JSON
+  } catch (error) {
+      console.error('Error fetching approved hours:', error);
+      res.status(500).json({ success: false, message: 'Failed to fetch approved hours.' });
   }
 });
