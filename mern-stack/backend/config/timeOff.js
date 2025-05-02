@@ -12,5 +12,5 @@ const timeOffSchema = new mongoose.Schema({
 });
 
 
-const timeOffEmployee = mongoose.model("timeOffEmployee", timeOffSchema);
+const timeOffEmployee = mongoose.model("TimeOffEmployee", timeOffSchema, "TimeOffEmployee");
 export { timeOffEmployee };

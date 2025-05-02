@@ -1,6 +1,24 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const tbody = document.querySelector('#timesheet tbody');
     const submitBut = document.querySelector('.buttonSubmitTimesheet');
+    
+    let existingData = [];
+    try {
+        const res = await fetch('/api/logged-hours', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.logs)) {
+        existingData = data.logs;
+        }
+    } catch (err) {
+        console.error('Error fetching existing data:', err);
+    }
+    const logMap = new Map();
+    existingData.forEach(log => 
+        logMap.set(log.date, log));
 
     const today = new Date();
     const year = today.getFullYear();
@@ -50,6 +68,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 totalHoursInput.value = hours;
             });
         });
+        if (logMap.has(datestr)) {
+            const log = logMap.get(datestr);
+            startTimeSelect.value = log.startTime || '';
+            endTimeSelect.value = log.endTime || '';
+            totalHoursInput.value = log.totalHours || '';
+            commentsInput.value = log.comments || '';
+            [startTimeSelect, endTimeSelect, totalHoursInput, commentsInput].forEach(input => {
+                input.disabled = true;
+                input.classList.add('locked-input');
+            });
+            row.classList.add('locked-input');
+        }
 
         row.appendChild(startTimeCell);
         row.appendChild(endTimeCell);

@@ -124,7 +124,7 @@ app.post("/userCreateAccount", async (req, res) => {
 
 //timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
 import { timeOffEmployee } from "./config/timeOff.js"; 
-import { error } from "console";
+import { error, log } from "console";
 app.post("/timeOffEmployee", async (req, res) => {
 
   const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
@@ -149,8 +149,6 @@ app.post("/timeOffEmployee", async (req, res) => {
   }
 });
 ///////////////////////////END OF IMRAN
-
-
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -403,8 +401,6 @@ app.get('/api/booked-times', async (req, res) => {
   }
 });
 
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // multi-function API for assigning and deleting tasks
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -412,42 +408,56 @@ app.post('/api/assignTasks', async (req, res) => {
   const tasksToSubmit = req.body;
 
   try { 
-    for (const task of tasksToSubmit) {
-    console.log("Processing task:", task);
-    const {type, assignTo, assignedBy, createdOn } = task;
-    const taskDate = createdOn.split(" ")[0];
-    const taskTime = createdOn.split(" ").slice(1).join(" ");
-
-    const newEmployeeTask = new EmployeeTask({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-      commments:'',
-      assignedBy: assignedBy,
-      user: assignTo,
-    });
-    await newEmployeeTask.save();
-
-    const existingApp = await Appointment.findOne({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-    });
-    if (existingApp) {
-      const pastApps = new PastApps({
-        date: existingApp.date,
-        time: existingApp.time,
-        service: existingApp.service,
-        comments: existingApp.comments || '',
-        status: existingApp.status,
-        movedAt: new Date(),
-      });
-      await pastApps.save();
-      await Appointment.deleteOne({ _id: existingApp._id });
-    } else {
-      console.warn(`No matching appointment found for: ${type} on ${taskDate} at ${taskTime}`);
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User is not logged in." });
     }
-  }
+
+    for (const task of tasksToSubmit) {
+      console.log("Processing task:", task);
+      const {type, assignTo, assignedBy, createdOn } = task;
+      const taskDate = createdOn.split(" ")[0];
+      const taskTime = createdOn.split(" ").slice(1).join(" ");
+
+      const assignedEmp = await User.findById(assignTo).select("firstName lastName email");
+      const { firstName, lastName, email } = assignedEmp;
+
+      const newEmployeeTask = new EmployeeTask({
+        date: taskDate,
+        time: taskTime,
+        service: type,
+        commments:'',
+        assignedBy: assignedBy,
+        user: assignTo,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+      });
+      await newEmployeeTask.save();
+
+      const existingApp = await Appointment.findOne({
+        date: taskDate,
+        time: taskTime,
+        service: type,
+      });
+      if (existingApp) {
+        const pastApps = new PastApps({
+          date: existingApp.date,
+          time: existingApp.time,
+          service: existingApp.service,
+          comments: existingApp.comments || '',
+          status: existingApp.status,
+          movedAt: new Date(),
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+        });
+        await pastApps.save();
+        await Appointment.deleteOne({ _id: existingApp._id });
+      } else {
+        console.warn(`No matching appointment found for: ${type} on ${taskDate} at ${taskTime}`);
+      }
+    }
   res.status(200).json({ success: true, message: "Tasks assigned successfully." });
   } catch (error) {
     console.error("Error assigning tasks:", error);
@@ -488,40 +498,27 @@ app.get("/api/assign-tasks", async (req, res) => {
 
 //fetch previous apps
 app.get('/api/appsPast', async (req, res) => {
-  try{
-    const today = new Date().toISOString().split('T')[0];
-    const userId = req.session.userId;
-    if(!userId) return res.status(401).json({ error: "User not logged in"});
-
-    const pastApps = await PastApps.find({
-      user: userId,
-      date: {$lt: today},
-    }).sort({ date: -1 });
-    res.json({ past: pastApps});
-    } catch (err) {
-      console.error("Error fetching past appointments:", err);
-      res.status(500).json({ error: 'Failed to fetch past appointments' });
-    }
-  });
-
-//fetch upcoming apps
-app.get('/api/appsUpcoming', async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const userId = req.session.userId;
-    if (!userId) return res.status(401).json({ error: "User not logged in" });
-
-    const upcomingApps = await PastApps.find({
-      user: userId,
-      date: { $gte: today }
-    }).sort({ date: 1 });
-
-    res.json({ upcoming: upcomingApps });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch upcoming appointments' });
+    const pastAppointments = await PastApps.find({ date: { $lt: new Date() } });
+    console.log('Past appointments:', pastAppointments);  // Debugging the fetched past appointments
+    res.json({ past: pastAppointments });
+  } catch (error) {
+      console.error('Error fetching past appointments:', error);
+      res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.get('/api/appsUpcoming', async (req, res) => {
+  try {
+    const upcomingAppointments = await PastApps.find({ date: { $gte: new Date() } });
+    console.log('Upcoming appointments:', upcomingAppointments);  // Debugging the fetched upcoming appointments
+    res.json({ upcoming: upcomingAppointments });
+  } catch (error) {
+      console.error('Error fetching upcoming appointments:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -535,28 +532,45 @@ app.post('/api/log-hours', async (req, res) => {
     return res.status(400).json({ error: 'No log entries received.' });
   }
 
-  const userId = req.session.userId;
+  const userId = req.session.userId?.id;
   if (!userId) {
     return res.status(401).json({ success: false, message: "User not logged in." });
   }
-
   try {
+    const user = await User.findById(userId).select("firstName lastName email");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
     const savedLogs = await Promise.all(logs.map(async ({ date, startTime, endTime, totalHours, comments }) => {
       if (!date || !startTime || !endTime) throw new Error('Missing required fields.');
       const newLog = new LoggedHours({ user: userId, date, startTime, endTime, totalHours, comments });
       return await newLog.save();
     }));
 
-    console.log("Hours saved:", savedLogs);
+    console.log("Hours saved:", savedLogs.length);
     res.status(200).json({ success: true, message: "Hours successfully logged." });
   } catch (error) {
     console.error("Error logging hours:", error);
     res.status(500).json({ success: false, message: "Failed to log hours." });
   }
 });
+app.get('/api/logged-hours', async (req, res) => {
+  const userId = req.session.userId?.id;
 
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "User not logged in." });
+  }
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+  try {
+    const logs = await LoggedHours.find({ user: userId });
+    return res.status(200).json({ success: true, logs });
+  } catch (error) {
+    console.error("Error fetching logged hours:", error);
+    return res.status(500).json({ success: false, message: "Failed to fetch logged hours." });
+  }
+});
+
 // Redirection API for URL
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post("/redirect", (req, res) => {
