@@ -15,7 +15,8 @@ import User from "./config/user.js";
 import { seedUsers } from "./config/seed.js"; 
 import { Check } from "./config/check.js"; 
 import { Appointment } from "./config/app.js"; 
-import { EmployeeTask } from "./config/TASKS.js";
+import { EmployeeTask } from "./config/employeeTasks.js";
+import { PastApps } from "./config/PastApps.js";
 //Express
 const app = express();
 //Middleware setup
@@ -117,42 +118,6 @@ app.post("/userCreateAccount", async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
-
-///////////////////////////HARKKKKK
-
-app.post('/api/assignTasks', async (req, res) => {
-  const tasksToSubmit = req.body;
-
-  try { 
-    for (const task of tasksToSubmit) {
-    console.log("Processing task:", task);
-    const {type, assignTo, assignedBy, createdOn } = task;
-
-    const [taskDate, taskTime] = createdOn.split(" ");
-
-    const newEmployeeTask = new EmployeeTask({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-      commments:'',
-      assignedBy: assignedBy,
-      user: assignTo,
-    });
-    await newEmployeeTask.save();
-
-  }
-  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
-  } catch (error) {
-    console.error("Error assigning tasks:", error);
-    if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
-    }
-    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
-  }
-});
-
-////////////////////HARKKKKK
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
@@ -401,6 +366,96 @@ app.get('/api/booked-times', async (req, res) => {
   } catch (error) {
     console.error("Error fetching booked times:", error);
     res.status(500).json({ success: false, message: "Internal server error." });
+  }
+});
+
+//log hours
+app.post('/api/log-hours', async (req, res) => {
+  const data = req.body;
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "User not logged in." });
+  }
+
+  const entries = [];
+
+  try {
+    for (const date in data) {
+      const { startTime, endTime, comments } = data[date];
+
+      if (!startTime || !endTime) continue;
+      
+      entries.push(
+        LoggedHours.findOneAndUpdate(
+          { user: userId, date },
+          { startTime, endTime, comments },
+          { upsert: true, new: true }
+        )
+      );
+
+      entries.push(log.save());
+    }
+
+    await Promise.all(entries);
+
+    res.status(200).json({ success: true, message: "All hours successfully logged" });
+  } catch (error) {
+    console.error("Error saving logs:", error);
+    res.status(500).json({ success: false, message: "Failed to log hours." });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// multi-function API for assigning and deleting tasks
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post('/api/assignTasks', async (req, res) => {
+  const tasksToSubmit = req.body;
+
+  try { 
+    for (const task of tasksToSubmit) {
+    console.log("Processing task:", task);
+    const {type, assignTo, assignedBy, createdOn } = task;
+    const taskDate = createdOn.split(" ")[0];
+    const taskTime = createdOn.split(" ").slice(1).join(" ");
+
+    const newEmployeeTask = new EmployeeTask({
+      date: taskDate,
+      time: taskTime,
+      service: type,
+      commments:'',
+      assignedBy: assignedBy,
+      user: assignTo,
+    });
+    await newEmployeeTask.save();
+
+    const existingApp = await Appointment.findOne({
+      date: taskDate,
+      time: taskTime,
+      service: type,
+    });
+    if (existingApp) {
+      const pastApps = new PastApps({
+        date: existingApp.date,
+        time: existingApp.time,
+        service: existingApp.service,
+        comments: existingApp.comments || '',
+        status: existingApp.status,
+        movedAt: new Date(),
+      });
+      await pastApps.save();
+      await Appointment.deleteOne({ _id: existingApp._id });
+    } else {
+      console.warn(`No matching appointment found for: ${type} on ${taskDate} at ${taskTime}`);
+    }
+  }
+  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning tasks:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
+    }
+    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
   }
 });
 

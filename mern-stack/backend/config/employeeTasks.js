@@ -10,5 +10,5 @@ const taskSchema = new mongoose.Schema({
 
 taskSchema.index({ date: 1, time: 1, service: 1, user: 1}, { unique: true });
 
-const EmployeeTask = mongoose.model('EmployeeTask', taskSchema);
+const EmployeeTask = mongoose.model('EmployeeTasks', taskSchema, 'EmployeeTasks');
 export { EmployeeTask };  // export the model
