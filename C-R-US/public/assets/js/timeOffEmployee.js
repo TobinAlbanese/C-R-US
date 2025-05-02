@@ -1,5 +1,5 @@
 
-var Employee = "thisEmployee"
+var Employee = "tmpEmployee"
 var startTimeSelect = document.getElementById("time-off-start");
 var endTimeSelect = document.getElementById("time-off-end")
 
@@ -54,7 +54,6 @@ timeOffSubmit.addEventListener("click", function(){
 
     //Send an alert of Time Off Requested
     alert('Time Off Request Has Been Submitted! \n\n'
-        +   'Time Off Employee: ' + Employee + '\n'
         +   'Time Off Type: ' + timeOffType + '\n'
         +   'Time Off Comments: ' + timeOffComments + '\n'
         +   'Time Off Date: ' + timeOffDate + '\n'
@@ -75,7 +74,7 @@ timeOffSubmit.addEventListener("click", function(){
           if (data.success) {
             alert("Success: Time Off Posted");
           } else {
-            alert("Failure: Time Off Not Posted");
+            alert("Failure: Time Off Not Posted.");
           }
         })
         .catch((error) => {
@@ -85,17 +84,3 @@ timeOffSubmit.addEventListener("click", function(){
         
         
 });
-
-
-//Used to redirect to correct page after submission
-/*
-function redirectToPage(role) {
-    if (role === "admin") {
-      window.location.href = "/adminViewPage.html";
-    } else if (role === "employee") {
-      window.location.href = "/employeeViewPage.html";
-    } else {
-      window.location.href = "/index.html";
-    }
-  }
-*/
