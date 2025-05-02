@@ -170,19 +170,21 @@ function createTimeSelect(datestr, type) {
 
 async function postLogHours(data) {
     try {
-        const res = await fetch('/api/log-hours', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data), 
-            credentials: 'include',
-        });
-        if (!res.ok) throw new Error('Failed to save log hours');
-        return await res.json();
+      console.log('Sending data to /api/log-hours:', data); // Debugging log
+      const res = await fetch('/api/log-hours', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+  
+      if (!res.ok) throw new Error('Failed to save log hours');
+      return await res.json();
     } catch (err) {
-        console.error(err);
-        return null;
+      console.error('Error in postLogHours:', err);
+      return null;
     }
-}
+  }
 
 
 async function togglePayroll () {
