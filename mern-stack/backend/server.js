@@ -17,11 +17,8 @@ import { Check } from "./config/check.js";
 import { Appointment } from "./config/app.js"; 
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
-<<<<<<< HEAD
 
-=======
 import { LoggedHours } from "./config/hours.js";
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
 //Express
 const app = express();
 //Middleware setup
@@ -652,7 +649,6 @@ app.listen(PORT, () => {
 
 
 
-<<<<<<< HEAD
 
 
 
@@ -698,5 +694,3 @@ app.post('/api/log-hours', async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to log hours." });
   }
 });
-=======
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7

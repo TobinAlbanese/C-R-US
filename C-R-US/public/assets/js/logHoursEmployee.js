@@ -7,21 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = today.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-<<<<<<< HEAD
-    let savedData = {};
-    try {
-        const res = await fetch('/api/log-hours');
-        savedData = await res.json();
-
-    }
-    catch (err) {
-        console.error(err);
-    }
-
-    for(let day = 1; day <= daysInMonth; day++) {
-=======
     for (let day = 1; day <= daysInMonth; day++) {
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
         const date = new Date(year, month, day);
         const datestr = date.toISOString().split('T')[0];
 
@@ -36,17 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         row.appendChild(datecell);
 
-<<<<<<< HEAD
-        const startTimeCell = document.createElement('td');
-        const startTimeSelect = createTimeSelect(datestr, 'start');
-        startTimeCell.appendChild(startTimeSelect);
-        row.appendChild(startTimeCell);
-
-        const endTimeCell = document.createElement('td');
-        const endTimeSelect = createTimeSelect(datestr, 'end');
-        endTimeCell.appendChild(endTimeSelect);
-        row.appendChild(endTimeCell);
-=======
         const startTimeSelect = createTimeSelect(datestr, 'start');
         const endTimeSelect = createTimeSelect(datestr, 'end');
 
@@ -54,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const endTimeCell = document.createElement('td');
         startTimeCell.appendChild(startTimeSelect);
         endTimeCell.appendChild(endTimeSelect);
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
 
         const totalHoursCell = document.createElement('td');
         const totalHoursInput = document.createElement('input');
@@ -62,10 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         totalHoursInput.readOnly = true;
         totalHoursInput.step = "0.01";
         totalHoursCell.appendChild(totalHoursInput);
-<<<<<<< HEAD
-        row.appendChild(totalHoursCell);
-=======
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
 
         const commentsCell = document.createElement('td');
         const commentsInput = document.createElement('textarea');
@@ -85,24 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
         row.appendChild(endTimeCell);
         row.appendChild(totalHoursCell);
         row.appendChild(commentsCell);
-<<<<<<< HEAD
-
-        if (savedData[datestr]) {
-            startTimeSelect.value = savedData[datestr].startTime || '';
-            endTimeSelect.value = savedData[datestr].endTime || '';
-            totalHoursInput.value = savedData[datestr].totalHours || '';
-            commentsInput.value = savedData[datestr].comments || '';
-        }
-
-        [startTimeSelect, endTimeSelect].forEach(input => {
-            input.addEventListener('change', () => {
-                const hours = autocalcTotalHours(startTimeSelect.value, endTimeSelect.value);
-                totalHoursInput.value = hours;
-            });
-        });
-
-=======
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
         tbody.appendChild(row);
     }
 
@@ -134,33 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             }
         });
-<<<<<<< HEAD
-
-        const dataToSave = {};
-        document.querySelectorAll('#timesheet tbody tr').forEach(row => {
-            const date = row.dataset.date;
-            const inputs = row.querySelectorAll('input, textarea');
-            const [startInput, endInput, totalInput, commentsInput] = inputs;
-
-            dataToSave[date] = {
-                startTime: startInput.value,
-                endTime: endInput.value,
-                totalHours: totalInput.value,
-                comments: commentsInput.value
-            };
-        });
-
-        const response = await fetch('/api/log-hours', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dataToSave)
-        })
-        
-        const result = await response.json();
-
-=======
         console.log('Data to save:', dataToSave);
         const result = await postLogHours(dataToSave);
         if (result) {
@@ -168,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             console.error("Failed to save log hours.");
         }
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
     });
 });
 
@@ -183,38 +107,6 @@ function autocalcTotalHours(start, end) {
     } else {
         return '';
     }
-<<<<<<< HEAD
-    else {
-        return '';
-    }
-}
-
-        function createTimeSelect(datestr, type) {
-            const select = document.createElement('select');
-            select.dataset.date = datestr;
-            select.classList.add('time-select');
-            
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = '--:--';
-            select.appendChild(defaultOption);
-    
-            for (let hour = 0; hour < 24; hour++) {
-                for (let minute = 0; minute < 60; minute += 15) {
-                    const option = document.createElement('option');
-                    const hourStr = hour.toString().padStart(2, '0');
-                    const minuteStr = minute.toString().padStart(2, '0');
-                    const timeValue = `${hourStr}:${minuteStr}`;
-                    
-                    option.value = timeValue;
-                    option.textContent = timeValue;
-                    select.appendChild(option);
-                }
-            }
-            
-            return select;
-        }
-=======
 }
 
 function createTimeSelect(datestr, type) {
@@ -257,4 +149,3 @@ async function postLogHours(data) {
         return null;
     }
 }
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
