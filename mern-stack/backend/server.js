@@ -127,13 +127,20 @@ app.post("/timeOffEmployee", async (req, res) => {
 
   const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
 
+  //Validate that necessary fields were submitted
+  if (!timeOffType || !timeOffDate || !timeOffStartTime || !timeOffEndTime) {
+    return res.status(400).json({ success: false, message: "All fields except comments are required"});
+  }
+
+
   //Get userId from req.session and put the id value in for Employee
   const userId = req.session.userId;
 
   if (!userId) {
     return res.status(401).json({ error: "User not logged in" });
   }
-  
+
+  //Insert the data gotten from the time off submition and save to database
   try {
     const newTimeOffEmployee = await timeOffEmployee.insertOne({
       Employee: userId.id,
