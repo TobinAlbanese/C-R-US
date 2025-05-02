@@ -15,8 +15,9 @@ import User from "./config/user.js";
 import { seedUsers } from "./config/seed.js"; 
 import { Check } from "./config/check.js"; 
 import { Appointment } from "./config/app.js"; 
-import { EmployeeTask } from "./config/TASKS.js";
-import { error } from "console";
+import { EmployeeTask } from "./config/employeeTasks.js";
+import { PastApps } from "./config/PastApps.js";
+
 //Express
 const app = express();
 //Middleware setup
@@ -118,41 +119,43 @@ app.post("/userCreateAccount", async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
+///////////////////////////IMRAN
 
-///////////////////////////HARKKKKK
+//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
+import { timeOffEmployee } from "./config/timeOff.js"; 
+app.post("/timeOffEmployee", async (req, res) => {
 
-app.post('/api/assignTasks', async (req, res) => {
-  const tasksToSubmit = req.body;
+  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
 
-  try { 
-    for (const task of tasksToSubmit) {
-    console.log("Processing task:", task);
-    const {type, assignTo, assignedBy, createdOn } = task;
+  //Get userId from req.session and put the id value in for Employee
+  const userId = req.session.userId;
 
-    const [taskDate, taskTime] = createdOn.split(" ");
-
-    const newEmployeeTask = new EmployeeTask({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-      commments:'',
-      assignedBy: assignedBy,
-      user: assignTo,
-    });
-    await newEmployeeTask.save();
-
+  if (!userId) {
+    return res.status(401).json({ error: "User not logged in" });
   }
-  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
+  
+  try {
+    const newTimeOffEmployee = await timeOffEmployee.insertOne({
+      Employee: userId.id,
+      timeOffType,
+      timeOffComments,
+      timeOffDate,
+      timeOffStartTime,
+      timeOffEndTime,
+    });
+    
+    console.log(Employee);
+    await newTimeOffEmployee.save();
+
+    res.json({ success: true, message: "User created successfully." });
   } catch (error) {
-    console.error("Error assigning tasks:", error);
-    if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
-    }
-    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
+///////////////////////////END OF IMRAN
 
-////////////////////HARKKKKK
+
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -407,6 +410,61 @@ app.get('/api/booked-times', async (req, res) => {
 
 
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// multi-function API for assigning and deleting tasks
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post('/api/assignTasks', async (req, res) => {
+  const tasksToSubmit = req.body;
+
+  try { 
+    for (const task of tasksToSubmit) {
+    console.log("Processing task:", task);
+    const {type, assignTo, assignedBy, createdOn } = task;
+    const taskDate = createdOn.split(" ")[0];
+    const taskTime = createdOn.split(" ").slice(1).join(" ");
+
+    const newEmployeeTask = new EmployeeTask({
+      date: taskDate,
+      time: taskTime,
+      service: type,
+      commments:'',
+      assignedBy: assignedBy,
+      user: assignTo,
+    });
+    await newEmployeeTask.save();
+
+    const existingApp = await Appointment.findOne({
+      date: taskDate,
+      time: taskTime,
+      service: type,
+    });
+    if (existingApp) {
+      const pastApps = new PastApps({
+        date: existingApp.date,
+        time: existingApp.time,
+        service: existingApp.service,
+        comments: existingApp.comments || '',
+        status: existingApp.status,
+        movedAt: new Date(),
+      });
+      await pastApps.save();
+      await Appointment.deleteOne({ _id: existingApp._id });
+    } else {
+      console.warn(`No matching appointment found for: ${type} on ${taskDate} at ${taskTime}`);
+    }
+  }
+  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning tasks:", error);
+    if (error.code === 11000) {
+      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
+    }
+    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
+  }
+});
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Assign-Tasks API for fetching data from Scheduling/Users into our admin page
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -433,6 +491,24 @@ app.get("/api/assign-tasks", async (req, res) => {
     res.json({ success: false, message: "Error fetching tasks" });
   }
 });
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Fetch Employee Tasks API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.get("/api/EmployeeTask", async (req, res) => {
+  try {
+    // Fetch tasks from the 'EmployeeTasks' collection
+    const tasks = await EmployeeTask.find();
+
+    // Return the tasks as JSON
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error("Error fetching employee tasks:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch employee tasks." });
+  }
+});
+
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Redirection API for URL

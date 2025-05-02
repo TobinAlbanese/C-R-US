@@ -8,9 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let currentDate = new Date();
 
+  let events = {}; // Declare a global variable to store events
+
   async function fetchEvents() {
     try {
-      const response = await fetch("/api/Scheduling");
+      const response = await fetch("/api/EmployeeTask");
       if (!response.ok) {
         throw new Error("Failed to fetch events");
       }
@@ -19,11 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
   
       // Transform the data into the format expected by the calendar
       events = data.reduce((acc, event) => {
-        const { date, time, service, comments, user } = event;
+        const { date, time, service, user } = event;
+  
         if (!acc[date]) {
           acc[date] = [];
         }
-        acc[date].push({ time, service, comments, user });
+        acc[date].push({ date, time, service, user });
         return acc;
       }, {});
   
@@ -34,38 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
   
-
-
-
-    // ---------------EX. DELETE THIS BLOCK WHEN DB IS WORKING--------------------
-    async function fetchEvents() {
-      try {
-        // Example data to force-load
-        events = {
-          "2025-04-14": [
-            { user: "Susan", time: "08:00 AM", service: "Dental Exam", comments: "Pain in lower right teeth." },
-            { user: "Bob", time: "10:00 AM", service: "Dental Exam", comments: "Pain in top molars." }
-          ],
-          "2025-04-24": [
-            { user: "Jerry", time: "08:00 AM", service: "Dental Cleanings & Prevention", comments: "Routine check up." },
-            { user: "Barbara", time: "09:00 AM", service: "Dental Cleanings & Prevention", comments: "Routine check up." },
-            { user: "Mike", time: "10:00 AM", service: "Dental Exam", comments: "Client concern: Blemish on front teeth." }
-          ],
-          "2025-04-26": [
-            { user: "Susan", time: "10:00 AM", service: "Composite Filling", comments: "Cavity in lower right molar." }
-          ],
-        };
-        renderCalendar(currentDate); // Re-render the calendar with example data
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    }
-    // ---------------EX. DELETE THIS BLOCK WHEN DB IS WORKING--------------------
-
-    
-
-  fetchEvents();
-
   function renderCalendar(date) {
     calendarGrid.innerHTML = "";
   
@@ -104,10 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
             eventBar.classList.add("event-bar");
   
             // Store event details in data attributes for later use
-            eventBar.dataset.user = event.user;
             eventBar.dataset.time = event.time;
             eventBar.dataset.service = event.service;
-            eventBar.dataset.comments = event.comments;
+            eventBar.dataset.user = event.user;
   
             const eventText = document.createElement("span");
             eventText.classList.add("event-text");
@@ -125,6 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
     attachEventHandlers();
   }
   
+  fetchEvents();
+
   function attachEventHandlers() {
     const eventBars = document.querySelectorAll(".event-bar"); // Select only the event bars
     eventBars.forEach(eventBar => {

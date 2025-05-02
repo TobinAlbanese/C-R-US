@@ -17,8 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error(err);
     }
 
-
-
     for(let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         const datestr = date.toISOString().split('T')[0];
@@ -54,11 +52,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const commentsCell = document.createElement('td');
         const commentsInput = document.createElement('textarea');
-        //commentsInput.type = 'commentsInput';
         commentsInput.dataset.date = datestr;
         commentsInput.rows = 1;
         commentsInput.cols = 20;
         commentsCell.appendChild(commentsInput);
+        row.appendChild(startTimeCell);
+        row.appendChild(endTimeCell);
+        row.appendChild(totalHoursCell);
         row.appendChild(commentsCell);
 
         if (savedData[datestr]) {
@@ -80,29 +80,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     submitBut.addEventListener('click', async () => {
         const rows = document.querySelectorAll('#timesheet tbody tr');
+        const dataToSave = {};
 
 
         rows.forEach(row => {
-            const inputs = row.querySelectorAll('input, textarea');
-            let hasData = false;
-            
-            inputs.forEach (input => {
-                if (input.tagName === "TEXTAREA") {
-                    if (input.value.trim() !== "") {
-                        hasData = true;
-                    }
-                } else if (input.value != "") {
-                    hasData = true;
-                }
-                
-            });
+            const date = row.dataset.date;
+            const [startInput, endInput, totalInput] = row.querySelectorAll('input[type="time"], input[type="number"]');
+            const commentsInput = row.querySelector('textarea');
+            const hasData = [startInput, endInput, totalInput, commentsInput].some(input => input.value.trim() !== "");
 
             if (hasData) {
-                inputs.forEach(input => {
+                [startInput, endInput, totalInput, commentsInput].forEach(input => {
                     input.disabled = true;
                     input.classList.add('locked-input');
                 });
                 row.classList.add('locked-input');
+
+                dataToSave[date] = {
+                    startTime: startInput.value,
+                    endTime: endInput.value,
+                    totalHours: totalInput.value,
+                    comments: commentsInput.value
+                };
             }
         });
 
@@ -130,27 +129,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         const result = await response.json();
 
-
-
     });
 });
 
-//automatically calculates the Total Hours worked.
-//reference from: https://connect.formidableforms.com/question/category/general-questions/javascript-to-calculate-the-date-and-time-difference/
+function createInputCell(type, date, readOnly = false) {
+    const cell = document.createElement('td');
+    const input = document.createElement('input');
+    input.type = type;
+    input.dataset.date = date;
+    if (readOnly) input.readOnly = true;
+    cell.appendChild(input);
+    return cell;
+}
+
 function autocalcTotalHours(start, end) {
-    if (start != '' && end != ''){
+    if (start && end) {
         const [startHours, startMins] = start.split(':').map(Number);
         const [endHours, endMins] = end.split(':').map(Number);
-
-        const startDate = new Date (0, 0, 0, startHours, startMins, 0);
-        const endDate = new Date (0, 0, 0, endHours, endMins, 0);
+        const startDate = new Date(0, 0, 0, startHours, startMins);
+        const endDate = new Date(0, 0, 0, endHours, endMins);
         let timeDiff = (endDate - startDate) / (1000 * 60 * 60);
-        if (timeDiff < 0) {
-            return '';
-        }
-        else {
-            return timeDiff.toFixed(2);
-        }
+        return timeDiff >= 0 ? timeDiff.toFixed(2) : '';
     }
     else {
         return '';
