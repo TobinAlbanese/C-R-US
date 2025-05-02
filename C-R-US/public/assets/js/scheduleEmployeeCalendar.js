@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let currentDate = new Date();
 
+
+
   let events = {}; // Declare a global variable to store events
 
   async function fetchEvents() {
@@ -18,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       const data = await response.json();
       console.log("Fetched events from API:", data); // Log the fetched data
-  
+
       // Transform the data into the format expected by the calendar
       events = data.reduce((acc, event) => {
         const { date, time, service, user } = event;
@@ -26,10 +28,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!acc[date]) {
           acc[date] = [];
         }
+
         acc[date].push({ date, time, service, user });
         return acc;
       }, {});
-  
+        
       console.log("Transformed events:", events); // Log the transformed events
       renderCalendar(currentDate); // Re-render the calendar after fetching events
     } catch (error) {
@@ -78,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
             eventBar.dataset.time = event.time;
             eventBar.dataset.service = event.service;
             eventBar.dataset.user = event.user;
+             
   
             const eventText = document.createElement("span");
             eventText.classList.add("event-text");

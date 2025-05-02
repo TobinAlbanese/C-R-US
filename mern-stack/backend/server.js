@@ -425,6 +425,7 @@ app.post('/api/assignTasks', async (req, res) => {
     });
     await newEmployeeTask.save();
 
+
     const existingApp = await Appointment.findOne({
       date: taskDate,
       time: taskTime,
@@ -487,8 +488,13 @@ app.get("/api/assign-tasks", async (req, res) => {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get("/api/EmployeeTask", async (req, res) => {
   try {
+    if (!req.session.userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    
     // Fetch tasks from the 'EmployeeTasks' collection
-    const tasks = await EmployeeTask.find();
+    // const tasks = await EmployeeTask.find();
+    const tasks = await EmployeeTask.find({ user: req.session.userId.id });
 
     // Return the tasks as JSON
     res.status(200).json(tasks);
@@ -497,6 +503,8 @@ app.get("/api/EmployeeTask", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch employee tasks." });
   }
 });
+
+
 
 
 
