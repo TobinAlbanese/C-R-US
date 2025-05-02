@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const tbody = document.querySelector('#timesheet tbody');
     const submitBut = document.querySelector('.buttonSubmitTimesheet');
 
@@ -6,6 +6,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const year = today.getFullYear();
     const month = today.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let savedData = {};
+    try {
+        const response = await fetch('/api/log-hours');
+        if (!response.ok) throw new Error ('Failed to load data');
+        savedData = await response.json();
+    }
+    catch (err) {
+        console.error(err);
+    }
 
     for(let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
@@ -21,43 +31,37 @@ document.addEventListener("DOMContentLoaded", () => {
             day: 'numeric'
         });
         row.appendChild(datecell);
-
-        const startTimeCell = document.createElement('td');
-        const startTimeInput = document.createElement('input');
-        startTimeInput.type = 'time';
-        startTimeInput.dataset.date = datestr;
-        startTimeCell.appendChild(startTimeInput);
-        row.appendChild(startTimeCell);
-
-        const endTimeCell = document.createElement('td');
-        const endTimeInput = document.createElement('input');
-        endTimeInput.type = 'time';
-        endTimeInput.dataset.date = datestr;
-        endTimeCell.appendChild(endTimeInput);
-        row.appendChild(endTimeCell);
-
-        const totalHoursCell = document.createElement('td');
-        const totalHoursInput = document.createElement('input');
-        totalHoursInput.type = 'number';
-        totalHoursInput.readOnly = true;
-        totalHoursInput.step = "0.01";
-        totalHoursCell.appendChild(totalHoursInput);
-        row.appendChild(totalHoursCell);
+        
+        const startTimeCell = createInputCell('time', datestr);
+        const endTimeCell = createInputCell('time', datestr);
+        const totalHoursCell = createInputCell('number', datestr, true); // read-only
+        totalHoursCell.querySelector('input').step = "0.01";
 
         const commentsCell = document.createElement('td');
         const commentsInput = document.createElement('textarea');
-        //commentsInput.type = 'commentsInput';
         commentsInput.dataset.date = datestr;
         commentsInput.rows = 1;
         commentsInput.cols = 20;
         commentsCell.appendChild(commentsInput);
+        row.appendChild(startTimeCell);
+        row.appendChild(endTimeCell);
+        row.appendChild(totalHoursCell);
         row.appendChild(commentsCell);
 
+        if (savedData[datestr]) {
+            startTimeCell.querySelector('input').value = savedData[datestr].startTime || '';
+            endTimeCell.querySelector('input').value = savedData[datestr].endTime || '';
+            totalHoursCell.querySelector('input').value = savedData[datestr].totalHours || '';
+            commentsInput.value = savedData[datestr].comments || '';
+        }
 
-        [startTimeInput, endTimeInput].forEach(input => {
+        [startTimeCell, endTimeCell].forEach(cell => {
+            const input = cell.querySelector('input');
             input.addEventListener('change', () => {
-                const hours = autocalcTotalHours(startTimeInput.value, endTimeInput.value);
-                totalHoursInput.value = hours;
+                const start = startTimeCell.querySelector('input').value;
+                const end = endTimeCell.querySelector('input').value;
+                const hours = autocalcTotalHours(start, end);
+                totalHoursCell.querySelector('input').value = hours;
             });
         });
 
@@ -66,51 +70,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
     submitBut.addEventListener('click', () => {
         const rows = document.querySelectorAll('#timesheet tbody tr');
+        const dataToSave = {};
 
         rows.forEach(row => {
-            const inputs = row.querySelectorAll('input, textarea');
-            let hasData = false;
-            
-            inputs.forEach (input => {
-                if (input.tagName === "TEXTAREA") {
-                    if (input.value.trim() !== "") {
-                        hasData = true;
-                    }
-                } else if (input.value != "") {
-                    hasData = true;
-                }
-                
-            });
+            const date = row.dataset.date;
+            const [startInput, endInput, totalInput] = row.querySelectorAll('input[type="time"], input[type="number"]');
+            const commentsInput = row.querySelector('textarea');
+            const hasData = [startInput, endInput, totalInput, commentsInput].some(input => input.value.trim() !== "");
 
             if (hasData) {
-                inputs.forEach(input => {
+                [startInput, endInput, totalInput, commentsInput].forEach(input => {
                     input.disabled = true;
                     input.classList.add('locked-input');
                 });
                 row.classList.add('locked-input');
+
+                dataToSave[date] = {
+                    startTime: startInput.value,
+                    endTime: endInput.value,
+                    totalHours: totalInput.value,
+                    comments: commentsInput.value
+                };
             }
+        });
+        fetch('/api/log-hours', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataToSave)
+        })
+        .then(() => {
+            document.getElementById('statusMessage').textContent = 'Timesheet submitted successfully!';
+        })
+        .catch(error => {
+            console.error('Error saving timesheet:', error);
+            document.getElementById('statusMessage').textContent = 'Error saving timesheet.';
         });
     });
 });
 
-//automatically calculates the Total Hours worked.
-//reference from: https://connect.formidableforms.com/question/category/general-questions/javascript-to-calculate-the-date-and-time-difference/
+function createInputCell(type, date, readOnly = false) {
+    const cell = document.createElement('td');
+    const input = document.createElement('input');
+    input.type = type;
+    input.dataset.date = date;
+    if (readOnly) input.readOnly = true;
+    cell.appendChild(input);
+    return cell;
+}
+
 function autocalcTotalHours(start, end) {
-    if (start != '' && end != ''){
+    if (start && end) {
         const [startHours, startMins] = start.split(':').map(Number);
         const [endHours, endMins] = end.split(':').map(Number);
-
-        const startDate = new Date (0, 0, 0, startHours, startMins, 0);
-        const endDate = new Date (0, 0, 0, endHours, endMins, 0);
+        const startDate = new Date(0, 0, 0, startHours, startMins);
+        const endDate = new Date(0, 0, 0, endHours, endMins);
         let timeDiff = (endDate - startDate) / (1000 * 60 * 60);
-        if (timeDiff < 0) {
-            return '';
-        }
-        else {
-            return timeDiff.toFixed(2);
-        }
+        return timeDiff >= 0 ? timeDiff.toFixed(2) : '';
     }
-    else {
-        return '';
-    }
+    return '';
 }

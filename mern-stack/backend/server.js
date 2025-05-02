@@ -118,9 +118,6 @@ app.post("/userCreateAccount", async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
-
-<<<<<<< HEAD
-=======
 ///////////////////////////IMRAN
 
 //timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
@@ -151,43 +148,8 @@ app.post("/timeOffEmployee", async (req, res) => {
 ///////////////////////////END OF IMRAN
 
 
-///////////////////////////HARKKKKK
-
-app.post('/api/assignTasks', async (req, res) => {
-  const tasksToSubmit = req.body;
-
-  try { 
-    for (const task of tasksToSubmit) {
-    console.log("Processing task:", task);
-    const {type, assignTo, assignedBy, createdOn } = task;
-
-    const [taskDate, taskTime] = createdOn.split(" ");
-
-    const newEmployeeTask = new EmployeeTask({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-      commments:'',
-      assignedBy: assignedBy,
-      user: assignTo,
-    });
-    await newEmployeeTask.save();
-
-  }
-  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
-  } catch (error) {
-    console.error("Error assigning tasks:", error);
-    if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: "Duplicate task assignment." });
-    }
-    res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
-  }
-});
-
-////////////////////HARKKKKK
 
 
->>>>>>> 6f230f153e32c670c5ec5df04c66cb017a7bd0f2
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -438,42 +400,7 @@ app.get('/api/booked-times', async (req, res) => {
   }
 });
 
-//log hours
-app.post('/api/log-hours', async (req, res) => {
-  const data = req.body;
-  const userId = req.session.userId;
 
-  if (!userId) {
-    return res.status(401).json({ success: false, message: "User not logged in." });
-  }
-
-  const entries = [];
-
-  try {
-    for (const date in data) {
-      const { startTime, endTime, comments } = data[date];
-
-      if (!startTime || !endTime) continue;
-      
-      entries.push(
-        LoggedHours.findOneAndUpdate(
-          { user: userId, date },
-          { startTime, endTime, comments },
-          { upsert: true, new: true }
-        )
-      );
-
-      entries.push(log.save());
-    }
-
-    await Promise.all(entries);
-
-    res.status(200).json({ success: true, message: "All hours successfully logged" });
-  } catch (error) {
-    console.error("Error saving logs:", error);
-    res.status(500).json({ success: false, message: "Failed to log hours." });
-  }
-});
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // multi-function API for assigning and deleting tasks
