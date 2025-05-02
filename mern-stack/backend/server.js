@@ -604,6 +604,27 @@ app.get('/api/appsUpcoming', async (req, res) => {
 });
 
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ // Fetch Employee Tasks API
+ /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+ app.get("/api/EmployeeTask", async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    // Fetch tasks from the 'EmployeeTasks' collection
+    // const tasks = await EmployeeTask.find();
+    const tasks = await EmployeeTask.find({ user: req.session.userId.id });
+
+    // Return the tasks as JSON
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error("Error fetching employee tasks:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch employee tasks." });
+  }
+});
+
 
 
 
