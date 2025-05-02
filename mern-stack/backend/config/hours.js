@@ -11,4 +11,5 @@ const LogHoursSchema = new mongoose.Schema({
 
 const LoggedHours = mongoose.model('LoggedHours', LogHoursSchema, 'LoggedHours');
 
-export { Timesheet };
+export { LoggedHours };
+
