@@ -151,6 +151,67 @@ h2{
     border-radius: 15px;
 }
 
+/*----------------------Button------------------------*/
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Align the button to the right */
+    margin-top: 20px; /* Add spacing from the table */
+    width: 100%; /* Ensure it spans the full width of the page */
+    
+}
+.buttonApprove{
+    color:white;
+    background-color: #000000;
+    text-align: center;
+    border-radius: 10px;
+    padding: 24px 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10.5em;
+    right: 5em;
+    top: 20em;
+    cursor: pointer;
+}
+.buttonApprove:hover{
+    opacity: 0.8;
+}
+
+.date-controls {
+    margin: 2em 4em;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
 /*-----------------------Footer-----------------------*/
 
 footer { 

@@ -194,6 +194,9 @@ h2{
 .submitButtonContainer{
     display: flex;
     margin-right: right;
+    margin-left: 70em;
+    margin-top: 20px;
+
 }
 
 #submitButton {
@@ -202,7 +205,6 @@ h2{
     color: white;
     margin-left: auto;
     margin-top: 10px;
-    margin-right: 45px;
     }
 
 #submitButton:hover {

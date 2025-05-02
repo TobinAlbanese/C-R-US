@@ -23,13 +23,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Transform the data into the format expected by the calendar
       events = data.reduce((acc, event) => {
-        const { date, time, service, user } = event;
+        const { date, time, service, firstName, lastName } = event;
   
         if (!acc[date]) {
           acc[date] = [];
         }
 
-        acc[date].push({ date, time, service, user });
+        acc[date].push({ date, time, service, firstName, lastName });
         return acc;
       }, {});
         
@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // Store event details in data attributes for later use
             eventBar.dataset.time = event.time;
             eventBar.dataset.service = event.service;
-            eventBar.dataset.user = event.user;
-             
+            eventBar.dataset.firstName = event.firstName;
+            eventBar.dataset.lastName = event.lastName; 
   
             const eventText = document.createElement("span");
             eventText.classList.add("event-text");
@@ -108,14 +108,15 @@ document.addEventListener("DOMContentLoaded", function () {
         event.stopPropagation(); // Prevent the click from bubbling up to parent elements
   
         // Extract event details from data attributes
-        const user = this.dataset.user;
+        const firstName = this.dataset.firstName;
+        const lastName = this.dataset.lastName;
         const time = this.dataset.time;
         const service = this.dataset.service;
         const comments = this.dataset.comments;
   
         // Show the custom pop-up with the event details
         showCustomPopup(
-          `User: <strong>${user}</strong><br>Time: <strong>${time}</strong><br>Service: <strong>${service}</strong><br>Comments: <strong>${comments}</strong>`
+          `Client: <strong>${firstName}</strong> <strong>${lastName}</strong><br>Time: <strong>${time}</strong><br>Service: <strong>${service}</strong><br>Comments: <strong>${comments}</strong>`
         );
       });
     });

@@ -168,10 +168,15 @@ form button
     outline: none;
     cursor: pointer;
 }
-button:hover
+form button:hover
 {
     opacity: 0.7;
     border-radius: 20px;
+}
+button:hover
+{
+    opacity: 0.7;
+    border-radius: 8px;
 }
 
 

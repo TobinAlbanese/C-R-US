@@ -18,6 +18,7 @@ import { Appointment } from "./config/app.js";
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { LoggedHours } from "./config/hours.js";
 =======
 <<<<<<< HEAD
@@ -26,6 +27,11 @@ import { LoggedHours } from "./config/hours.js";
 import { LoggedHours } from "./config/hours.js";
 >>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
 >>>>>>> e75eea683fdc3e4f52d3adc5948039cd25134009
+=======
+import { LoggedHours } from "./config/hours.js";
+import { ApprovedHours } from "./config/ApprovedHours.js";
+
+>>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a
 //Express
 const app = express();
 //Middleware setup
@@ -132,7 +138,7 @@ app.post("/userCreateAccount", async (req, res) => {
 
 //timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
 import { timeOffEmployee } from "./config/timeOff.js"; 
-import { error } from "console";
+import { error, log } from "console";
 app.post("/timeOffEmployee", async (req, res) => {
 
   const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
@@ -173,8 +179,6 @@ app.post("/timeOffEmployee", async (req, res) => {
 ///////////////////////////END OF IMRAN
 
 
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -182,7 +186,6 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -191,6 +194,7 @@ app.post("/login", async (req, res) => {
         message: "Incorrect email or password.",
       });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -198,11 +202,18 @@ app.post("/login", async (req, res) => {
     }
 
     req.session.userId = {
-      id: user._id,
+      id: user._id, // This should set the user ID
       email: user.email,
       role: user.role,
     };
-    return res.json({ success: true, role: user.role });
+
+    req.session.save((err) => {
+      if (err) {
+        console.error("Error saving session:", err);
+        return res.status(500).json({ success: false, message: "Failed to save session." });
+      }
+      return res.json({ success: true, role: user.role });
+    });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ success: false, message: "Server error" });
@@ -426,53 +437,80 @@ app.get('/api/booked-times', async (req, res) => {
 });
 
 
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // multi-function API for assigning and deleting tasks
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post('/api/assignTasks', async (req, res) => {
   const tasksToSubmit = req.body;
 
-  try { 
-    for (const task of tasksToSubmit) {
-    console.log("Processing task:", task);
-    const {type, assignTo, assignedBy, createdOn } = task;
-    const taskDate = createdOn.split(" ")[0];
-    const taskTime = createdOn.split(" ").slice(1).join(" ");
-
-    const newEmployeeTask = new EmployeeTask({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-      commments:'',
-      assignedBy: assignedBy,
-      user: assignTo,
-    });
-    await newEmployeeTask.save();
-
-
-    const existingApp = await Appointment.findOne({
-      date: taskDate,
-      time: taskTime,
-      service: type,
-    });
-    if (existingApp) {
-      const pastApps = new PastApps({
-        date: existingApp.date,
-        time: existingApp.time,
-        service: existingApp.service,
-        comments: existingApp.comments || '',
-        status: existingApp.status,
-        movedAt: new Date(),
-      });
-      await pastApps.save();
-      await Appointment.deleteOne({ _id: existingApp._id });
-    } else {
-      console.warn(`No matching appointment found for: ${type} on ${taskDate} at ${taskTime}`);
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User is not logged in." });
     }
-  }
-  res.status(200).json({ success: true, message: "Tasks assigned successfully." });
+
+    for (const task of tasksToSubmit) {
+      console.log("Processing task:", task);
+      const { type, assignTo, assignedBy, createdOn } = task;
+      const taskDate = createdOn.split(" ")[0];
+      const taskTime = createdOn.split(" ").slice(1).join(" ");
+
+      // Check if a task with the same date, time, service, and user already exists
+      const existingTask = await EmployeeTask.findOne({
+        date: taskDate,
+        time: taskTime,
+        service: type,
+        user: assignTo,
+      });
+
+      if (existingTask) {
+        console.warn(`Duplicate task found for: ${type} on ${taskDate} at ${taskTime}`);
+        continue; // Skip this task and move to the next one
+      }
+
+      const assignedUser = await User.findById(assignTo).select("email firstName lastName");
+      if (!assignedUser) {
+        throw new Error(`User not found for ID: ${assignTo}`);
+      }
+
+      const newEmployeeTask = new EmployeeTask({
+        date: taskDate,
+        time: taskTime,
+        service: type,
+        commments: '',
+        assignedBy: assignedBy,
+        user: assignTo,
+        email: assignedUser.email,
+        firstName: assignedUser.firstName,
+        lastName: assignedUser.lastName,
+      });
+      await newEmployeeTask.save();
+
+      const existingApp = await Appointment.findOne({
+        date: taskDate,
+        time: taskTime,
+        service: type,
+      });
+      if (existingApp) {
+        const pastApps = new PastApps({
+          date: existingApp.date,
+          time: existingApp.time,
+          service: existingApp.service,
+          comments: existingApp.comments || '',
+          status: existingApp.status,
+          movedAt: new Date(),
+          email: assignedUser.email,
+          firstName: assignedUser.firstName,
+          lastName: assignedUser.lastName,
+        });
+        await pastApps.save();
+        await Appointment.deleteOne({ _id: existingApp._id });
+      } else {
+        console.warn(`No matching appointment found for: ${type} on ${taskDate} at ${taskTime}`);
+      }
+    }
+
+    res.status(200).json({ success: true, message: "Tasks assigned successfully." });
   } catch (error) {
     console.error("Error assigning tasks:", error);
     if (error.code === 11000) {
@@ -493,6 +531,8 @@ app.get("/api/assign-tasks", async (req, res) => {
     
     const tasksWithUsers = tasks.map(task => {
       return {
+        _id: task._id.toString(),
+     //   user: task.user.toString(),
         type: task.service,
         assignTo: task.user ? task.user.toString() : null,
         assignedBy: task.assignedBy ? task.assignedBy.toString() : null, 
@@ -510,95 +550,68 @@ app.get("/api/assign-tasks", async (req, res) => {
   }
 });
 
+app.post("/api/assign-tasks", async (req, res) => {
+  try {
+
+    console.log("Received request body:", req.body);
+
+
+    const { user, admin, service, date, time, comments } = req.body;
+    console.log("Parsed data:", { user, admin, service, date, time, comments });
+    const newTask = new Appointment({
+      user,
+      service,
+      date,
+      time,
+      comments
+    });
+    await newTask.save();
+    res.status(200).json({ success: true, message: "Task assigned successfully." });
+  } catch (error) {
+    console.error("Error assigning task:", error);
+    res.status(500).json({ success: false, message: "Failed to assign task." });
+  }
+});
+
+app.post("/api/delete-task", async (req, res) => {
+  try {
+    const { taskIds } = req.body;
+    console.log("Received task ID to delete:", taskIds);
+    if (!taskIds) {
+      return res.status(400).json({ success: false, message: "Task ID is required." });
+    }
+    const deletedTask = await Appointment.deleteMany({_id: { $in: taskIds}});
+    if (!deletedTask) {
+      return res.status(404).json({ success: false, message: "Task not found." });
+    }
+    console.log("Deleted task:", deletedTask);
+    res.status(200).json({ success: true, message: "Task deleted successfully." }); 
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).json({ success: false, message: "Failed to delete task." });
+  }
+});
 
 //fetch previous apps
 app.get('/api/appsPast', async (req, res) => {
-  try{
-    const today = new Date().toISOString().split('T')[0];
-    const userId = req.session.userId;
-    if(!userId) return res.status(401).json({ error: "User not logged in"});
+  try {
+    const pastAppointments = await PastApps.find({ date: { $lt: new Date() } });
+    console.log('Past appointments:', pastAppointments);  // Debugging the fetched past appointments
+    res.json({ past: pastAppointments });
+  } catch (error) {
+      console.error('Error fetching past appointments:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
-    const pastApps = await PastApps.find({
-      user: userId,
-      date: {$lt: today},
-    }).sort({ date: -1 });
-    res.json({ past: pastApps});
-    } catch (err) {
-      console.error("Error fetching past appointments:", err);
-      res.status(500).json({ error: 'Failed to fetch past appointments' });
-    }
-  });
-
-//fetch upcoming apps
 app.get('/api/appsUpcoming', async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const userId = req.session.userId;
-    if (!userId) return res.status(401).json({ error: "User not logged in" });
-
-    const upcomingApps = await PastApps.find({
-      user: userId,
-      date: { $gte: today }
-    }).sort({ date: 1 });
-
-    res.json({ upcoming: upcomingApps });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch upcoming appointments' });
-  }
-});
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Log Hours
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-app.post('/api/log-hours', async (req, res) => {
-  const logs = req.body;
-  console.log("Received log data:", logs);
-
-  if (!Array.isArray(logs) || logs.length === 0) {
-    return res.status(400).json({ error: 'No log entries received.' });
-  }
-
-  const userId = req.session.userId;
-  if (!userId) {
-    return res.status(401).json({ success: false, message: "User not logged in." });
-  }
-
-  try {
-    const savedLogs = await Promise.all(logs.map(async ({ date, startTime, endTime, totalHours, comments }) => {
-      if (!date || !startTime || !endTime) throw new Error('Missing required fields.');
-      const newLog = new LoggedHours({ user: userId, date, startTime, endTime, totalHours, comments });
-      return await newLog.save();
-    }));
-
-    console.log("Hours saved:", savedLogs);
-    res.status(200).json({ success: true, message: "Hours successfully logged." });
+    const upcomingAppointments = await PastApps.find({ date: { $gte: new Date() } });
+    console.log('Upcoming appointments:', upcomingAppointments);  // Debugging the fetched upcoming appointments
+    res.json({ upcoming: upcomingAppointments });
   } catch (error) {
-    console.error("Error logging hours:", error);
-    res.status(500).json({ success: false, message: "Failed to log hours." });
-  }
-});
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Fetch Employee Tasks API
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-app.get("/api/EmployeeTask", async (req, res) => {
-  try {
-    if (!req.session.userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-    
-    // Fetch tasks from the 'EmployeeTasks' collection
-    // const tasks = await EmployeeTask.find();
-    const tasks = await EmployeeTask.find({ user: req.session.userId.id });
-
-    // Return the tasks as JSON
-    res.status(200).json(tasks);
-  } catch (error) {
-    console.error("Error fetching employee tasks:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch employee tasks." });
+      console.error('Error fetching upcoming appointments:', error);
+      res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -606,7 +619,6 @@ app.get("/api/EmployeeTask", async (req, res) => {
 
 
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Redirection API for URL
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post("/redirect", (req, res) => {
@@ -657,8 +669,11 @@ app.listen(PORT, () => {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a
 
 
 
@@ -676,34 +691,146 @@ app.listen(PORT, () => {
 // Log Hours
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post('/api/log-hours', async (req, res) => {
-  const { date, startTime, endTime, comments } = req.body;
-  
-  if (!date || !startTime || !endTime) {
-    return res.status(400).json({ error: 'Missing required fields.' });
+  const logs = req.body;
+  console.log("Received log data:", logs); // Debugging log
+
+  if (!Array.isArray(logs) || logs.length === 0) {
+    return res.status(400).json({ error: 'No log entries received.' });
+  }
+
+  const userId = req.session.userId?.id;
+  console.log("Session userId:", userId); // Debugging log
+
+  if (!userId) {
+    return res.status(401).json({ success: false, message: "User not logged in." });
   }
 
   try {
-    const userId = req.session.userId;
-    if (!userId){
-      return res.status(401).json({success:false, message: "User not logged in."});
+    const user = await User.findById(userId).select("firstName lastName email");
+    console.log("Fetched user:", user); // Debugging log
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
     }
 
-    const log = new LoggedHours ({
-      user: userId,
-      date,
-      startTime,
-      endTime,
-      comments,
-    });
-    const savedLog = await log.save();
-    console.log("Hours saved:", savedLog);
-    res.status(200).json({ success: true, message: "Hours successfully logged"});
-    
+    const savedLogs = await Promise.all(
+      logs.map(async ({ date, startTime, endTime, totalHours, comments }) => {
+        if (!date || !startTime || !endTime || !totalHours) {
+          throw new Error('Missing required fields.');
+        }
+
+        const newLog = new LoggedHours({
+          user: userId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          date,
+          startTime,
+          endTime,
+          totalHours,
+          comments,
+        });
+
+        return await newLog.save();
+      })
+    );
+
+    console.log("Hours saved:", savedLogs.length);
+    res.status(200).json({ success: true, message: "Hours successfully logged." });
   } catch (error) {
-    console.error("Error: ", error);
+    console.error("Error logging hours:", error); // Log the error
     res.status(500).json({ success: false, message: "Failed to log hours." });
   }
 });
+<<<<<<< HEAD
 =======
 >>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
 >>>>>>> e75eea683fdc3e4f52d3adc5948039cd25134009
+=======
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Fetch Logged Hours API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.get("/api/log-hours", async (req, res) => {
+  try {
+    
+    // Fetch hours from the 'LoggedHours' collection
+    const hours = await LoggedHours.find();
+
+    // Return the tasks as JSON
+    res.status(200).json(hours);
+  } catch (error) {
+    console.error("Error fetching logged hours:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch logged hours." });
+  }
+});
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Post Approved Hours API 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+app.post('/api/approve-hours', async (req, res) => {
+  const approvedHours = req.body;
+
+  try {
+    // Save approved hours to the ApprovedHours collection
+    const savedApprovedHours = await Promise.all(
+      approvedHours.map(async (hour) => {
+        // Fetch the corresponding LoggedHours entry to get the email
+        const loggedHour = await LoggedHours.findById(hour.id).select("email");
+        if (!loggedHour) {
+          throw new Error(`LoggedHours entry not found for ID: ${hour.id}`);
+        }
+
+        const newApprovedHour = new ApprovedHours({
+          firstName: hour.firstName,
+          lastName: hour.lastName,
+          email: loggedHour.email, // Include the email field
+          timeLogged: hour.timeLogged,
+          calculatedPay: hour.calculatedPay,
+          originalId: hour.id, // Save the original ID for reference
+        });
+
+        return await newApprovedHour.save();
+      })
+    );
+
+    // Delete the approved hours from the LoggedHours collection
+    const idsToDelete = approvedHours.map((hour) => hour.id); // Collect IDs of approved hours
+    await LoggedHours.deleteMany({ _id: { $in: idsToDelete } });
+
+    res.status(200).json({
+      success: true,
+      message: "Hours approved and removed from LoggedHours.",
+      data: savedApprovedHours,
+    });
+  } catch (error) {
+    console.error("Error approving hours:", error);
+    res.status(500).json({ success: false, message: "Failed to approve hours." });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Get Approved Hours API 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+app.get('/api/approvedHours', async (req, res) => {
+  try {
+    // Get the logged-in user's email from the session
+    const userEmail = req.session.userId?.email;
+    console.log("Fetching approved hours for email:", userEmail); // Debugging log
+
+    if (!userEmail) {
+      return res.status(401).json({ success: false, message: "User not logged in." });
+    }
+
+    // Fetch approved hours for the logged-in user's email
+    const approvedHours = await ApprovedHours.find({ email: userEmail });
+    res.status(200).json(approvedHours); // Send the filtered data as JSON
+  } catch (error) {
+    console.error('Error fetching approved hours:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch approved hours.' });
+  }
+});
+>>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a

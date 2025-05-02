@@ -138,6 +138,20 @@ nav#assignments {
     margin: 2em 4em;
 }
 
+.seePayroll {
+    margin: 2em auto;
+    font-size: 15px;
+    text-align: center;
+    font-weight: bold;
+    padding: 24px 24px;
+    cursor: pointer;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: center;
+}
+
 
 /*----------------------Table-------------------------*/
 
@@ -214,8 +228,33 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     cursor: not-allowed !important;
 }
 
-
-
+/*--------------------Payroll------------------------*/
+.payroll-container {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 2em auto;
+}
+.hidden {
+    display: none !important;
+}
+.visible {
+    display: block !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.payroll-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .payroll-table th, .payroll-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .payroll-table th {
+    background-color: #f8f9fa;
+  }
 
 
 /*-----------------------Footer-----------------------*/

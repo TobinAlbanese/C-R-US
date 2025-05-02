@@ -1,6 +1,29 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const tbody = document.querySelector('#timesheet tbody');
     const submitBut = document.querySelector('.buttonSubmitTimesheet');
+    const seePayrollBut = document.querySelector('.seePayroll');
+    const timesheetTable = document.querySelector('.timesheetTable');
+    const payrollContainer = document.querySelector('.payroll-container');
+
+      
+    let existingData = [];
+    try {
+        const res = await fetch('/api/logged-hours', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.logs)) {
+        existingData = data.logs;
+        }
+    } catch (err) {
+        console.error('Error fetching existing data:', err);
+    }
+    const logMap = new Map();
+    existingData.forEach(log => 
+        logMap.set(log.date, log));
+
 
     const today = new Date();
     const year = today.getFullYear();
@@ -50,6 +73,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 totalHoursInput.value = hours;
             });
         });
+        if (logMap.has(datestr)) {
+            const log = logMap.get(datestr);
+            startTimeSelect.value = log.startTime || '';
+            endTimeSelect.value = log.endTime || '';
+            totalHoursInput.value = log.totalHours || '';
+            commentsInput.value = log.comments || '';
+            [startTimeSelect, endTimeSelect, totalHoursInput, commentsInput].forEach(input => {
+                input.disabled = true;
+                input.classList.add('locked-input');
+            });
+            row.classList.add('locked-input');
+        }
 
         row.appendChild(startTimeCell);
         row.appendChild(endTimeCell);
@@ -93,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Failed to save log hours.");
         }
     });
-});
+
 
 function autocalcTotalHours(start, end) {
     if (start && end) {
@@ -135,16 +170,85 @@ function createTimeSelect(datestr, type) {
 
 async function postLogHours(data) {
     try {
-        const res = await fetch('/api/log-hours', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data), 
-            credentials: 'include',
-        });
-        if (!res.ok) throw new Error('Failed to save log hours');
-        return await res.json();
+      console.log('Sending data to /api/log-hours:', data); // Debugging log
+      const res = await fetch('/api/log-hours', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+  
+      if (!res.ok) throw new Error('Failed to save log hours');
+      return await res.json();
     } catch (err) {
-        console.error(err);
-        return null;
+      console.error('Error in postLogHours:', err);
+      return null;
+    }
+  }
+
+
+async function togglePayroll () {
+    console.log('Toggle Payroll button clicked'); // Debugging log
+    timesheetTable.classList.toggle('hidden');
+    payrollContainer.classList.toggle('visible');
+
+    if (timesheetTable.classList.contains('hidden')) {
+        seePayrollBut.textContent = 'See Timesheet';
+        await loadPayrollData();
+    }
+    else {
+        seePayrollBut.textContent = 'See Payroll';
+    }
+<<<<<<< HEAD
+}
+=======
+}
+
+async function loadPayrollData() {
+    try {
+        const response = await fetch('/api/approvedHours', {
+            credentials: 'include'
+        });
+        
+        if (!response.ok) throw new Error('Failed to load payroll data');
+        
+        const payrollData = await response.json();
+        displayPayrollData(payrollData);
+    } catch (error) {
+        console.error('Error loading payroll data:', error);
+        document.getElementById('payrollData').innerHTML = 
+            '<p>Error loading payroll information. Please try again later.</p>';
     }
 }
+
+function displayPayrollData(data) {
+    const payrollDataElement = document.getElementById('payroll-data'); // Select the payroll table container
+
+    let html = `
+        <table class="payroll-table">
+            <thead>
+                <tr>
+                    <th>Time Logged</th>
+                    <th>Calculated Pay</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    // Loop through the data and create table rows
+    data.forEach(period => {
+        html += `
+            <tr>
+                <td>${period.timeLogged}</td>
+                <td>$${parseFloat(period.calculatedPay).toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    payrollDataElement.innerHTML = html; // Insert the table into the container
+}
+
+seePayrollBut.addEventListener('click', togglePayroll);
+});
+>>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a

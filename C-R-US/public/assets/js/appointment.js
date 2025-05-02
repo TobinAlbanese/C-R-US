@@ -21,34 +21,52 @@ document.addEventListener('DOMContentLoaded', () => {
 // fetch past & upcomign appointments
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 async function pastApps() {
-    const response = await fetch('/api/appsPast');
-    const data = await response.json();
-    displayApps(data.past, 'past-appointments');
+    try {
+        const response = await fetch('/api/appsPast');
+        if (!response.ok) throw new Error('Failed to fetch past apps');
+        const data = await response.json();
+        console.log('past appointments:', data.past);
+        displayApps(data.past, 'past-appointments');
+    } catch (error) {
+        console.error('Error fetching past appointments:', error);
+    }
 }
+
 async function upcomingApps() {
-    const response = await fetch('/api/appsUpcoming');
-    const data = await response.json();
-    displayApps(data.upcoming, 'upcoming-appointments');
+    try {
+        const response = await fetch('/api/appsUpcoming');
+        if (!response.ok) throw new Error('Failed to fetch upcoming apps');
+        const data = await response.json();
+        console.log('upcoming appointments:', data.upcoming);
+        displayApps(data.upcoming, 'upcoming-appointments');
+    } catch (error) {
+        console.error('Error fetching upcoming appointments:', error);
+    }
 }
+
 function displayApps(appointments, containerId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = ''; 
-    if (!appointments || appointments.length === 0) {
-        container.innerHTML = '<p>No appointments found.</p>';
-        return;
+    container.innerHTML = '';  // Clear existing content
+
+    if (appointments.length === 0) {
+        container.innerHTML = `<div class="appointment-item">No appointments available.</div>`;
+    } else {
+        appointments.forEach(app => {
+            console.log("Appointment details:", app);  // Debugging each appointment
+            const appointmentItem = document.createElement('div');
+            appointmentItem.classList.add('appointment-item');
+            
+            // Display the date and details for each appointment
+            const appointmentDate = new Date(app.date).toLocaleDateString();
+            appointmentItem.textContent = `${appointmentDate} - ${app.details || "No details available"}`;
+            container.appendChild(appointmentItem);
+        });
     }
-    appointments.forEach(app => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-        <p><strong>${app.service}</strong> on ${app.date} at ${app.time}</p>
-        <p>Status: ${app.status}</p>
-        <p>Comments: ${app.comments}</p>
-        `;
-    container.appendChild(div);
-  });
 }
+
 pastApps();
 upcomingApps();
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // calendar section for taken dates
