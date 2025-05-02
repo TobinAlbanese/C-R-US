@@ -17,21 +17,9 @@ import { Check } from "./config/check.js";
 import { Appointment } from "./config/app.js"; 
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { LoggedHours } from "./config/hours.js";
-=======
-<<<<<<< HEAD
-
-=======
-import { LoggedHours } from "./config/hours.js";
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
->>>>>>> e75eea683fdc3e4f52d3adc5948039cd25134009
-=======
 import { LoggedHours } from "./config/hours.js";
 import { ApprovedHours } from "./config/ApprovedHours.js";
 
->>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a
 //Express
 const app = express();
 //Middleware setup
@@ -668,12 +656,6 @@ app.listen(PORT, () => {
 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a
 
 
 
@@ -742,11 +724,6 @@ app.post('/api/log-hours', async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to log hours." });
   }
 });
-<<<<<<< HEAD
-=======
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
->>>>>>> e75eea683fdc3e4f52d3adc5948039cd25134009
-=======
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Fetch Logged Hours API
@@ -833,4 +810,3 @@ app.get('/api/approvedHours', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch approved hours.' });
   }
 });
->>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a

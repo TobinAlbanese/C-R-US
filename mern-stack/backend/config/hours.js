@@ -13,19 +13,6 @@ const LoggedHoursSchema = new mongoose.Schema({
   comments: { type: String },
 }, { collection: 'LoggedHours' }); // Explicitly set the collection name
 
-<<<<<<< HEAD
-const LoggedHours = mongoose.model('LoggedHours', LogHoursSchema, 'LoggedHours');
-<<<<<<< HEAD
-export { LoggedHours };
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a
 
 const LoggedHours = mongoose.model('LoggedHours', LoggedHoursSchema);
 export { LoggedHours };
-<<<<<<< HEAD
->>>>>>> 7c3f26f9bc661c08aaba1b019b38cc98038a29f7
->>>>>>> e75eea683fdc3e4f52d3adc5948039cd25134009
-=======
->>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a

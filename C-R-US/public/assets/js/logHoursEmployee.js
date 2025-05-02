@@ -199,9 +199,6 @@ async function togglePayroll () {
     else {
         seePayrollBut.textContent = 'See Payroll';
     }
-<<<<<<< HEAD
-}
-=======
 }
 
 async function loadPayrollData() {
@@ -251,4 +248,3 @@ function displayPayrollData(data) {
 
 seePayrollBut.addEventListener('click', togglePayroll);
 });
->>>>>>> 68f0b83161ae7c5cf56f2234136c2d221496ce6a
