@@ -17,6 +17,7 @@ import { Check } from "./config/check.js";
 import { Appointment } from "./config/app.js"; 
 import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
+
 //Express
 const app = express();
 //Middleware setup
@@ -409,6 +410,7 @@ app.get('/api/booked-times', async (req, res) => {
 
 
 
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // multi-function API for assigning and deleting tasks
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -461,6 +463,7 @@ app.post('/api/assignTasks', async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred while assigning tasks." });
   }
 });
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Assign-Tasks API for fetching data from Scheduling/Users into our admin page
@@ -538,4 +541,67 @@ app.get("/products", (req, res) => {
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Log Hours
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post('/api/log-hours', async (req, res) => {
+  const { date, startTime, endTime, comments } = req.body;
+  
+  if (!date || !startTime || !endTime) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
+
+  try {
+    const userId = req.session.userId;
+    if (!userId){
+      return res.status(401).json({success:false, message: "User not logged in."});
+    }
+
+    const log = new LoggedHours ({
+      user: userId,
+      date,
+      startTime,
+      endTime,
+      comments,
+    });
+    const savedLog = await log.save();
+    console.log("Hours saved:", savedLog);
+    res.status(200).json({ success: true, message: "Hours successfully logged"});
+    
+  } catch (error) {
+    console.error("Error: ", error);
+    res.status(500).json({ success: false, message: "Failed to log hours." });
+  }
 });

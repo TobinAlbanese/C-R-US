@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let savedData = {};
     try {
-        const response = await fetch('/api/log-hours');
-        if (!response.ok) throw new Error ('Failed to load data');
-        savedData = await response.json();
+        const res = await fetch('/api/log-hours');
+        savedData = await res.json();
+
     }
     catch (err) {
         console.error(err);
@@ -31,11 +31,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             day: 'numeric'
         });
         row.appendChild(datecell);
-        
-        const startTimeCell = createInputCell('time', datestr);
-        const endTimeCell = createInputCell('time', datestr);
-        const totalHoursCell = createInputCell('number', datestr, true); // read-only
-        totalHoursCell.querySelector('input').step = "0.01";
+
+        const startTimeCell = document.createElement('td');
+        const startTimeSelect = createTimeSelect(datestr, 'start');
+        startTimeCell.appendChild(startTimeSelect);
+        row.appendChild(startTimeCell);
+
+        const endTimeCell = document.createElement('td');
+        const endTimeSelect = createTimeSelect(datestr, 'end');
+        endTimeCell.appendChild(endTimeSelect);
+        row.appendChild(endTimeCell);
+
+        const totalHoursCell = document.createElement('td');
+        const totalHoursInput = document.createElement('input');
+        totalHoursInput.type = 'number';
+        totalHoursInput.readOnly = true;
+        totalHoursInput.step = "0.01";
+        totalHoursCell.appendChild(totalHoursInput);
+        row.appendChild(totalHoursCell);
 
         const commentsCell = document.createElement('td');
         const commentsInput = document.createElement('textarea');
@@ -49,28 +62,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         row.appendChild(commentsCell);
 
         if (savedData[datestr]) {
-            startTimeCell.querySelector('input').value = savedData[datestr].startTime || '';
-            endTimeCell.querySelector('input').value = savedData[datestr].endTime || '';
-            totalHoursCell.querySelector('input').value = savedData[datestr].totalHours || '';
+            startTimeSelect.value = savedData[datestr].startTime || '';
+            endTimeSelect.value = savedData[datestr].endTime || '';
+            totalHoursInput.value = savedData[datestr].totalHours || '';
             commentsInput.value = savedData[datestr].comments || '';
         }
 
-        [startTimeCell, endTimeCell].forEach(cell => {
-            const input = cell.querySelector('input');
+        [startTimeSelect, endTimeSelect].forEach(input => {
             input.addEventListener('change', () => {
-                const start = startTimeCell.querySelector('input').value;
-                const end = endTimeCell.querySelector('input').value;
-                const hours = autocalcTotalHours(start, end);
-                totalHoursCell.querySelector('input').value = hours;
+                const hours = autocalcTotalHours(startTimeSelect.value, endTimeSelect.value);
+                totalHoursInput.value = hours;
             });
         });
 
         tbody.appendChild(row);
     }
 
-    submitBut.addEventListener('click', () => {
+    submitBut.addEventListener('click', async () => {
         const rows = document.querySelectorAll('#timesheet tbody tr');
         const dataToSave = {};
+
 
         rows.forEach(row => {
             const date = row.dataset.date;
@@ -93,18 +104,31 @@ document.addEventListener("DOMContentLoaded", async () => {
                 };
             }
         });
-        fetch('/api/log-hours', {
+
+        const dataToSave = {};
+        document.querySelectorAll('#timesheet tbody tr').forEach(row => {
+            const date = row.dataset.date;
+            const inputs = row.querySelectorAll('input, textarea');
+            const [startInput, endInput, totalInput, commentsInput] = inputs;
+
+            dataToSave[date] = {
+                startTime: startInput.value,
+                endTime: endInput.value,
+                totalHours: totalInput.value,
+                comments: commentsInput.value
+            };
+        });
+
+        const response = await fetch('/api/log-hours', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(dataToSave)
         })
-        .then(() => {
-            document.getElementById('statusMessage').textContent = 'Timesheet submitted successfully!';
-        })
-        .catch(error => {
-            console.error('Error saving timesheet:', error);
-            document.getElementById('statusMessage').textContent = 'Error saving timesheet.';
-        });
+        
+        const result = await response.json();
+
     });
 });
 
@@ -127,5 +151,33 @@ function autocalcTotalHours(start, end) {
         let timeDiff = (endDate - startDate) / (1000 * 60 * 60);
         return timeDiff >= 0 ? timeDiff.toFixed(2) : '';
     }
-    return '';
+    else {
+        return '';
+    }
 }
+
+        function createTimeSelect(datestr, type) {
+            const select = document.createElement('select');
+            select.dataset.date = datestr;
+            select.classList.add('time-select');
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '--:--';
+            select.appendChild(defaultOption);
+    
+            for (let hour = 0; hour < 24; hour++) {
+                for (let minute = 0; minute < 60; minute += 15) {
+                    const option = document.createElement('option');
+                    const hourStr = hour.toString().padStart(2, '0');
+                    const minuteStr = minute.toString().padStart(2, '0');
+                    const timeValue = `${hourStr}:${minuteStr}`;
+                    
+                    option.value = timeValue;
+                    option.textContent = timeValue;
+                    select.appendChild(option);
+                }
+            }
+            
+            return select;
+        }
