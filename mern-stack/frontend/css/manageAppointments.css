@@ -138,6 +138,13 @@ footer {
    
 }
 
+.button-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
 footer #name {
     font-weight: bold;
 }
@@ -206,3 +213,161 @@ footer #rights {
       background: linear-gradient(to right,#f9ce34, #ee2a7b, #6228d7);
       color: #ffffff !important;
     }
+
+    .container{
+        display: flex;
+        justify-content: space-around;
+        flex-direction: row;
+        background-color: #F7F7F7;
+        padding : 20px;
+        border-radius: 15px;
+        width: 1000px;
+        margin: 0 auto;
+      }
+    
+      .space{
+        height : 40px;
+        color: #F7F7F7;
+    }
+    
+    .container2 {
+        margin-top: 100px;
+        width: 1000px;
+        height: auto; 
+        display: flex;
+        flex-direction: column; 
+        background-color: #F7F7F7;
+        color: black; 
+        padding: 20px;
+        margin: 0 auto;
+        border-radius: 15px;
+    }
+    
+    .input[type="checkbox"] {
+        margin-right: 10px;
+    }
+    
+    .task-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+    }
+    
+    .task-row div {
+        flex: 1;  
+        margin-right: 10px;
+    }
+    
+    .task-row select {
+        width: 90%;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 0.9em;
+    }
+    .container div {
+        color: black;
+        font-weight: bold;
+    }
+    
+    .container2 div {
+        color: black;
+    }
+    
+    .container2 div {
+        padding: 5px;
+        text-align: left;
+    }
+    
+    .submitButtonContainer{
+        display: flex;
+        margin-right: right;
+        position: fixed;
+        bottom: 100px;
+        right: 28px;
+        width: 280px;
+    }
+    
+    #submitButton {
+        border-radius: 15px;
+        background-color: #4681AC;
+        color: white;
+        margin-left: auto;
+        margin-top: 10px;
+        margin-right: 45px;
+        }
+    
+    #submitButton:hover {
+        background-color: #F7F7F7;
+        color: Black;
+        border: 2px solid black;
+    }
+    
+    .createButtonContainer {
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        
+        cursor: pointer;
+        opacity: 0.8;
+        bottom: 23px;
+        right: 28px;
+        width: 280px;
+      }
+      
+      /* The popup form - hidden by default */
+      .create-Appointment {
+        display: none;
+        bottom: 0;
+        right: 15px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+      }
+      
+      /* Add styles to the form container */
+      .form-container {
+        max-width: 300px;
+        padding: 10px;
+        background-color: white;
+      }
+      
+      /* Full-width input fields */
+      .form-container input[type=text], .form-container input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+      }
+      
+      /* When the inputs get focus, do something */
+      .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+      }
+      
+      /* Set a style for the create button */
+      .form-container .btn {
+        background-color: black;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom:10px;
+        opacity: 0.8;
+      }
+      
+      /* Add a red background color to the cancel button */
+      .form-container .cancel {
+        background-color: #ff5440;
+      }
+      
+      /* Add some hover effects to buttons */
+      .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+      }
