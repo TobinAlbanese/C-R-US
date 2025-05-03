@@ -57,8 +57,9 @@ function displayApps(appointments, containerId) {
             appointmentItem.classList.add('appointment-item');
             
             // Display the date and details for each appointment
+            
             const appointmentDate = new Date(app.date).toLocaleDateString();
-            appointmentItem.textContent = `${appointmentDate} at ${app.time} - ${app.service} for ${app.firstName} ${app.lastName}. Notes: ${app.comments}`;
+            appointmentItem.textContent = `${appointmentDate} at ${app.time} - ${app.service} for ${app.firstName} ${app.lastName}`;
             container.appendChild(appointmentItem);
         });
     }

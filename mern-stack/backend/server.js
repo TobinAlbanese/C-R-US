@@ -415,7 +415,6 @@ app.get('/api/booked-times', async (req, res) => {
   }
 
   try {
-    const userEmail = req.session.userId?.email;
 
     const bookings = await Appointment.find({ date }); 
     const bookedTimes = bookings.map(booking => booking.time); 
@@ -585,12 +584,22 @@ app.post("/api/delete-task", async (req, res) => {
 //fetch previous apps
 app.get('/api/appsPast', async (req, res) => {
   try {
-    const pastAppointments = await PastApps.find({ date: { $lt: new Date() } });
-    console.log('Past appointments:', pastAppointments);  // Debugging the fetched past appointments
+    const userEmail = req.session.userId?.email;
+
+    if (!userEmail) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const pastAppointments = await PastApps.find({
+      email: userEmail, // Filter by the logged-in user's email
+      date: { $lt: new Date() } // Only fetch past appointments
+    });
+
+    console.log('Past appointments:', pastAppointments); // Debugging the fetched past appointments
     res.json({ past: pastAppointments });
   } catch (error) {
-      console.error('Error fetching past appointments:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching past appointments:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
