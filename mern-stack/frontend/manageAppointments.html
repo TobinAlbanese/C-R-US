@@ -27,6 +27,8 @@
                     <li><a href="manageAppointments.html">Manage</a></li>
                     <li><a href="assignTasks.html">Assign</a></li>
                     <li><a href="approveHours.html">Approve</a></li>
+                    <li><a href="manageTimeOff.html">Requests</a></li>
+
     
                 </ul>
             </nav>
@@ -38,39 +40,49 @@
 Manage Appointments
 </h2>
 
-<div class="create-Appointment" id="create-Appointment-Form">
-    <form id="createAppointmentForm" class="form-container">
-      <h1>Create Appointment</h1>
-  
-      <div>
-        <label for="type"><b>Type</b></label>
-        <input type="text" id="type" placeholder="Enter Service" name="type" required>  
-      </div>
-      
-      <div>
-        <label for="date"><b>Date</b></label>
-        <input type="date" id="date" name="date" required>
-      </div>
-      
-      <div>
-        <label for="time"><b>Time</b></label>
-        <input type="time" id="time" name="time" required>
-      </div>
-    
-      <div>
-        <label for="assignTo"><b>Assign To</b></label>
-        <div id="assignToWrapper"></div>
+<!-- Header Text -->
+<div class="headerText">
+  <b>Create Appointment</b>
+</div>
+
+<!-- Appointment Form -->
+<div class="container-custom">
+  <form id="createAppointmentForm">
+    <div class="row-custom">
+      <div class="column-custom">
+        <label for="type">Service Type:</label>
+        <input type="text" id="type" placeholder="Enter Service" name="type" required>
       </div>
 
-      <div>
-        <label for="assignedBy"><b>Assigned By</b></label>
+      <div class="column-custom">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+    </div>
+
+    <div class="row-custom">
+      <div class="column-custom">
+        <label for="time">Time:</label>
+        <input type="time" id="time" name="time" required>
+      </div>
+
+      <div class="column-custom">
+        <label for="assignTo">Assign To:</label>
+        <div id="assignToWrapper"></div>
+      </div>
+    </div>
+
+    <div class="row-custom">
+      <div class="column-custom">
+        <label for="assignedBy">Assigned By:</label>
         <div id="assignByWrapper"></div>
       </div>
-  
-      <button type="submit" id ="create" class="btn">Create</button>
-      <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-    </form>
-  </div>
+    </div>
+
+    <button type="submit" id="create" class="btn">Submit</button>
+  </form>
+</div>
+
 
 
   <div class="container">
