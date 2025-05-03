@@ -415,6 +415,7 @@ app.get('/api/booked-times', async (req, res) => {
   }
 
   try {
+
     const bookings = await Appointment.find({ date }); 
     const bookedTimes = bookings.map(booking => booking.time); 
     res.json({ bookedTimes });
@@ -583,25 +584,51 @@ app.post("/api/delete-task", async (req, res) => {
 //fetch previous apps
 app.get('/api/appsPast', async (req, res) => {
   try {
-    const pastAppointments = await PastApps.find({ date: { $lt: new Date() } });
-    console.log('Past appointments:', pastAppointments);  // Debugging the fetched past appointments
+    const userEmail = req.session.userId?.email;
+
+    if (!userEmail) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    // Convert today's date to a string in "YYYY-MM-DD" format
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const pastAppointments = await PastApps.find({
+      email: userEmail,
+      date: { $lt: todayStr }  // ✅ comparing string to string
+    });
+
+    console.log('Past appointments:', pastAppointments);
     res.json({ past: pastAppointments });
   } catch (error) {
-      console.error('Error fetching past appointments:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching past appointments:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
+
 app.get('/api/appsUpcoming', async (req, res) => {
   try {
-    const upcomingAppointments = await PastApps.find({ date: { $gte: new Date() } });
-    console.log('Upcoming appointments:', upcomingAppointments);  // Debugging the fetched upcoming appointments
+    const userEmail = req.session.userId?.email;
+    if (!userEmail) {
+      return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+
+    const upcomingAppointments = await PastApps.find({ 
+      email: userEmail,
+      date: { $gte: todayStr } // ✅ comparing string to string
+    });
+
+    console.log('Upcoming appointments:', upcomingAppointments);
     res.json({ upcoming: upcomingAppointments });
   } catch (error) {
-      console.error('Error fetching upcoming appointments:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching upcoming appointments:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 
