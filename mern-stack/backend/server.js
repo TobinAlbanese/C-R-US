@@ -516,8 +516,16 @@ app.get("/api/assign-tasks", async (req, res) => {
   try {
     const tasks = await Appointment.find();  
     const users = await User.find();  
+    const checkouts = await Check.find();
+
+    console.log("Checkouts:", checkouts);
+
     
     const tasksWithUsers = tasks.map(task => {
+      const fullDateTime = `${task.date} ${task.time}`;
+      console.log("Full DateTime:", fullDateTime); // Debugging log
+      const relatedUser = checkouts.find(check =>
+        check.appDate === fullDateTime);
       return {
         _id: task._id.toString(),
      //   user: task.user.toString(),
@@ -527,9 +535,16 @@ app.get("/api/assign-tasks", async (req, res) => {
         schedule:{
           date: task.date,
           time: task.time,
-        }
-      };
+        },
+        shipInfo: relatedUser && relatedUser.shipInfo ? {
+          firstName: relatedUser.shipInfo.firstName,
+          lastName: relatedUser.shipInfo.lastName,
+          email: relatedUser.shipInfo.email,
+        } : null,
+      };      
+
     });
+
 
     res.json({ success: true, tasks: tasksWithUsers, users: users });
   } catch (err) {
