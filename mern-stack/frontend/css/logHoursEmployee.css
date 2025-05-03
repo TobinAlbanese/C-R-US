@@ -244,6 +244,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .payroll-table {
     width: 100%;
     border-collapse: collapse;
+    border: solid gray 1px;
   }
   
   .payroll-table th, .payroll-table td {
@@ -253,7 +254,14 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   }
   
   .payroll-table th {
-    background-color: #f8f9fa;
+    color: lightslategray;
+    background-color: rgb(221, 221, 238);
+    padding:0.75rem 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-size: 0.7rem;
+    font-weight: 950;
+    border: solid gray 1px;
   }
 
 
