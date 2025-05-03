@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(deleteButton) {
         deleteButton.addEventListener("click", (e_) => {
             e_.preventDefault();
-            deleteAppointment();
+            deleteTimeOff();
         });
     }else {
         alert("FAILED to submit button");
@@ -23,22 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
             container.innerHTML = "";
-
-            //const employees = data.users.filter(user => user.role === "employee");
-            //const admins = data.users.filter(user => user.role === "admin");
-
-            const assignToWrapper = document.getElementById("assignToWrapper");
-            const assignedByWrapper = document.getElementById("assignedByWrapper");
-
-            //const employeeDropdown = createEmployeeDropdown(employees);
-            //employeeDropdown.id = "assignTo";
-            //assignToWrapper.innerHTML = ""; // Clear previous content
-            //assignToWrapper.appendChild(employeeDropdown);
-
-            //const adminDropdown = createAdminDropdown(admins);
-            //adminDropdown.id = "assignBy";
-            //assignByWrapper.innerHTML = ""; // Clear previous content
-            //assignByWrapper.appendChild(adminDropdown);
 
             data.timeOffs.forEach((timeOff) => {
                 console.log("TimeOff:", timeOff);
@@ -89,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-async function deleteAppointment() {
+async function deleteTimeOff() {
     const selectedTasks = document.querySelectorAll(".task-row input[type='checkbox']:checked");
     if (selectedTasks.length === 0) {
         alert("Please select at least one task to delete.");
