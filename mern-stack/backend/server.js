@@ -19,6 +19,7 @@ import { EmployeeTask } from "./config/employeeTasks.js";
 import { PastApps } from "./config/PastApps.js";
 import { LoggedHours } from "./config/hours.js";
 import { ApprovedHours } from "./config/ApprovedHours.js";
+import { timeOffEmployee } from "./config/timeOff.js"; 
 
 //Express
 const app = express();
@@ -122,10 +123,11 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
-///////////////////////////IMRAN
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// TimeOffEmployee API for handling new Employee time off requests
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
-import { timeOffEmployee } from "./config/timeOff.js"; 
+//uses timeOffEmployee import
 import { error, log } from "console";
 app.post("/timeOffEmployee", async (req, res) => {
 
@@ -164,7 +166,56 @@ app.post("/timeOffEmployee", async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred." });
   }
 });
-///////////////////////////END OF IMRAN
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Assign-Time-OFF API for fetching data from TimeOffEmployee into our admin page
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+app.get("/api/assign-time-off", async (req, res) => {
+  try {
+    const timeOffs = await timeOffEmployee.find();   
+
+    const tasksWithUsersTime = timeOffs.map(timeOff => {
+      return {
+        Employee: timeOff._id.toString(),
+        timeOffType: timeOff.timeOffType,
+        timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
+        timeOffDate: timeOff.timeOffDate, 
+        timeOffStartTime: timeOff.timeOffStartTime, 
+        timeOffEndTime: timeOff.timeOffEndTime
+      };
+    });
+    console.log(tasksWithUsersTime);
+    res.json({ success: true, timeOffs: tasksWithUsersTime});
+  } catch (err) {
+    console.error("Error fetching timeOffs:", err);
+    res.json({ success: false, message: "Error fetching timeOffs" });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Delete-Time-OFF API for deleting time offs from our admin page Manage Time Offs
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+app.post("/api/delete-timeOff", async (req, res) => {
+  try {
+    const { timeOffEmployee } = req.body;
+    console.log("Received time Off ID to delete:", timeOffEmployee);
+    if (!timeOffEmployee) {
+      return res.status(400).json({ success: false, message: "Time Off ID is required." });
+    }
+    const deletedTimeOff = await timeOffEmployee.deleteMany({_id: { $in: timeOffEmployee}});
+    if (!deletedTimeOff) {
+      return res.status(404).json({ success: false, message: "TimeOff not found." });
+    }
+    console.log("Deleted TimeOff:", deletedTimeOff);
+    res.status(200).json({ success: true, message: "TimeOff deleted successfully." }); 
+  } catch (error) {
+    console.error("Error deleting TimeOff:", error);
+    res.status(500).json({ success: false, message: "Failed to delete TimeOff." });
+  }
+});
+
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
