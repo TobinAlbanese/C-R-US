@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    
+     
     const createButton = document.getElementById('create');
     const deleteButton = document.getElementById('delete-Tasks');
 
@@ -60,6 +60,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const typeDiv = document.createElement("div");
                 typeDiv.textContent = task.type || "N/A";
 
+                const patientDiv = document.createElement("div");
+                patientDiv.textContent = `${task.shipInfo ? `${task.shipInfo.firstName} ${task.shipInfo.lastName}` : "N/A"}`;
+
                 const assignIdDiv = document.createElement("div");
                 assignIdDiv.textContent = task._id || "N/A";
 
@@ -74,6 +77,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 checkBox.type = 'checkbox';
                 selectDiv.appendChild(checkBox);
 
+            
+                row.appendChild(patientDiv);
                 row.appendChild(typeDiv);
                 row.appendChild(assignIdDiv);
              //   row.appendChild(assignedUserDiv);
@@ -198,7 +203,7 @@ async function deleteAppointment() {
         return;
     }
 
-    const taskIds = Array.from(selectedTasks).map(checkbox => checkbox.closest('.task-row').querySelector('div:nth-child(2)').textContent.trim());
+    const taskIds = Array.from(selectedTasks).map(checkbox => checkbox.closest('.task-row').querySelector('div:nth-child(3)').textContent.trim());
 
     try {
         const res = await fetch("/api/delete-task", {
@@ -224,4 +229,3 @@ async function deleteAppointment() {
 }
 
   document.getElementById("create-Appointment-Button").addEventListener("click", openForm);
-
