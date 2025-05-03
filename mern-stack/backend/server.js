@@ -415,6 +415,8 @@ app.get('/api/booked-times', async (req, res) => {
   }
 
   try {
+    const userEmail = req.session.userId?.email;
+
     const bookings = await Appointment.find({ date }); 
     const bookedTimes = bookings.map(booking => booking.time); 
     res.json({ bookedTimes });
