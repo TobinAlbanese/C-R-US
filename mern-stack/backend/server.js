@@ -177,7 +177,7 @@ app.get("/api/assign-time-off", async (req, res) => {
 
     const tasksWithUsersTime = timeOffs.map(timeOff => {
       return {
-        Employee: timeOff._id.toString(),
+        Employee: timeOff.Employee,
         timeOffType: timeOff.timeOffType,
         timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
         timeOffDate: timeOff.timeOffDate.getUTCFullYear() + '-' + (timeOff.timeOffDate.getUTCMonth() + 1) + '-' + timeOff.timeOffDate.getUTCDate(), 
