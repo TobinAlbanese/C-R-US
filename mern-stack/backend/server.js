@@ -627,7 +627,7 @@ app.post("/api/assign-tasks", async (req, res) => {
       date,
       time,
       comments,
-      shipInfo
+      admin,
     });
     await newTask.save();
     res.status(200).json({ success: true, message: "Task assigned successfully." });
