@@ -209,11 +209,11 @@ app.post("/api/delete-timeOff", async (req, res) => {
     if (!deletedTimeOff) {
       return res.status(404).json({ success: false, message: "TimeOff not found." });
     }
-    console.log("Deleted TimeOff:", deletedTimeOff);
-    res.status(200).json({ success: true, message: "TimeOff deleted successfully." }); 
+    console.log("Approved TimeOff:", deletedTimeOff);
+    res.status(200).json({ success: true, message: "TimeOff approved successfully." }); 
   } catch (error) {
-    console.error("Error deleting TimeOff:", error);
-    res.status(500).json({ success: false, message: "Failed to delete TimeOff." });
+    console.error("Error approving TimeOff:", error);
+    res.status(500).json({ success: false, message: "Failed to approve TimeOff." });
   }
 });
 
