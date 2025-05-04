@@ -31,9 +31,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const row = document.createElement("div");
                 row.className = "task-row"; 
 
-                const patientDiv = document.createElement("div");
-                patientDiv.textContent = `${task.shipInfo ? `${task.shipInfo.firstName} ${task.shipInfo.lastName}` : "N/A"}`;
-                
                 const typeDiv = document.createElement("div");
                 typeDiv.textContent = task.type || "N/A";
 
@@ -50,8 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const checkBox = document.createElement('input');
                 checkBox.type = 'checkbox';
                 selectDiv.appendChild(checkBox);
-                
-                row.appendChild(patientDiv);
+
                 row.appendChild(typeDiv);
                 row.appendChild(assignToDiv);
                 row.appendChild(assignedByDiv);
@@ -74,8 +70,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 container.appendChild(row);
             });
-
-
         }
     } catch (err) {
         console.error("Error loading tasks: at tobins part", err);

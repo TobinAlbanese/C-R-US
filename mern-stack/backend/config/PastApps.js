@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const PastAppsSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },  
-  date: String,
+  date: { type: Date, required: true },
     time: String,
     service: String,
     comments: String,
