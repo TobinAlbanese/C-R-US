@@ -34,19 +34,27 @@ document.addEventListener("DOMContentLoaded", function () {
   function createUserAccount(email, password, confirmPassword) {
     const submitButton = document.querySelector('button[type="submit"]');
     submitButton.disabled = true;
-
-
+  
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+  
     fetch(`/userCreateAccount`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, confirmPassword }), // Include confirmPassword in the request
+      body: JSON.stringify({
+        email,
+        password,
+        confirmPassword,
+        firstName,
+        lastName
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
         submitButton.disabled = false;
-
+  
         if (data.success) {
           hideErrorMessage();
           redirectToPage();
@@ -62,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("An error occurred. Please try again.");
       });
   }
-
+  
   function hideErrorMessage() {
     const errorMessage = document.getElementById("error-message");
     if (errorMessage) {

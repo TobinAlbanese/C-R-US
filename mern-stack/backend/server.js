@@ -647,7 +647,9 @@ app.post("/api/delete-task", async (req, res) => {
   }
 });
 
-//fetch previous apps
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Fetch previous apps and upcoming apps API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get('/api/appsPast', async (req, res) => {
   try {
     const userEmail = req.session.userId?.email;
@@ -694,6 +696,27 @@ app.get('/api/appsUpcoming', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+
+app.delete('/api/appointments/:id', async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+
+    const deleted = await PastApps.findByIdAndDelete(appointmentId);
+
+    if (!deleted) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    res.json({ success: true, message: 'Appointment canceled' });
+  } catch (error) {
+    console.error('Error canceling appointment:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

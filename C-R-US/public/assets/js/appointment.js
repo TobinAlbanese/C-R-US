@@ -9,103 +9,129 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('date-of-appointment');
     const submitButton = document.getElementById('submit-button');
     const comment = document.getElementById('comments');
-    const errorMessage = document.createElement('p');
-    errorMessage.id = 'error-message';
-    errorMessage.style.color = 'red';
-    errorMessage.style.display = 'none'; 
-    document.body.appendChild(errorMessage);
+
     let bookedTimes = [];
     let selectedServicePrice = 0;
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// fetch past & upcomign appointments
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-async function pastApps() {
-    try {
-        const response = await fetch('/api/appsPast');
-        if (!response.ok) throw new Error('Failed to fetch past apps');
-        const data = await response.json();
-        console.log('past appointments:', data.past);
-        displayApps(data.past, 'past-appointments');
-    } catch (error) {
-        console.error('Error fetching past appointments:', error);
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    // Fetch and display past and upcoming appointments
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    async function pastApps() {
+        try {
+            const response = await fetch('/api/appsPast');
+            if (!response.ok) throw new Error('Failed to fetch past apps');
+            const data = await response.json();
+            displayApps(data.past, 'past-appointments');
+        } catch (error) {
+            console.error('Error fetching past appointments:', error);
+        }
     }
-}
 
-async function upcomingApps() {
-    try {
-        const response = await fetch('/api/appsUpcoming');
-        if (!response.ok) throw new Error('Failed to fetch upcoming apps');
-        const data = await response.json();
-        console.log('upcoming appointments:', data.upcoming);
-        displayApps(data.upcoming, 'upcoming-appointments');
-    } catch (error) {
-        console.error('Error fetching upcoming appointments:', error);
+    async function upcomingApps() {
+        try {
+            const response = await fetch('/api/appsUpcoming');
+            if (!response.ok) throw new Error('Failed to fetch upcoming apps');
+            const data = await response.json();
+            displayApps(data.upcoming, 'upcoming-appointments');
+        } catch (error) {
+            console.error('Error fetching upcoming appointments:', error);
+        }
     }
-}
 
-function displayApps(appointments, containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';  // Clear existing content
+    function displayApps(appointments, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
 
-    if (appointments.length === 0) {
-        container.innerHTML = `<div class="appointment-item">No appointments available.</div>`;
-    } else {
+        if (appointments.length === 0) {
+            container.innerHTML = `<div class="appointment-item">No appointments available.</div>`;
+            return;
+        }
+
         appointments.forEach(app => {
-            console.log("Appointment details:", app);  // Debugging each appointment
             const appointmentItem = document.createElement('div');
             appointmentItem.classList.add('appointment-item');
-            
-            // Display the date and details for each appointment
-            
+            appointmentItem.dataset.id = app._id;
+
             const appointmentDate = new Date(app.date).toLocaleDateString();
-            appointmentItem.textContent = `${appointmentDate} at ${app.time} - ${app.service} for ${app.firstName} ${app.lastName}`;
+            appointmentItem.innerHTML = `
+            <div class="appointment-text">${appointmentDate} at ${app.time} - ${app.service}</div>
+        `;
+        
+
+            // Only add cancel button for upcoming appointments
+            if (containerId === 'upcoming-appointments') {
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = 'Cancel';
+                cancelBtn.classList.add('cancel-btn');
+                cancelBtn.addEventListener('click', () => cancelAppointment(app._id, appointmentItem));
+                appointmentItem.appendChild(cancelBtn);
+            }
+
             container.appendChild(appointmentItem);
         });
     }
-}
 
-pastApps();
-upcomingApps();
+    async function cancelAppointment(id, appointmentElement) {
+        if (!confirm('Cancel this appointment?')) return;
 
+        try {
+            const res = await fetch(`/api/appointments/${id}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// calendar section for taken dates
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+            if (res.ok) {
+                appointmentElement.remove();
+                alert('Appointment canceled.');
+            } else {
+                alert(data.error || 'Failed to cancel appointment.');
+            }
+        } catch (error) {
+            console.error('Error canceling appointment:', error);
+            alert('An error occurred while canceling.');
+        }
+    }
+
+    pastApps();
+    upcomingApps();
+
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    // Fetch booked times for selected date
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     async function fetchBookedTimes(date) {
         const response = await fetch(`/api/booked-times?date=${date}`);
         const data = await response.json();
-        return data.bookedTimes; 
+        return data.bookedTimes;
     }
 
     async function updateTimeSlots() {
         const selectedDate = dateInput.value.trim();
         if (!selectedDate) return;
-    
+
         bookedTimes = await fetchBookedTimes(selectedDate);
-    
+
         timeButtons.forEach(button => {
             const timeSlot = button.textContent.trim();
             if (bookedTimes.includes(timeSlot)) {
                 button.classList.add('disabled');
-                button.disabled = true; 
-                button.style.backgroundColor = "#36454F"; 
-                button.style.color = "	white";            
+                button.disabled = true;
+                button.style.backgroundColor = "#36454F";
+                button.style.color = "white";
             } else {
                 button.classList.remove('disabled');
-                button.disabled = false; 
+                button.disabled = false;
                 button.style.backgroundColor = "";
                 button.style.color = "";
             }
         });
     }
-    
-    dateInput.addEventListener('change', updateTimeSlots); 
+
+    dateInput.addEventListener('change', updateTimeSlots);
 
     flatpickr("#date-of-appointment", {
         inline: true,
         minDate: "today",
-        onChange: function( dateStr, instance) {
+        onChange: function(dateStr, instance) {
             fetchBookedTimes(dateStr).then(bookedTimes => {
                 const allSlotsBooked = bookedTimes.length === timeButtons.length;
                 if (allSlotsBooked) {
@@ -119,35 +145,28 @@ upcomingApps();
         }
     });
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Select Service and Price
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        serviceButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                const serviceName = event.target.getAttribute('data-value');
-                selectedServicePrice = parseFloat(event.target.getAttribute('data-price'));
-                serviceInput.value = serviceName; 
-                console.log(`Selected Service: ${serviceName}, Price: $${selectedServicePrice}`);
-            });
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    // Service selection and pricing
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    serviceButtons.forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            serviceButtons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            const serviceName = button.getAttribute('data-value');
+            selectedServicePrice = parseFloat(button.getAttribute('data-price'));
+            serviceInput.value = serviceName;
         });
+    });
 
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    // Appointment submission
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    submitButton.addEventListener('click', async event => {
+        event.preventDefault();
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// backend logic for sending the appointment data & checkout data
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-    submitButton.addEventListener('click', async (event) => {
-        if (!serviceInput.value.trim()) {
-            alert('Please select a service.');
-            return;
-        }
-        
-        if (!dateInput.value.trim()) {
-            alert('Please select a date.');
-            return;
-        }
-        
-        if (!hiddenTimeInput.value.trim()) {
-            alert('Please select a time slot.');
+        if (!serviceInput.value.trim() || !dateInput.value.trim() || !hiddenTimeInput.value.trim()) {
+            alert('Please complete all appointment fields.');
             return;
         }
 
@@ -158,58 +177,42 @@ upcomingApps();
 
         if (submitButton.disabled) return;
         submitButton.disabled = true;
-    
-        const appointmentDate = dateInput.value.trim();
-        const appointmentTime = hiddenTimeInput.value.trim();
-        const appointmentService = serviceInput.value.trim();
-        const appointmentComment = comment.value.trim();
 
-        function generateObjectId() {
-            const timestamp = Math.floor(Date.now() / 1000).toString(16);
-            return (
-                timestamp +
-                'xxxxxxxxxxxxxxxx'
-                    .replace(/[x]/g, () => (Math.random() * 16 | 0).toString(16))
-                    .toLowerCase()
-            );
-        }
-        const appointmentId = generateObjectId();
-
-        if (bookedTimes.some(booking => booking.date === appointmentDate && booking.time === appointmentTime )) {
-            alert("This time slot is already booked. Please choose another.");
-            submitButton.disabled = false;
-            return;
-        }
-    
-        localStorage.setItem('appointmentData', JSON.stringify({
-            date: appointmentDate,
-            time: appointmentTime,
-            service: appointmentService,
-            comment: appointmentComment,
-            status: 'pending', 
+        const appointmentData = {
+            date: dateInput.value.trim(),
+            time: hiddenTimeInput.value.trim(),
+            service: serviceInput.value.trim(),
+            comment: comment.value.trim(),
+            status: 'pending',
             price: selectedServicePrice,
-            appointmentId: appointmentId,
-        }));
-    
+            appointmentId: generateObjectId(),
+        };
+
+        localStorage.setItem('appointmentData', JSON.stringify(appointmentData));
         window.location.href = '/checkout.html';
     });
 
+    function generateObjectId() {
+        const timestamp = Math.floor(Date.now() / 1000).toString(16);
+        return timestamp + 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, () =>
+            (Math.random() * 16 | 0).toString(16)
+        ).toLowerCase();
+    }
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Hover Effects
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    // UI Hover Effects
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     timeButtons.forEach(button => {
         button.addEventListener('mouseenter', () => {
             if (!button.classList.contains('disabled')) {
-                button.style.backgroundColor = '		#437fb8';
+                button.style.backgroundColor = '#437fb8';
                 button.style.color = 'white';
             }
         });
-
         button.addEventListener('mouseleave', () => {
             if (!button.classList.contains('disabled')) {
-                button.style.backgroundColor = ''; 
-                button.style.color = '';  
+                button.style.backgroundColor = '';
+                button.style.color = '';
             }
         });
     });
@@ -221,11 +224,10 @@ upcomingApps();
                 day.style.color = 'white';
             }
         });
-
         day.addEventListener('mouseleave', () => {
             if (!day.classList.contains('disabled')) {
-                day.style.backgroundColor = '';  
-                day.style.color = '';  
+                day.style.backgroundColor = '';
+                day.style.color = '';
             }
         });
     });
@@ -233,15 +235,14 @@ upcomingApps();
     serviceButtons.forEach(button => {
         button.addEventListener('mouseenter', () => {
             if (!button.classList.contains('disabled')) {
-                button.style.backgroundColor = '	#437fb8';
+                button.style.backgroundColor = '#437fb8';
                 button.style.color = 'white';
             }
         });
-
         button.addEventListener('mouseleave', () => {
             if (!button.classList.contains('disabled')) {
-                button.style.backgroundColor = '';  
-                button.style.color = '';  
+                button.style.backgroundColor = '';
+                button.style.color = '';
             }
         });
     });
