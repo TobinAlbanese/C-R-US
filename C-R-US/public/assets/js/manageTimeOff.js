@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     const deleteButton = document.getElementById('delete-timeOffs');
 
+    //functionality for approve button
     if(deleteButton) {
         deleteButton.addEventListener("click", (e_) => {
             e_.preventDefault();
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("FAILED to submit button");
     }
     
-    
+    //Get for the time offs that employees have submitted 
     try {
         const res = await fetch("/api/assign-time-off");
         const data = await res.json();
@@ -48,6 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const timeOffEndTime = document.createElement("div");
                 timeOffEndTime.textContent = timeOff.timeOffEndTime;
 
+                //Need time off id to do delete, succefully hides as an input
                 const timeOffId = document.createElement("input");
                 timeOffId.textContent = timeOff._id;
                 timeOffId.type = "hidden";
@@ -79,6 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
+//Used with the approve button, so far it just gets rid of the item from TimeOffEmployee Collection in MongoDB
 async function deleteTimeOff() {
     const selectedTasks = document.querySelectorAll(".task-row input[type='checkbox']:checked");
     if (selectedTasks.length === 0) {
