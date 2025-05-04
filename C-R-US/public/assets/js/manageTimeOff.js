@@ -102,14 +102,14 @@ async function deleteTimeOff() {
 
         const result = await res.json();
         if (result.success) {
-            alert("Tasks deleted successfully!");
+            alert("Time offs approved successfully!");
             window.location.reload(); // Reload to see the changes
         } else {
-            alert("Failed to delete tasks: " + result.message);
+            alert("Failed to approve time offs: " + result.message);
         }
     } catch (error) {
-        console.error("Error deleting tasks:", error);
-        alert("An error occurred while deleting the tasks.");
+        console.error("Error approving time offs:", error);
+        alert("An error occurred while approving the time off.");
     }
     
 }
