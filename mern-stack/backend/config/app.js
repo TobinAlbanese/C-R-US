@@ -6,6 +6,10 @@ const appSchema = new mongoose.Schema({
   service: { type: String, required: true },
   comments: { type: String },
   status: { type: String, default: 'pending' },  
+  shipInfo: {
+    firstName: String,
+    lastName: String 
+  },
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
 });
 
