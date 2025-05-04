@@ -180,7 +180,7 @@ app.get("/api/assign-time-off", async (req, res) => {
         Employee: timeOff._id.toString(),
         timeOffType: timeOff.timeOffType,
         timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
-        timeOffDate: timeOff.timeOffDate, 
+        timeOffDate: timeOff.timeOffDate.getUTCFullYear() + '-' + (timeOff.timeOffDate.getUTCMonth() + 1) + '-' + timeOff.timeOffDate.getUTCDate(), 
         timeOffStartTime: timeOff.timeOffStartTime, 
         timeOffEndTime: timeOff.timeOffEndTime,
         _id: timeOff._id
@@ -209,11 +209,11 @@ app.post("/api/delete-timeOff", async (req, res) => {
     if (!deletedTimeOff) {
       return res.status(404).json({ success: false, message: "TimeOff not found." });
     }
-    console.log("Approved TimeOff:", deletedTimeOff);
-    res.status(200).json({ success: true, message: "TimeOff approved successfully." }); 
+    console.log("Deleted TimeOff:", deletedTimeOff);
+    res.status(200).json({ success: true, message: "TimeOff deleted successfully." }); 
   } catch (error) {
-    console.error("Error approving TimeOff:", error);
-    res.status(500).json({ success: false, message: "Failed to approve TimeOff." });
+    console.error("Error deleting TimeOff:", error);
+    res.status(500).json({ success: false, message: "Failed to delete TimeOff." });
   }
 });
 
