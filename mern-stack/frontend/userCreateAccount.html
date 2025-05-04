@@ -39,52 +39,75 @@
 </header>
 
   <main>
-    <div class="create-account-form">
-      <form id="userCreateAccount" method="POST" action="/userCreateAccount">
-        <h2>Create Your Account</h2>
-
-        <div>
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            class="input-box"
-            placeholder="Your Email"
-            required
-            autocomplete="email"
-          />
-        </div>
-
-        <div>
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="input-box"
-            placeholder="Your Password"
-            required
-            autocomplete="email"
-          />
-        </div>
-
-        <div>
-          <label for="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            class="input-box"
-            placeholder="Confirm Password"
-            required
-            autocomplete="email"
-          />
-        </div>
-
-        <button type="submit" class="createAcc-btn">Create Account</button>
-      </form>
-    </div>
+    <form id="userCreateAccount" method="POST" action="/userCreateAccount">
+      <h2>Create Your Account</h2>
+    
+      <div>
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          class="input-box"
+          placeholder="First Name"
+          required
+          autocomplete="given-name"
+        />
+      </div>
+    
+      <div>
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          class="input-box"
+          placeholder="Last Name"
+          required
+          autocomplete="family-name"
+        />
+      </div>
+    
+      <div>
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="input-box"
+          placeholder="Your Email"
+          required
+          autocomplete="email"
+        />
+      </div>
+    
+      <div>
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="input-box"
+          placeholder="Your Password"
+          required
+        />
+      </div>
+    
+      <div>
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          class="input-box"
+          placeholder="Confirm Password"
+          required
+        />
+      </div>
+    
+      <button type="submit" class="createAcc-btn">Create Account</button>
+    </form>
+    
   </main>
 
   <!-----------------------Footer----------------------->
