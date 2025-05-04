@@ -612,14 +612,16 @@ app.post("/api/assign-tasks", async (req, res) => {
     console.log("Received request body:", req.body);
 
 
-    const { user, admin, service, date, time, comments } = req.body;
-    console.log("Parsed data:", { user, admin, service, date, time, comments });
+    const { user, admin, service, date, time, comments, shipInfo } = req.body;
+    console.log("Parsed data:", { user, admin, service, date, time, comments, shipInfo });
     const newTask = new Appointment({
       user,
+      admin,
       service,
       date,
       time,
-      comments
+      comments,
+      shipInfo
     });
     await newTask.save();
     res.status(200).json({ success: true, message: "Task assigned successfully." });
