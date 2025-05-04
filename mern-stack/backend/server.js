@@ -182,7 +182,8 @@ app.get("/api/assign-time-off", async (req, res) => {
         timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
         timeOffDate: timeOff.timeOffDate, 
         timeOffStartTime: timeOff.timeOffStartTime, 
-        timeOffEndTime: timeOff.timeOffEndTime
+        timeOffEndTime: timeOff.timeOffEndTime,
+        _id: timeOff._id
       };
     });
     console.log(tasksWithUsersTime);
@@ -199,12 +200,12 @@ app.get("/api/assign-time-off", async (req, res) => {
 
 app.post("/api/delete-timeOff", async (req, res) => {
   try {
-    const { timeOffEmployee } = req.body;
-    console.log("Received time Off ID to delete:", timeOffEmployee);
-    if (!timeOffEmployee) {
+    const { TimeOffs } = req.body;
+    console.log("Received time Off ID to delete:", TimeOffs);
+    if (!TimeOffs) {
       return res.status(400).json({ success: false, message: "Time Off ID is required." });
     }
-    const deletedTimeOff = await timeOffEmployee.deleteMany({_id: { $in: timeOffEmployee}});
+    const deletedTimeOff = await timeOffEmployee.deleteMany({_id: { $in: TimeOffs}});
     if (!deletedTimeOff) {
       return res.status(404).json({ success: false, message: "TimeOff not found." });
     }
