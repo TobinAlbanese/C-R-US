@@ -140,10 +140,10 @@ function taskSubmission() {
     allRows.forEach(row => {
         const checkBox = row.querySelector("input[type='checkbox']");
         if(checkBox && checkBox.checked) {
-            const typeDiv = row.children[0];
-            const assignToDiv = row.children[1];
-            const assignedByDiv = row.children[2];
-            const createdOnDiv = row.children[3];
+            const typeDiv = row.children[1];
+            const assignToDiv = row.children[2];
+            const assignedByDiv = row.children[3];
+            const createdOnDiv = row.children[4];
 
             tasksToSubmit.push({
                 type: typeDiv.textContent,
