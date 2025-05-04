@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const timeOffEndTime = document.createElement("div");
                 timeOffEndTime.textContent = timeOff.timeOffEndTime;
 
+                const timeOffId = document.createElement("input");
+                timeOffId.textContent = timeOff._id;
+                timeOffId.type = "hidden";
+
                 const selectDiv = document.createElement("div");
                 const checkBox = document.createElement('input');
                 checkBox.type = 'checkbox';
@@ -59,8 +63,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 row.appendChild(timeOffDate);
                 row.appendChild(timeOffStartTime);
                 row.appendChild(timeOffEndTime);
+                row.appendChild(timeOffId);
                 row.appendChild(selectDiv);
 
+                
         
                 
 
@@ -80,15 +86,15 @@ async function deleteTimeOff() {
         return;
     }
 
-    const timeOffEmployee = Array.from(selectedTasks).map(checkbox => checkbox.closest('.task-row').querySelector('div:nth-child(2)').textContent.trim());
-    console.log(timeOffEmployee);
+    const TimeOffs = Array.from(selectedTasks).map(checkbox => checkbox.closest('.task-row').querySelector('div:nth-child(2)').textContent.trim());
+    console.log(TimeOffs);
     try {
         const res = await fetch("/api/delete-timeOff", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ timeOffEmployee })
+            body: JSON.stringify({ TimeOffs })
         });
 
         const result = await res.json();
