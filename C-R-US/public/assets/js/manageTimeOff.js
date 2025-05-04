@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 typeDiv.textContent = timeOff.timeOffType || "N/A";
 
                 const employeeDiv = document.createElement("div");
-                employeeDiv.textContent = timeOff.Employee || "N/A";
+                employeeDiv.textContent = `${timeOff.Employee.firstName} ${timeOff.Employee.lastName}` || "N/A";
 
                 const commentsDiv = document.createElement("div");
                 commentsDiv.textContent = timeOff.timeOffComments || "N/A";

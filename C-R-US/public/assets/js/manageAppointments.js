@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     
     try {
-        const res = await fetch("/api/assign-tasks");
+        const res = await fetch("/api/manage-appointments");
         const data = await res.json();
 
         if (data.success) {
@@ -67,7 +67,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 assignIdDiv.textContent = task._id || "N/A";
 
                 const assignedUserDiv = document.createElement("div");
-                assignedUserDiv.textContent = task.user || "N/A";
+                if (task.firstName && task.lastName) {
+                    assignedUserDiv.textContent = task.assignedUserName || "N/A";
+                } else {
+                    assignedUserDiv.textContent = "N/A";
+                }
 
                 const createdOnDiv = document.createElement("div");
                 createdOnDiv.textContent = `${task.schedule?.date || "N/A"} ${task.schedule?.time || ""}`;
@@ -75,13 +79,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const selectDiv = document.createElement("div");
                 const checkBox = document.createElement('input');
                 checkBox.type = 'checkbox';
+                checkBox.setAttribute("data-task-id", task._id);
                 selectDiv.appendChild(checkBox);
 
             
                 row.appendChild(patientDiv);
                 row.appendChild(typeDiv);
                 row.appendChild(assignIdDiv);
-             //   row.appendChild(assignedUserDiv);
+                row.appendChild(assignedUserDiv);
                 row.appendChild(createdOnDiv);
                 row.appendChild(selectDiv);
 
@@ -185,7 +190,7 @@ async function createAppointment() {
         if (result.success) {
             alert("Task created successfully!");
             closeForm();
-            window.location.reload(); // Reload to see the new task
+            window.location.reload(); 
         } else {
             alert("Failed to create task: " + result.message);
         }
@@ -202,8 +207,9 @@ async function deleteAppointment() {
         alert("Please select at least one task to delete.");
         return;
     }
-
-    const taskIds = Array.from(selectedTasks).map(checkbox => checkbox.closest('.task-row').querySelector('div:nth-child(3)').textContent.trim());
+    const taskIds = Array.from(selectedTasks).map(checkbox =>
+        checkbox.getAttribute("data-task-id")
+    );
 
     try {
         const res = await fetch("/api/delete-task", {

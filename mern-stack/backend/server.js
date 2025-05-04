@@ -502,6 +502,7 @@ app.post('/api/assignTasks', async (req, res) => {
         time: taskTime,
         service: type,
         user: assignTo,
+        admin: assignedBy,
       });
 
       if (existingTask) {
@@ -524,6 +525,7 @@ app.post('/api/assignTasks', async (req, res) => {
         email: assignedUser.email,
         firstName: assignedUser.firstName,
         lastName: assignedUser.lastName,
+        admin: admin,
       });
       await newEmployeeTask.save();
 
@@ -565,6 +567,10 @@ app.post('/api/assignTasks', async (req, res) => {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Assign-Tasks API for fetching data from Scheduling/Users into our admin page
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Assign-Tasks API for fetching data from Scheduling/Users into our admin page
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get("/api/assign-tasks", async (req, res) => {
   try {
     const tasks = await Appointment.find();  
@@ -575,28 +581,28 @@ app.get("/api/assign-tasks", async (req, res) => {
 
     
     const tasksWithUsers = tasks.map(task => {
-      const fullDateTime = `${task.date} ${task.time}`;
-      console.log("Full DateTime:", fullDateTime); // Debugging log
-      const relatedUser = checkouts.find(check =>
-        check.appDate === fullDateTime);
+      const fullDateTime = new Date(`${task.date} ${task.time}`);
+      console.log("Full DateTime:", fullDateTime); 
+      const relatedUser = checkouts.find(check => {
+          const checkDateTime = new Date(check.appDate);
+          return checkDateTime.getTime() === fullDateTime.getTime();
+      });
       return {
-        _id: task._id.toString(),
-     //   user: task.user.toString(),
-        type: task.service,
-        assignTo: task.user ? task.user.toString() : null,
-        assignedBy: task.assignedBy ? task.assignedBy.toString() : null, 
-        schedule:{
-          date: task.date,
-          time: task.time,
-        },
-        shipInfo: relatedUser && relatedUser.shipInfo ? {
-          firstName: relatedUser.shipInfo.firstName,
-          lastName: relatedUser.shipInfo.lastName,
-          email: relatedUser.shipInfo.email,
-        } : null,
-      };      
-
-    });
+          _id: task._id.toString(),
+          type: task.service,
+          assignTo: task.user ? task.user.toString() : null,
+          assignedBy: task.assignedBy ? task.assignedBy.toString() : null,
+          schedule: {
+              date: task.date,
+              time: task.time,
+          },
+          shipInfo: relatedUser && relatedUser.shipInfo ? {
+              firstName: relatedUser.shipInfo.firstName,
+              lastName: relatedUser.shipInfo.lastName,
+              email: relatedUser.shipInfo.email,
+          } : null,
+      };
+  });
 
 
     res.json({ success: true, tasks: tasksWithUsers, users: users });
@@ -619,7 +625,8 @@ app.post("/api/assign-tasks", async (req, res) => {
       service,
       date,
       time,
-      comments
+      comments,
+      admin,
     });
     await newTask.save();
     res.status(200).json({ success: true, message: "Task assigned successfully." });
@@ -648,55 +655,75 @@ app.post("/api/delete-task", async (req, res) => {
   }
 });
 
+app.get("/api/manage-appointments", async (req, res) => {
+  try {
+    const tasks = await EmployeeTask.find();
+    const users = await User.find();  
+    const checkouts = await Check.find();
+
+    console.log("Checkouts:", checkouts);
+
+    const tasksWithUsers = tasks.map(task => {
+      const relatedUser = checkouts.find(check => {
+        const taskDateTime = new Date(`${task.date} ${task.time}`);
+        const checkDateTime = new Date(check.appDate);
+        return taskDateTime.getTime() === checkDateTime.getTime();
+      });
+    
+      const assignedUser = users.find(u => u._id.toString() === (task.user?.toString()));
+      const assignedByUser = users.find(u => u._id.toString() === (task.assignedBy?.toString()));  
+      
+      return {
+        _id: task._id.toString(),
+        type: task.service,
+        assignTo: task.user ? task.user.toString() : null,
+        assignedUserName: assignedUser ? `${assignedUser.firstName} ${assignedUser.lastName}` : null,
+        assignedBy: assignedByUser ? `${assignedByUser.firstName} ${assignedByUser.lastName}` : null,  
+        schedule: {
+          date: task.date,
+          time: task.time,
+        },
+        shipInfo: relatedUser?.shipInfo ? {
+          firstName: relatedUser.shipInfo.firstName,
+          lastName: relatedUser.shipInfo.lastName,
+          email: relatedUser.shipInfo.email,
+        } : null,
+      };
+    });
+
+    res.json({ success: true, tasks: tasksWithUsers, users: users });
+  } catch (err) {
+    console.error("Error fetching tasks:", err);
+    res.json({ success: false, message: "Error fetching tasks" });
+  }
+});
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Fetch previous apps and upcoming apps API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get('/api/appsPast', async (req, res) => {
   try {
-    const userEmail = req.session.userId?.email;
-
-    if (!userEmail) {
-      return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    // Convert today's date to a string in "YYYY-MM-DD" format
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    const pastAppointments = await PastApps.find({
-      email: userEmail,
-      date: { $lt: todayStr }  // ✅ comparing string to string
-    });
-
-    console.log('Past appointments:', pastAppointments);
+    const now = new Date();
+    const pastAppointments = await PastApps.find({ date: { $lt: now } }).sort({ date: -1 });
+    console.log('Past appointments:', pastAppointments);  
     res.json({ past: pastAppointments });
   } catch (error) {
-    console.error('Error fetching past appointments:', error);
-    res.status(500).json({ error: 'Internal server error' });
+      console.error('Error fetching past appointments:', error);
+      res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 app.get('/api/appsUpcoming', async (req, res) => {
   try {
-    const userEmail = req.session.userId?.email;
-    if (!userEmail) {
-      return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    const todayStr = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
-
-    const upcomingAppointments = await PastApps.find({ 
-      email: userEmail,
-      date: { $gte: todayStr } // ✅ comparing string to string
-    });
-
-    console.log('Upcoming appointments:', upcomingAppointments);
+    const upcomingAppointments = await PastApps.find({ date: { $gte: new Date() } });
+    console.log('Upcoming appointments:', upcomingAppointments);  
     res.json({ upcoming: upcomingAppointments });
   } catch (error) {
-    console.error('Error fetching upcoming appointments:', error);
-    res.status(500).json({ error: 'Internal server error' });
+      console.error('Error fetching upcoming appointments:', error);
+      res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 
 
