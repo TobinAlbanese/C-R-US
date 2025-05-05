@@ -123,105 +123,6 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-=======
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// TimeOffEmployee API for handling new Employee time off requests
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
-//uses timeOffEmployee import
-import { error, log } from "console";
-app.post("/timeOffEmployee", async (req, res) => {
-
-  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
-
-  //Validate that necessary fields were submitted
-  if (!timeOffType || !timeOffDate || !timeOffStartTime || !timeOffEndTime) {
-    return res.status(400).json({ success: false, message: "All fields except comments are required"});
-  }
-
-
-  //Get userId from req.session and put the id value in for Employee
-  const userId = req.session.userId;
-
-  if (!userId) {
-    return res.status(401).json({ error: "User not logged in" });
-  }
-
-  //Insert the data gotten from the time off submition and save to database
-  try {
-    const newTimeOffEmployee = await timeOffEmployee.insertOne({
-      Employee: userId.id,
-      timeOffType,
-      timeOffComments,
-      timeOffDate,
-      timeOffStartTime,
-      timeOffEndTime,
-    });
-    
-    console.log(Employee);
-    await newTimeOffEmployee.save();
-
-    res.json({ success: true, message: "User created successfully." });
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ success: false, message: "An error occurred." });
-  }
-});
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Assign-Time-OFF API for fetching data from TimeOffEmployee into our admin page
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-app.get("/api/assign-time-off", async (req, res) => {
-  try {
-    const timeOffs = await timeOffEmployee.find();   
-
-    const tasksWithUsersTime = timeOffs.map(timeOff => {
-      return {
-        Employee: timeOff._id.toString(),
-        timeOffType: timeOff.timeOffType,
-        timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
-        timeOffDate: timeOff.timeOffDate.getUTCFullYear() + '-' + (timeOff.timeOffDate.getUTCMonth() + 1) + '-' + timeOff.timeOffDate.getUTCDate(), 
-        timeOffStartTime: timeOff.timeOffStartTime, 
-        timeOffEndTime: timeOff.timeOffEndTime,
-        _id: timeOff._id
-      };
-    });
-    console.log(tasksWithUsersTime);
-    res.json({ success: true, timeOffs: tasksWithUsersTime});
-  } catch (err) {
-    console.error("Error fetching timeOffs:", err);
-    res.json({ success: false, message: "Error fetching timeOffs" });
-  }
-});
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Delete-Time-OFF API for deleting time offs from our admin page Manage Time Offs
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-app.post("/api/delete-timeOff", async (req, res) => {
-  try {
-    const { TimeOffs } = req.body;
-    console.log("Received time Off ID to delete:", TimeOffs);
-    if (!TimeOffs) {
-      return res.status(400).json({ success: false, message: "Time Off ID is required." });
-    }
-    const deletedTimeOff = await timeOffEmployee.deleteMany({_id: { $in: TimeOffs}});
-    if (!deletedTimeOff) {
-      return res.status(404).json({ success: false, message: "TimeOff not found." });
-    }
-    console.log("Deleted TimeOff:", deletedTimeOff);
-    res.status(200).json({ success: true, message: "TimeOff deleted successfully." }); 
-  } catch (error) {
-    console.error("Error deleting TimeOff:", error);
-    res.status(500).json({ success: false, message: "Failed to delete TimeOff." });
-  }
-});
-
-
-
->>>>>>> a529c79f9fda995d1ff047469b0e82fe09197200
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -610,21 +511,18 @@ app.post("/api/assign-tasks", async (req, res) => {
     console.log("Received request body:", req.body);
 
 
-<<<<<<< HEAD
-    const { user, admin, service, date, time, comments } = req.body;
-    console.log("Parsed data:", { user, admin, service, date, time, comments });
-    const newTask = new PastApps({
-=======
     const { user, admin, service, date, time, comments, shipInfo } = req.body;
-    console.log("Parsed data:", { user, admin, service, date, time, comments, shipInfo });
-    const newTask = new Appointment({
->>>>>>> a529c79f9fda995d1ff047469b0e82fe09197200
+    const firstName = shipInfo.firstName;  
+    const lastName = shipInfo.lastName;
+    const newTask = new EmployeeTask({
       user,
       admin,
       service,
       date,
       time,
-      comments
+      comments,
+      firstName,
+      lastName,
     });
     await newTask.save();
     res.status(200).json({ success: true, message: "Task assigned successfully." });
@@ -902,14 +800,6 @@ app.get("/products", (req, res) => {
 });
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Server Run API
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Server started at http://localhost:${PORT}`);
-});
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Log Hours
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post('/api/log-hours', async (req, res) => {
@@ -1047,4 +937,12 @@ app.get('/api/approvedHours', async (req, res) => {
     console.error('Error fetching approved hours:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch approved hours.' });
   }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Server Run API
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Server started at http://localhost:${PORT}`);
 });

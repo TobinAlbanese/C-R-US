@@ -10,7 +10,7 @@ const taskSchema = new mongoose.Schema({
   firstName: { type: String },
   lastName: { type: String },
   email: { type: String },
-  
+  shipInfo: { type: String },
 });
 
 taskSchema.index({ date: 1, time: 1, service: 1, user: 1}, { unique: true });
