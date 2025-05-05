@@ -41,7 +41,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 commentsDiv.textContent = timeOff.timeOffComments || "N/A";
 
                 const timeOffDate = document.createElement("div");
-                timeOffDate.textContent = timeOff.timeOffDate;
+                const date = new Date(timeOff.timeOffDate);
+                const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+                      `${date.getDate().toString().padStart(2, '0')}/` +
+                      `${date.getFullYear()}`;
+                            timeOffDate.textContent = formattedDate;
 
                 const timeOffStartTime = document.createElement("div");
                 timeOffStartTime.textContent = timeOff.timeOffStartTime;
@@ -51,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 //Need time off id to do delete, succefully hides as an input
                 const timeOffId = document.createElement("input");
-                timeOffId.textContent = timeOff._id;
+                timeOffId.value = timeOff._id; 
                 timeOffId.type = "hidden";
 
                 const selectDiv = document.createElement("div");
@@ -88,16 +92,22 @@ async function deleteTimeOff() {
         alert("Please select at least one task to delete.");
         return;
     }
+    const timeOffIds = Array.from(selectedTasks).map(checkbox => {
+        return checkbox.closest('.task-row').querySelector('input[type="hidden"]').value.trim(); 
+    }).filter(id => id !== "");
+    console.log("Selected TimeOff IDs:", timeOffIds);
+    if (timeOffIds.length === 0) {
+        alert("No valid TimeOff IDs selected.");
+        return;
+    }
 
-    const TimeOffs = Array.from(selectedTasks).map(checkbox => checkbox.closest('.task-row').querySelector('div:nth-child(2)').textContent.trim());
-    console.log(TimeOffs);
     try {
         const res = await fetch("/api/delete-timeOff", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ TimeOffs })
+            body: JSON.stringify({ timeOffIds })
         });
 
         const result = await res.json();
@@ -113,4 +123,3 @@ async function deleteTimeOff() {
     }
     
 }
-

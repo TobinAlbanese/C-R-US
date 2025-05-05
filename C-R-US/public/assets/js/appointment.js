@@ -41,24 +41,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayApps(appointments, containerId) {
         const container = document.getElementById(containerId);
         container.innerHTML = '';
-
+    
         if (appointments.length === 0) {
             container.innerHTML = `<div class="appointment-item">No appointments available.</div>`;
             return;
         }
-
+    
         appointments.forEach(app => {
             const appointmentItem = document.createElement('div');
             appointmentItem.classList.add('appointment-item');
             appointmentItem.dataset.id = app._id;
-
-            const appointmentDate = new Date(app.date).toLocaleDateString();
+    
+            const appointmentDate = app.date;     
             appointmentItem.innerHTML = `
             <div class="appointment-text">${appointmentDate} at ${app.time} - ${app.service}</div>
-        `;
-        
-
-            // Only add cancel button for upcoming appointments
+            `;
+    
             if (containerId === 'upcoming-appointments') {
                 const cancelBtn = document.createElement('button');
                 cancelBtn.textContent = 'Cancel';
@@ -66,10 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 cancelBtn.addEventListener('click', () => cancelAppointment(app._id, appointmentItem));
                 appointmentItem.appendChild(cancelBtn);
             }
-
+    
             container.appendChild(appointmentItem);
         });
-    }
+      }
 
     async function cancelAppointment(id, appointmentElement) {
         if (!confirm('Cancel this appointment?')) return;

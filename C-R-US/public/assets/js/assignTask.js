@@ -30,7 +30,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 const row = document.createElement("div");
                 row.className = "task-row"; 
+                row.setAttribute("data-task-id", task._id);
 
+                const nameDiv = document.createElement("div");
+                const name = [task.shipInfo?.firstName, task.shipInfo?.lastName].filter(Boolean).join(" ");
+                nameDiv.textContent = name || "N/A";
+                
                 const typeDiv = document.createElement("div");
                 typeDiv.textContent = task.type || "N/A";
 
@@ -48,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 checkBox.type = 'checkbox';
                 selectDiv.appendChild(checkBox);
 
+                row.appendChild(nameDiv);
                 row.appendChild(typeDiv);
                 row.appendChild(assignToDiv);
                 row.appendChild(assignedByDiv);
@@ -77,7 +83,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     
 });
 
-// Creates dropdown for Employees
 function createEmployeeDropdown(employees, selectedId) {
     const select = document.createElement("select");
     const defaultOption = document.createElement("option");
@@ -134,16 +139,19 @@ function taskSubmission() {
     allRows.forEach(row => {
         const checkBox = row.querySelector("input[type='checkbox']");
         if(checkBox && checkBox.checked) {
-            const typeDiv = row.children[0];
-            const assignToDiv = row.children[1];
-            const assignedByDiv = row.children[2];
-            const createdOnDiv = row.children[3];
-
+            const nameDiv = row.children[0];
+            const typeDiv = row.children[1];
+            const assignToDiv = row.children[2];
+            const assignedByDiv = row.children[3];
+            const createdOnDiv = row.children[4];
+            const taskId = row.getAttribute("data-task-id");
             tasksToSubmit.push({
+                name: nameDiv.textContent,
                 type: typeDiv.textContent,
                 assignTo: assignToDiv.querySelector("select").value,
                 assignedBy: assignedByDiv.querySelector("select").value,
-                createdOn: createdOnDiv.textContent
+                createdOn: createdOnDiv.textContent,
+                taskId,
             });
             tasksToRemove.push(row);
         }
@@ -169,13 +177,9 @@ function taskSubmission() {
             if (data.success) {
                 alert("Tasks submitted successfully!");
                 console.log("Tasks submitted successfully:", data)
-                // Remove the submitted rows from the UI
                 tasksToRemove.forEach(row => {
-                 //   const row = document.querySelector(`.task-row:has(div:contains('${task.type}'))`);
-                   // if (row) {
                      console.log("Removing row:", row);
                         row.remove();
-                   // }
                 });
                tasksToSubmit = [];
             }

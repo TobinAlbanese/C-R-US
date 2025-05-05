@@ -123,102 +123,6 @@ app.post("/userCreateAccount", async (req, res) => {
   }
 });
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// TimeOffEmployee API for handling new Employee time off requests
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//timeOffEmployee handles time off requests made by employees, by taking data frome timeOffEmployee.js and putting into the db
-//uses timeOffEmployee import
-import { error, log } from "console";
-app.post("/timeOffEmployee", async (req, res) => {
-
-  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
-
-  //Validate that necessary fields were submitted
-  if (!timeOffType || !timeOffDate || !timeOffStartTime || !timeOffEndTime) {
-    return res.status(400).json({ success: false, message: "All fields except comments are required"});
-  }
-
-
-  //Get userId from req.session and put the id value in for Employee
-  const userId = req.session.userId;
-
-  if (!userId) {
-    return res.status(401).json({ error: "User not logged in" });
-  }
-
-  //Insert the data gotten from the time off submition and save to database
-  try {
-    const newTimeOffEmployee = await timeOffEmployee.insertOne({
-      Employee: userId.id,
-      timeOffType,
-      timeOffComments,
-      timeOffDate,
-      timeOffStartTime,
-      timeOffEndTime,
-    });
-    
-    console.log(Employee);
-    await newTimeOffEmployee.save();
-
-    res.json({ success: true, message: "User created successfully." });
-  } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ success: false, message: "An error occurred." });
-  }
-});
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Assign-Time-OFF API for fetching data from TimeOffEmployee into our admin page
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-app.get("/api/assign-time-off", async (req, res) => {
-  try {
-    const timeOffs = await timeOffEmployee.find();   
-
-    const tasksWithUsersTime = timeOffs.map(timeOff => {
-      return {
-        Employee: timeOff._id.toString(),
-        timeOffType: timeOff.timeOffType,
-        timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
-        timeOffDate: timeOff.timeOffDate, 
-        timeOffStartTime: timeOff.timeOffStartTime, 
-        timeOffEndTime: timeOff.timeOffEndTime,
-        _id: timeOff._id
-      };
-    });
-    console.log(tasksWithUsersTime);
-    res.json({ success: true, timeOffs: tasksWithUsersTime});
-  } catch (err) {
-    console.error("Error fetching timeOffs:", err);
-    res.json({ success: false, message: "Error fetching timeOffs" });
-  }
-});
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Delete-Time-OFF API for deleting time offs from our admin page Manage Time Offs
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-app.post("/api/delete-timeOff", async (req, res) => {
-  try {
-    const { TimeOffs } = req.body;
-    console.log("Received time Off ID to delete:", TimeOffs);
-    if (!TimeOffs) {
-      return res.status(400).json({ success: false, message: "Time Off ID is required." });
-    }
-    const deletedTimeOff = await timeOffEmployee.deleteMany({_id: { $in: TimeOffs}});
-    if (!deletedTimeOff) {
-      return res.status(404).json({ success: false, message: "TimeOff not found." });
-    }
-    console.log("Approved TimeOff:", deletedTimeOff);
-    res.status(200).json({ success: true, message: "TimeOff approved successfully." }); 
-  } catch (error) {
-    console.error("Error approving TimeOff:", error);
-    res.status(500).json({ success: false, message: "Failed to approve TimeOff." });
-  }
-});
-
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Login API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -468,7 +372,7 @@ app.get('/api/booked-times', async (req, res) => {
 
   try {
 
-    const bookings = await Appointment.find({ date }); 
+    const bookings = await PastApps.find({ date }); 
     const bookedTimes = bookings.map(booking => booking.time); 
     res.json({ bookedTimes });
   } catch (error) {
@@ -476,7 +380,6 @@ app.get('/api/booked-times', async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // multi-function API for assigning and deleting tasks
@@ -495,8 +398,6 @@ app.post('/api/assignTasks', async (req, res) => {
       const { type, assignTo, assignedBy, createdOn } = task;
       const taskDate = createdOn.split(" ")[0];
       const taskTime = createdOn.split(" ").slice(1).join(" ");
-
-      // Check if a task with the same date, time, service, and user already exists
       const existingTask = await EmployeeTask.findOne({
         date: taskDate,
         time: taskTime,
@@ -507,14 +408,12 @@ app.post('/api/assignTasks', async (req, res) => {
 
       if (existingTask) {
         console.warn(`Duplicate task found for: ${type} on ${taskDate} at ${taskTime}`);
-        continue; // Skip this task and move to the next one
+        continue; 
       }
-
       const assignedUser = await User.findById(assignTo).select("email firstName lastName");
       if (!assignedUser) {
         throw new Error(`User not found for ID: ${assignTo}`);
       }
-
       const newEmployeeTask = new EmployeeTask({
         date: taskDate,
         time: taskTime,
@@ -525,10 +424,9 @@ app.post('/api/assignTasks', async (req, res) => {
         email: assignedUser.email,
         firstName: assignedUser.firstName,
         lastName: assignedUser.lastName,
-        admin: admin,
+        admin: assignedBy,
       });
       await newEmployeeTask.save();
-
       const existingApp = await Appointment.findOne({
         date: taskDate,
         time: taskTime,
@@ -563,11 +461,6 @@ app.post('/api/assignTasks', async (req, res) => {
   }
 });
 
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-// Assign-Tasks API for fetching data from Scheduling/Users into our admin page
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Assign-Tasks API for fetching data from Scheduling/Users into our admin page
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -581,28 +474,28 @@ app.get("/api/assign-tasks", async (req, res) => {
 
     
     const tasksWithUsers = tasks.map(task => {
-      const fullDateTime = new Date(`${task.date} ${task.time}`);
+      const fullDateTime = `${task.date} ${task.time}`;
       console.log("Full DateTime:", fullDateTime); 
-      const relatedUser = checkouts.find(check => {
-          const checkDateTime = new Date(check.appDate);
-          return checkDateTime.getTime() === fullDateTime.getTime();
-      });
+      const relatedUser = checkouts.find(check =>
+        check.appDate === fullDateTime);
       return {
-          _id: task._id.toString(),
-          type: task.service,
-          assignTo: task.user ? task.user.toString() : null,
-          assignedBy: task.assignedBy ? task.assignedBy.toString() : null,
-          schedule: {
-              date: task.date,
-              time: task.time,
-          },
-          shipInfo: relatedUser && relatedUser.shipInfo ? {
-              firstName: relatedUser.shipInfo.firstName,
-              lastName: relatedUser.shipInfo.lastName,
-              email: relatedUser.shipInfo.email,
-          } : null,
-      };
-  });
+        _id: task._id.toString(),
+     //   user: task.user.toString(),
+        type: task.service,
+        assignTo: task.user ? task.user.toString() : null,
+        assignedBy: task.assignedBy ? task.assignedBy.toString() : null, 
+        schedule:{
+          date: task.date,
+          time: task.time,
+        },
+        shipInfo: relatedUser && relatedUser.shipInfo ? {
+          firstName: relatedUser.shipInfo.firstName,
+          lastName: relatedUser.shipInfo.lastName,
+          email: relatedUser.shipInfo.email,
+        } : null,
+      };      
+
+    });
 
 
     res.json({ success: true, tasks: tasksWithUsers, users: users });
@@ -620,13 +513,12 @@ app.post("/api/assign-tasks", async (req, res) => {
 
     const { user, admin, service, date, time, comments } = req.body;
     console.log("Parsed data:", { user, admin, service, date, time, comments });
-    const newTask = new Appointment({
+    const newTask = new PastApps({
       user,
       service,
       date,
       time,
-      comments,
-      admin,
+      comments
     });
     await newTask.save();
     res.status(200).json({ success: true, message: "Task assigned successfully." });
@@ -640,21 +532,28 @@ app.post("/api/delete-task", async (req, res) => {
   try {
     const { taskIds } = req.body;
     console.log("Received task ID to delete:", taskIds);
-    if (!taskIds) {
+
+    if (!taskIds || taskIds.length === 0) {
       return res.status(400).json({ success: false, message: "Task ID is required." });
     }
-    const deletedTask = await Appointment.deleteMany({_id: { $in: taskIds}});
-    if (!deletedTask) {
-      return res.status(404).json({ success: false, message: "Task not found." });
+    const objectIds = taskIds.map(id => new mongoose.Types.ObjectId(id));
+    console.log("Task IDs to delete:", objectIds); 
+    const deletedTask = await EmployeeTask.deleteMany({ _id: { $in: objectIds } });
+    if (deletedTask.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "No tasks found to delete." });
     }
     console.log("Deleted task:", deletedTask);
-    res.status(200).json({ success: true, message: "Task deleted successfully." }); 
+    res.status(200).json({ success: true, message: "Task deleted successfully." });
   } catch (error) {
     console.error("Error deleting task:", error);
     res.status(500).json({ success: false, message: "Failed to delete task." });
   }
 });
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//manage appointments method
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get("/api/manage-appointments", async (req, res) => {
   try {
     const tasks = await EmployeeTask.find();
@@ -699,42 +598,148 @@ app.get("/api/manage-appointments", async (req, res) => {
 });
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// TimeOffEmployee API for handling new Employee time off requests
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post("/timeOffEmployee", async (req, res) => {
+
+  const { Employee, timeOffType, timeOffComments, timeOffDate, timeOffStartTime, timeOffEndTime } = req.body;
+
+  //Validate that necessary fields were submitted
+  if (!timeOffType || !timeOffDate || !timeOffStartTime || !timeOffEndTime) {
+    return res.status(400).json({ success: false, message: "All fields except comments are required"});
+  }
+
+
+  //Get userId from req.session and put the id value in for Employee
+  const userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  //Insert the data gotten from the time off submition and save to database
+  try {
+    const newTimeOffEmployee = await timeOffEmployee.insertOne({
+      Employee: userId.id,
+      timeOffType,
+      timeOffComments,
+      timeOffDate,
+      timeOffStartTime,
+      timeOffEndTime,
+    });
+    
+    console.log(Employee);
+    await newTimeOffEmployee.save();
+
+    res.json({ success: true, message: "User created successfully." });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ success: false, message: "An error occurred." });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Assign-Time-OFF API for fetching data from TimeOffEmployee into our admin page
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+app.get("/api/assign-time-off", async (req, res) => {
+  try {
+    const timeOffs = await timeOffEmployee.find();  
+    const tasksWithUsersTime = await Promise.all(timeOffs.map(async (timeOff) => {
+      const user = await User.findOne({ _id: timeOff.Employee }); 
+      return {
+        Employee: {
+          firstName: user?.firstName || "Unknown",
+          lastName: user?.lastName || "User",
+          _id: timeOff.Employee.toString(),  
+        },
+        timeOffType: timeOff.timeOffType,
+        timeOffComments: timeOff.timeOffComments ? timeOff.timeOffComments.toString() : null,
+        timeOffDate: timeOff.timeOffDate.getUTCFullYear() + '-' + (timeOff.timeOffDate.getUTCMonth() + 1) + '-' + timeOff.timeOffDate.getUTCDate(), 
+        timeOffStartTime: timeOff.timeOffStartTime, 
+        timeOffEndTime: timeOff.timeOffEndTime,
+        _id: timeOff._id
+      };
+    }));
+    console.log(tasksWithUsersTime);
+    res.json({ success: true, timeOffs: tasksWithUsersTime});
+  } catch (err) {
+    console.error("Error fetching timeOffs:", err);
+    res.json({ success: false, message: "Error fetching timeOffs" });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+// Delete-Time-OFF API for deleting time offs from our admin page Manage Time Offs
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+app.post("/api/delete-timeOff", async (req, res) => {
+  try {
+    const { timeOffIds } = req.body;
+    console.log("Received time Off ID to delete:", timeOffIds);
+    if (!timeOffIds) {
+      return res.status(400).json({ success: false, message: "Time Off ID is required." });
+    }
+    const objectIds = timeOffIds.map(id => new mongoose.Types.ObjectId(id));
+    const deletedTimeOff = await timeOffEmployee.deleteMany({
+      _id: { $in: objectIds }
+    });    
+    if (!deletedTimeOff) {
+      return res.status(404).json({ success: false, message: "TimeOff not found." });
+    }
+    console.log("Deleted TimeOff:", deletedTimeOff);
+    res.status(200).json({ success: true, message: "TimeOff deleted successfully." }); 
+  } catch (error) {
+    console.error("Error deleting TimeOff:", error);
+    res.status(500).json({ success: false, message: "Failed to delete TimeOff." });
+  }
+});
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Fetch previous apps and upcoming apps API
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.get('/api/appsPast', async (req, res) => {
   try {
-    const now = new Date();
-    const pastAppointments = await PastApps.find({ date: { $lt: now } }).sort({ date: -1 });
+    const now = new Date(); 
+    const today = now.toISOString().split('T')[0]; 
+    const pastAppointments = await PastApps.find({
+      date: { $lt: today } 
+    }).sort({ date: -1 });
     console.log('Past appointments:', pastAppointments);  
     res.json({ past: pastAppointments });
   } catch (error) {
-      console.error('Error fetching past appointments:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching past appointments:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 app.get('/api/appsUpcoming', async (req, res) => {
   try {
-    const upcomingAppointments = await PastApps.find({ date: { $gte: new Date() } });
+    const now = new Date(); 
+    const today = now.toISOString().split('T')[0]; 
+    const upcomingAppointments = await PastApps.find({
+      date: { $gte: today } 
+    });
     console.log('Upcoming appointments:', upcomingAppointments);  
     res.json({ upcoming: upcomingAppointments });
   } catch (error) {
-      console.error('Error fetching upcoming appointments:', error);
-      res.status(500).json({ error: 'Internal server error' });
+    console.error('Error fetching upcoming appointments:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
 
 app.delete('/api/appointments/:id', async (req, res) => {
   try {
     const appointmentId = req.params.id;
-
     const deleted = await PastApps.findByIdAndDelete(appointmentId);
-
     if (!deleted) {
       return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    const {date, time, service} = deleted;
+    console.log('Deleting task with:', { date, time, service });
+    const deleteTasks = await EmployeeTask.findOneAndDelete({date, time, service});
+    if (!deleteTasks) {
+      return res.status(404).json({error: 'Appointment not found in EmployeeTasks'});
     }
 
     res.json({ success: true, message: 'Appointment canceled' });
@@ -743,9 +748,6 @@ app.delete('/api/appointments/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
  // Fetch Employee Tasks API
@@ -768,10 +770,7 @@ app.delete('/api/appointments/:id', async (req, res) => {
   }
 });
 
-
-
-
-
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Redirection API for URL
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 app.post("/redirect", (req, res) => {
@@ -803,36 +802,6 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Log Hours
@@ -907,11 +876,9 @@ app.get("/api/log-hours", async (req, res) => {
   }
 });
 
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 // Post Approved Hours API 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 app.post('/api/approve-hours', async (req, res) => {
   const approvedHours = req.body;
 

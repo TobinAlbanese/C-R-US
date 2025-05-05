@@ -63,15 +63,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const patientDiv = document.createElement("div");
                 patientDiv.textContent = `${task.shipInfo ? `${task.shipInfo.firstName} ${task.shipInfo.lastName}` : "N/A"}`;
 
-                const assignIdDiv = document.createElement("div");
-                assignIdDiv.textContent = task._id || "N/A";
 
-                const assignedUserDiv = document.createElement("div");
-                if (task.firstName && task.lastName) {
-                    assignedUserDiv.textContent = task.assignedUserName || "N/A";
-                } else {
-                    assignedUserDiv.textContent = "N/A";
-                }
+                const assignedToDiv = document.createElement("div");
+                assignedToDiv.textContent = task.assignedUserName || "N/A";
+
+                const assignedByDiv = document.createElement("div");
+                assignedByDiv.textContent = task.assignedBy || "N/A";
 
                 const createdOnDiv = document.createElement("div");
                 createdOnDiv.textContent = `${task.schedule?.date || "N/A"} ${task.schedule?.time || ""}`;
@@ -85,8 +82,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             
                 row.appendChild(patientDiv);
                 row.appendChild(typeDiv);
-                row.appendChild(assignIdDiv);
-                row.appendChild(assignedUserDiv);
+                row.appendChild(assignedToDiv);
+                row.appendChild(assignedByDiv);
                 row.appendChild(createdOnDiv);
                 row.appendChild(selectDiv);
 
