@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 assignedByDiv.textContent = task.assignedBy || "N/A";
 
                 const createdOnDiv = document.createElement("div");
-                createdOnDiv.textContent = `${task.schedule?.date || "N/A"} ${task.schedule?.time || ""}`;
+                const formattedTime = formatTimeTo12Hour(task.schedule?.time || ""); 
+                createdOnDiv.textContent = `${task.schedule?.date || "N/A"} ${formattedTime || ""}`;
 
                 const selectDiv = document.createElement("div");
                 const checkBox = document.createElement('input');
@@ -164,18 +165,18 @@ async function createAppointment() {
     const time = document.getElementById("time").value;
     const firstName = document.getElementById("firstName").value;  
     const lastName = document.getElementById("lastName").value;
-
+    const formattedTime = formatTimeTo12Hour(time);
 
     const appointmentData = {
         user: assignTo,
-        admin: assignBy,
+        assignedBy: assignBy,
         date,
-        time,
+        time: formattedTime,
         service: type,
         comments: "",
         shipInfo: {
             firstName: firstName,
-            lastName: lastName
+            lastName: lastName,
         }
        
 };
@@ -202,6 +203,19 @@ async function createAppointment() {
         alert("An error occurred while creating the task.");
     }
 
+}
+
+function formatTimeTo12Hour(time) {
+    const [hour, minute] = time.split(":");
+    let hours = parseInt(hour, 10);
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; 
+    const formattedTime = `${hours}:${minute}`;
+    if (!formattedTime.includes("AM") && !formattedTime.includes("PM")) {
+        return `${formattedTime} ${ampm}`;
+    }
+    return formattedTime; 
 }
 
 async function deleteAppointment() {

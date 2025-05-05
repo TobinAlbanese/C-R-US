@@ -507,22 +507,22 @@ app.get("/api/assign-tasks", async (req, res) => {
 
 app.post("/api/assign-tasks", async (req, res) => {
   try {
+    const { user, assignedBy, service, date, time, comments, shipInfo } = req.body;
+    const {firstName, lastName} = shipInfo;
+    const assignedUser = await User.findById(user).select("email firstName lastName");
+    const shipInfoData = { firstName, lastName };
 
-    console.log("Received request body:", req.body);
-
-
-    const { user, admin, service, date, time, comments, shipInfo } = req.body;
-    const firstName = shipInfo.firstName;  
-    const lastName = shipInfo.lastName;
     const newTask = new EmployeeTask({
-      user,
-      admin,
-      service,
       date,
       time,
+      service,
       comments,
-      firstName,
-      lastName,
+      user,
+      assignedBy,
+      email: assignedUser.email,
+      firstName: assignedUser.firstName,
+      lastName: assignedUser.lastName,
+      shipInfo: shipInfoData,
     });
     await newTask.save();
     res.status(200).json({ success: true, message: "Task assigned successfully." });
@@ -575,7 +575,12 @@ app.get("/api/manage-appointments", async (req, res) => {
     
       const assignedUser = users.find(u => u._id.toString() === (task.user?.toString()));
       const assignedByUser = users.find(u => u._id.toString() === (task.assignedBy?.toString()));  
-      
+      const shipInfo = relatedUser?.shipInfo ? {
+        firstName: relatedUser.shipInfo.firstName,
+        lastName: relatedUser.shipInfo.lastName,
+        email: relatedUser.shipInfo.email,
+      } : task.shipInfo || null;
+
       return {
         _id: task._id.toString(),
         type: task.service,
@@ -586,11 +591,7 @@ app.get("/api/manage-appointments", async (req, res) => {
           date: task.date,
           time: task.time,
         },
-        shipInfo: relatedUser?.shipInfo ? {
-          firstName: relatedUser.shipInfo.firstName,
-          lastName: relatedUser.shipInfo.lastName,
-          email: relatedUser.shipInfo.email,
-        } : null,
+        shipInfo: shipInfo,
       };
     });
 
