@@ -162,6 +162,8 @@ async function createAppointment() {
     const type = document.getElementById("type").value;
     const date = document.getElementById("date").value;
     const time = document.getElementById("time").value;
+    const firstName = document.getElementById("firstName").value;  
+    const lastName = document.getElementById("lastName").value;
 
 
     const appointmentData = {
@@ -170,9 +172,13 @@ async function createAppointment() {
         date,
         time,
         service: type,
-        comments: ""
-        
-    }
+        comments: "",
+        shipInfo: {
+            firstName: firstName,
+            lastName: lastName
+        }
+       
+};
 
     try {
         const res = await fetch("/api/assign-tasks", {
